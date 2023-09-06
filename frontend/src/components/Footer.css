@@ -1,0 +1,14 @@
+.footer {
+  background-color: #4caf50;
+  color: white;
+  padding: 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.footer-content {
+  font-size: 1rem;
+}
