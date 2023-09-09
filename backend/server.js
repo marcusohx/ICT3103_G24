@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors"); // Import the cors package
-const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,11 +25,7 @@ mongoose
 app.use(bodyParser.json());
 app.use(cors()); // Use the cors middleware
 
-app.use("/auth", authRoutes);
-
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
-});
+app.use("/user", userRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
