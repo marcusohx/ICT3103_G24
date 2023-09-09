@@ -4,7 +4,7 @@ import "./Login.css";
 import { AuthContext } from "../../contexts/AuthContext"; // Adjust the path as necessary
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { login } = useContext(AuthContext);
@@ -12,12 +12,12 @@ function Login() {
   const handleLogin = async () => {
     try {
       const response = await axios.post("http://localhost:3001/user/login", {
-        username,
+        email,
         password,
       });
       console.log(response.data);
 
-      login({ username, password }); // call the login function from AuthContext
+      login({ email, password }); // call the login function from AuthContext
     } catch (error) {
       console.log(error);
     }
@@ -27,9 +27,9 @@ function Login() {
     <div>
       <input
         type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"

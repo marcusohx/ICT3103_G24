@@ -1,13 +1,32 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+require("dotenv").config(); // Ensure this is at the very top of your file
+const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  console.log(email, password, user);
   if (!user) return res.status(404).send("User not found");
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) return res.status(401).send("Invalid password");
+
+  // JWT token generation
+  const token = jwt.sign(
+    { userId: user._id, email: user.email, userType: user.userType },
+    "secret",
+    { expiresIn: "1h" }
+  );
+  console.log(token);
+  // Setting the JWT as a cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 3600000, // 1 hour
+    path: "/", // add this line
+  });
 
   res.status(200).send("Logged in successfully");
 };

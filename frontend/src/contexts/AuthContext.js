@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("/user/user-data");
+      const response = await axios.get("http://localhost:3001/user/user-data");
       setAuthState(response.data);
     } catch (error) {
       console.error(error);
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
 
   const login = async (credentials) => {
     try {
-      await axios.post("/user/login", credentials);
+      await axios.post("http://localhost:3001/user/login", credentials);
       await fetchUserData();
     } catch (error) {
       console.error(error);
@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await axios.post("/user/logout");
+      await axios.post("http://localhost:3001/user/logout");
       setAuthState(null);
     } catch (error) {
       console.error(error);

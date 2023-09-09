@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors"); // Import the cors package
 const userRoutes = require("./routes/userRoutes");
-
+const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -22,8 +22,14 @@ mongoose
     console.error("Database connection error:", error);
   });
 
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(cors()); // Use the cors middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000", // replace with your frontend application's URL
+    credentials: true,
+  })
+);
 
 app.use("/user", userRoutes);
 
