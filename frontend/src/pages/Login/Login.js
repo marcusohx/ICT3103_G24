@@ -3,18 +3,7 @@ import axios from "axios";
 import "./Login.css";
 import { AuthContext } from "../../contexts/AuthContext"; // Adjust the path as necessary
 import { useNavigate } from "react-router-dom"; // Import useHistory
-import {
-  Alert,
-  Box,
-  Button,
-  FormHelperText,
-  Link,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -83,9 +72,10 @@ function Login() {
         <div>
           <Stack spacing={1} sx={{ mb: 3 }}>
             <Typography variant="h4">Login</Typography>
-            <Typography color="text.secondary" variant="body2">
-              Don&apos;t have an account? &nbsp;
+            <Typography color="text.secondary" variant="body2"> Don&apos;t have an account? &nbsp;
+            <Link href="/register" underline="hover" variant="subtitle2">Register </Link>
             </Typography>
+        
           </Stack>
           {error && <Alert severity="error">{error}</Alert>}{" "}
           {/* Display error message if there is an error */}

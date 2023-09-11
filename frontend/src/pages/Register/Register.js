@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./Register.css";
+import { Box, Button, Link, Stack, TextField, Typography } from '@mui/material';
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -41,41 +42,87 @@ function Register() {
   };
 
   return (
-    <div>
-      {message && <div className="message">{message}</div>}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-      />
-      <select value={userType} onChange={(e) => setUserType(e.target.value)}>
-        <option value="" disabled>
-          Select User Type
-        </option>
-        <option value="employer">employer</option>
-        <option value="user">user</option>
-      </select>
-      <button onClick={handleRegister}>Register</button>
-    </div>
+    <Box
+        sx={{
+          flex: '1 1 auto',
+          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'center'
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 550,
+            px: 3,
+            py: '100px',
+            width: '100%'
+          }}
+        >
+          <div>
+            <Stack
+              spacing={1}
+              sx={{ mb: 3 }}
+            >
+              <Typography variant="h4">
+                Register
+              </Typography>
+              <Typography
+                color="text.secondary"
+                variant="body2"
+              >
+                Already have an account?
+                &nbsp;
+                <Link
+                  href="/login"
+                  underline="hover"
+                  variant="subtitle2"
+                >
+                  Log in
+                </Link>
+              </Typography>
+            </Stack>
+            <form
+              noValidate onSubmit={handleRegister}
+            >
+              <Stack spacing={3}>
+                <TextField
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <TextField
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </Stack>
+              <Button
+                fullWidth
+                size="large"
+                sx={{ mt: 3 }}
+                type="submit"
+                variant="contained"
+              >
+                Register
+              </Button>
+            </form>
+          </div>
+        </Box>
+      </Box>
   );
 }
 
