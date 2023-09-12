@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors"); // Import the cors package
 const userRoutes = require("./routes/userRoutes");
+const employerRoutes = require("./routes/employerRoutes");
 const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -32,6 +33,7 @@ app.use(
 );
 
 app.use("/user", userRoutes);
+app.use("/employer", employerRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

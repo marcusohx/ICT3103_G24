@@ -11,7 +11,7 @@ function Navbar() {
     <div>
       <Link to="/">Home</Link>
       <span>About</span>
-      <Link to="/login">Login</Link>
+      <Link to="/chooserole">Login</Link>
       <Link to="/Register">Register</Link>
     </div>
   );
@@ -26,21 +26,11 @@ function Navbar() {
     </div>
   );
 
-  // Navbar for users who are logged in as 'employer'
-  const employerNavbar = (
-    <div>
-      <span>Home</span>
-      <span>Dashboard</span>
-      <span>Settings</span>
-      <span onClick={logout}>Logout</span>
-    </div>
-  );
-
   if (!authState) {
     return notLoggedInNavbar;
   }
 
-  return authState.userType === "employer" ? employerNavbar : userNavbar;
+  return userNavbar;
 }
 
 export default Navbar;

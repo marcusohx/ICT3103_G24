@@ -13,11 +13,9 @@ exports.login = async (req, res) => {
   if (!validPassword) return res.status(401).send("Invalid password");
 
   // JWT token generation
-  const token = jwt.sign(
-    { userId: user._id, email: user.email, userType: user.userType },
-    "secret",
-    { expiresIn: "1h" }
-  );
+  const token = jwt.sign({ userId: user._id, email: user.email }, "secret", {
+    expiresIn: "1h",
+  });
   console.log(token);
   // Setting the JWT as a cookie
   res.cookie("token", token, {
@@ -32,28 +30,40 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { email, username, password, userType } = req.body;
+  const { email, username, password, firstName, lastName } = req.body;
+  console.log(req.body);
+  try {
+    // Checking if the email already exists
+    const emailExists = await User.findOne({ email });
+    if (emailExists) return res.status(400).send("Email already registered");
 
-  // Checking if the email already exists
-  const emailExists = await User.findOne({ email });
-  if (emailExists) return res.status(400).send("Email already registered");
+    // Checking if the username already exists
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) return res.status(400).send("Username already taken");
 
-  // Checking if the username already exists
-  const usernameExists = await User.findOne({ username });
-  if (usernameExists) return res.status(400).send("Username already taken");
+    // Hash the password before storing it in the database
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+    // Create a new user
+    const user = new User({
+      email,
+      username,
+      password: hashedPassword,
+      firstName,
+      lastName,
+    });
 
-  const user = new User({
-    email,
-    username,
-    password: hashedPassword,
-    userType,
-  });
+    // Save the new user in the database
+    await user.save();
 
-  await user.save();
-  res.status(201).send("User created");
+    // Respond with a success message
+    res.status(201).send("User created");
+  } catch (error) {
+    // Respond with a generic error message
+    console.log(error);
+    res.status(500).send("Something went wrong");
+  }
 };
 
 exports.logout = (req, res) => {
