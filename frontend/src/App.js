@@ -7,6 +7,8 @@ import EmployerLogin from "./pages/Auth/EmployerLogin/EmployerLogin.js";
 import UserRegister from "./pages/Auth/UserRegister/Register.js";
 import EmployerRegister from "./pages/Auth/EmployerRegister/EmployerRegister.js";
 import ChooseRole from "./pages/Auth/ChooseRole/ChooseRoleLogin/ChooseRoleLogin.js";
+import JobListings from "./pages/JobListing/JobListingPage.js";
+import CreateJobListingPage from "./pages/JobListing/CreateJobListing/CreateJobListing.js";
 import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -14,9 +16,9 @@ import { EmployerAuthProvider } from "./contexts/EmployerAuthContext"; // Import
 
 function App() {
   return (
-    <AuthProvider>
-      <EmployerAuthProvider>
-        <Router>
+    <Router>
+      <AuthProvider>
+        <EmployerAuthProvider>
           <div className="App">
             <Navbar />
             <Routes>
@@ -26,12 +28,17 @@ function App() {
               <Route path="/userregister" element={<UserRegister />} />
               <Route path="/employerregister" element={<EmployerRegister />} />
               <Route path="/chooserole" element={<ChooseRole />} />
+              <Route path="/joblistings" element={<JobListings />} />
+              <Route
+                path="/createjoblisting"
+                element={<CreateJobListingPage />}
+              />
             </Routes>
             <Footer />
           </div>
-        </Router>
-      </EmployerAuthProvider>
-    </AuthProvider>
+        </EmployerAuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

@@ -10,6 +10,7 @@ const jobListingSchema = new mongoose.Schema({
   },
   appliedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   acceptedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  payment: { type: Number, required: true }, // Added payment field
 });
 
 module.exports = mongoose.model("JobListing", jobListingSchema);

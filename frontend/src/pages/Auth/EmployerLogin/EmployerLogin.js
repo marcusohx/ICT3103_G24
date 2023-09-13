@@ -36,7 +36,7 @@ function EmployerLogin() {
 
       if (response.status === 200) {
         await login({ email, password });
-        navigate("/employer-dashboard"); // Navigate to the employer dashboard or another appropriate route
+        navigate("/"); // Navigate to the employer dashboard or another appropriate route
       } else {
         setError(response.data);
       }
