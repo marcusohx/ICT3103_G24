@@ -36,7 +36,7 @@ export function EmployerAuthProvider({ children }) {
     }
   };
 
-  const logout = async () => {
+  const employerlogout = async () => {
     try {
       await axios.post(
         "http://localhost:3001/employer/logout",
@@ -50,7 +50,9 @@ export function EmployerAuthProvider({ children }) {
   };
 
   return (
-    <EmployerAuthContext.Provider value={{ employerAuthState, login, logout }}>
+    <EmployerAuthContext.Provider
+      value={{ employerAuthState, login, employerlogout }}
+    >
       {children}
     </EmployerAuthContext.Provider>
   );

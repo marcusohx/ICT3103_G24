@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
     process.env.JWT_SECRET || "secret",
     { expiresIn: "1h" }
   );
-
+  console.log("employer" + token);
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

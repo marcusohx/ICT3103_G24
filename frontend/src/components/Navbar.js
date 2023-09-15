@@ -6,10 +6,13 @@ import { EmployerAuthContext } from "../contexts/EmployerAuthContext"; // Make s
 
 function Navbar() {
   const { authState, logout } = useContext(AuthContext);
-  const { employerAuthState, employerLogout } = useContext(EmployerAuthContext);
+  const { employerAuthState, employerlogout } = useContext(EmployerAuthContext);
 
   useEffect(() => {
     // this will cause a re-render whenever authState or employeeAuthState changes
+    console.log("authState changed");
+    console.log(authState);
+    console.log(employerAuthState);
   }, [authState, employerAuthState]);
   // Navbar for users who are not logged in
   const notLoggedInNavbar = (
@@ -37,7 +40,8 @@ function Navbar() {
       <span>Home</span>
       <span>Dashboard</span> {/* Adjust as necessary */}
       <span>Settings</span>
-      <span onClick={employerLogout}>Logout</span> {/* Adjust as necessary */}
+      <button onClick={employerlogout}>Logout</button>
+      {/* Adjust as necessary */}
     </div>
   );
 
