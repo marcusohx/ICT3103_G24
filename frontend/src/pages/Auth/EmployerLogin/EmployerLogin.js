@@ -76,7 +76,7 @@ function EmployerLogin() {
             <Typography color="text.secondary" variant="body2">
               Don’t have an account?&nbsp;
               <Link
-                href="/employer-register"
+                href="/employerregister"
                 underline="hover"
                 variant="subtitle2"
               >

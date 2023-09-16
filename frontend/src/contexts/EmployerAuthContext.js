@@ -5,6 +5,8 @@ export const EmployerAuthContext = createContext();
 
 export function EmployerAuthProvider({ children }) {
   const [employerAuthState, setEmployerAuthState] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchEmployerData = async () => {
     try {
@@ -16,8 +18,12 @@ export function EmployerAuthProvider({ children }) {
       );
       console.log(response.data);
       setEmployerAuthState(response.data);
+      console.log(employerAuthState);
     } catch (error) {
       console.error(error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,17 +33,22 @@ export function EmployerAuthProvider({ children }) {
 
   const login = async (credentials) => {
     try {
+      setLoading(true);
       await axios.post("http://localhost:3001/employer/login", credentials, {
         withCredentials: true,
       });
       await fetchEmployerData();
     } catch (error) {
       console.error(error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const employerlogout = async () => {
     try {
+      setLoading(true);
       await axios.post(
         "http://localhost:3001/employer/logout",
         {},
@@ -46,12 +57,15 @@ export function EmployerAuthProvider({ children }) {
       setEmployerAuthState(null);
     } catch (error) {
       console.error(error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <EmployerAuthContext.Provider
-      value={{ employerAuthState, login, employerlogout }}
+      value={{ employerAuthState, loading, error, login, employerlogout }}
     >
       {children}
     </EmployerAuthContext.Provider>

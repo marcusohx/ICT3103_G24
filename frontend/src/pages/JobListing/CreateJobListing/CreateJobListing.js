@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Container, TextField, Button } from "@mui/material";
 import axios from "axios";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 
 function CreateJobListingPage() {
-  const { employerauthState } = useContext(EmployerAuthContext);
+  const { employerAuthState } = useContext(EmployerAuthContext);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -20,6 +21,15 @@ function CreateJobListingPage() {
     });
   };
 
+  useEffect(() => {
+    if (employerAuthState) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        employer: employerAuthState._id, // Assuming the ID is stored in _id field
+      }));
+    }
+  }, [employerAuthState]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -34,20 +44,19 @@ function CreateJobListingPage() {
         title: "",
         description: "",
         payment: "",
-        employer: "",
       });
     } catch (error) {
       console.error("There was an error creating the job listing!", error);
     }
   };
 
-  //   if (!employerauthState) {
-  //     return (
-  //       <div>
-  //         <h1>Not logged in</h1>
-  //       </div>
-  //     );
-  //   }
+  if (!employerAuthState) {
+    return (
+      <div>
+        <h1>Not logged in</h1>
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -89,6 +98,7 @@ function CreateJobListingPage() {
           onChange={handleChange}
           fullWidth
           margin="normal"
+          disabled
         />
         <Button variant="contained" color="primary" type="submit">
           Create Job Listing

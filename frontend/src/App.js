@@ -13,32 +13,39 @@ import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { AuthProvider } from "./contexts/AuthContext";
 import { EmployerAuthProvider } from "./contexts/EmployerAuthContext"; // Import the EmployerAuthProvider
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme/theme.js";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <EmployerAuthProvider>
-          <div className="App">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/userlogin" element={<UserLogin />} />
-              <Route path="/employerlogin" element={<EmployerLogin />} />
-              <Route path="/userregister" element={<UserRegister />} />
-              <Route path="/employerregister" element={<EmployerRegister />} />
-              <Route path="/chooserole" element={<ChooseRole />} />
-              <Route path="/joblistings" element={<JobListings />} />
-              <Route
-                path="/createjoblisting"
-                element={<CreateJobListingPage />}
-              />
-            </Routes>
-            <Footer />
-          </div>
-        </EmployerAuthProvider>
-      </AuthProvider>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <AuthProvider>
+          <EmployerAuthProvider>
+            <div className="App">
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/userlogin" element={<UserLogin />} />
+                <Route path="/employerlogin" element={<EmployerLogin />} />
+                <Route path="/userregister" element={<UserRegister />} />
+                <Route
+                  path="/employerregister"
+                  element={<EmployerRegister />}
+                />
+                <Route path="/chooserole" element={<ChooseRole />} />
+                <Route path="/joblistings" element={<JobListings />} />
+                <Route
+                  path="/createjoblisting"
+                  element={<CreateJobListingPage />}
+                />
+              </Routes>
+              <Footer />
+            </div>
+          </EmployerAuthProvider>
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 

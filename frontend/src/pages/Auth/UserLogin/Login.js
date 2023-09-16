@@ -82,7 +82,7 @@ function Login() {
             <Typography color="text.secondary" variant="body2">
               {" "}
               Don&apos;t have an account? &nbsp;
-              <Link href="/register" underline="hover" variant="subtitle2">
+              <Link href="/userregister" underline="hover" variant="subtitle2">
                 Register{" "}
               </Link>
             </Typography>

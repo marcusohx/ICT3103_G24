@@ -29,10 +29,10 @@ function ChooseRole() {
         }}
       >
         <Stack spacing={1} sx={{ mb: 3 }}>
-          <Typography variant="h4">User</Typography>
-          <Typography color="text.secondary" variant="body2">
-            Login or register as a user
-          </Typography>
+          <Typography variant="h4">Money Making</Typography>
+          {/* <Typography color="text.secondary" variant="body2">
+            Login
+          </Typography> */}
         </Stack>
         <Button
           fullWidth
@@ -42,39 +42,8 @@ function ChooseRole() {
           component={Link}
           href="/userlogin"
         >
-          Login
+          Student Login
         </Button>
-        <Button
-          fullWidth
-          size="large"
-          sx={{ mt: 3 }}
-          variant="contained"
-          component={Link}
-          href="/userregister"
-        >
-          Register
-        </Button>
-      </Box>
-
-      <Box
-        sx={{
-          maxWidth: 550,
-          width: "100%",
-          px: 3,
-          py: "100px",
-          backgroundColor: "#f9f9f9", // Add your preferred background color
-          textAlign: "center",
-          border: "1px solid #ccc", // Add your preferred border color
-          borderRadius: "8px", // Optional: for rounded corners
-          margin: "auto", // Center the box
-        }}
-      >
-        <Stack spacing={1} sx={{ mb: 3 }}>
-          <Typography variant="h4">Employer</Typography>
-          <Typography color="text.secondary" variant="body2">
-            Login or register as an employer
-          </Typography>
-        </Stack>
         <Button
           fullWidth
           size="large"
@@ -83,17 +52,7 @@ function ChooseRole() {
           component={Link}
           href="/employerlogin"
         >
-          Login
-        </Button>
-        <Button
-          fullWidth
-          size="large"
-          sx={{ mt: 3 }}
-          variant="contained"
-          component={Link}
-          href="/employerregister"
-        >
-          Register
+          Employer Login
         </Button>
       </Box>
     </Box>
