@@ -91,6 +91,47 @@ function JobListingsPage() {
       });
   };
 
+  const handleApplyJob = (selectedJob) => {
+    axios
+      .post(
+        `http://localhost:3001/joblisting/job-listings/apply/${selectedJob._id}`,
+        {},
+        { withCredentials: true }
+      )
+      .then((response) => {
+        console.log(response.data);
+        if (response.status === 200) {
+          alert("Job application successful");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+
+          if (error.response.status === 400) {
+            alert("User has already applied for this job");
+          } else if (error.response.status === 401) {
+            alert("Not authenticated");
+          } else if (error.response.status === 404) {
+            alert("Job listing not found");
+          } else {
+            alert("An unexpected error occurred");
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+          alert("No response received from the server");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log("Error", error.message);
+          alert("An unexpected error occurred");
+        }
+      });
+  };
+
   return (
     <Container>
       <Banner>
@@ -189,7 +230,23 @@ function JobListingsPage() {
               <Typography variant="h5">{selectedJob.title}</Typography>
               <Typography>{selectedJob.description}</Typography>
               <Typography>Payment: ${selectedJob.payment}</Typography>
-              <Button variant="contained" onClick={() => setSelectedJob(null)}>
+
+              {/* Check if user is authenticated before allowing to apply for a job */}
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleApplyJob(selectedJob)}
+                sx={{ mt: 2 }}
+              >
+                Apply for Job
+              </Button>
+
+              <Button
+                variant="contained"
+                onClick={() => setSelectedJob(null)}
+                sx={{ mt: 2 }}
+              >
                 Back
               </Button>
             </StyledCard>

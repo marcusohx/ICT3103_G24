@@ -123,6 +123,7 @@ export default function PrimarySearchAppBar() {
   const userMenuItems = [
     { text: "User Profile", path: "/user/profile" },
     { text: "User Settings", path: "/user/settings" },
+    { text: "Job Listings", path: "/joblistings" },
   ];
 
   const employerMenuItems = [

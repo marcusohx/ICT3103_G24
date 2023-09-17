@@ -7,16 +7,20 @@ const jwt = require("jsonwebtoken");
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  console.log(email, password, user);
+  // console.log(email, password, user);
   if (!user) return res.status(404).send("User not found");
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) return res.status(401).send("Invalid password");
 
   // JWT token generation
-  const token = jwt.sign({ userId: user._id, email: user.email }, "secret", {
-    expiresIn: "1h",
-  });
+  const token = jwt.sign(
+    { userId: user._id, email: user.email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
   // Setting the JWT as a cookie
   res.cookie("token", token, {
     httpOnly: true,

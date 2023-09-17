@@ -45,3 +45,40 @@ exports.createJobListing = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
+exports.applyForJob = async (req, res) => {
+  try {
+    const jobListing = await JobListing.findById(req.params.jobId);
+    if (!jobListing) {
+      return res.status(404).send("Job listing not found");
+    }
+
+    // Get the id of the authenticated user or employer
+    const authenticatedId = req.user
+      ? req.user._id
+      : req.employer
+      ? req.employer._id
+      : null;
+    if (!authenticatedId) {
+      console.log(jobListing);
+      return res.status(401).send("Not authenticated");
+    }
+    // Check if user or employer has already applied
+    if (
+      jobListing.appliedUsers.some(
+        (userId) => userId.toString() === authenticatedId.toString()
+      )
+    ) {
+      return res.status(400).send("User has already applied for this job");
+    }
+    jobListing.appliedUsers.push(authenticatedId);
+    await jobListing.save();
+    res.json({ msg: "Job application successful" });
+  } catch (err) {
+    console.error(err);
+    if (err.kind === "ObjectId") {
+      return res.status(404).send("Job listing not found");
+    }
+    res.status(500).send("Server error");
+  }
+};

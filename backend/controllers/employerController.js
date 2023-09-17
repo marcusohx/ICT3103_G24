@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
 
   const token = jwt.sign(
     { employerId: employer._id, email: employer.email },
-    process.env.JWT_SECRET || "secret",
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
   res.cookie("token", token, {
