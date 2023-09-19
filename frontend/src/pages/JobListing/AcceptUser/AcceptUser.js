@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 function AcceptUser() {
   const { jobId } = useParams();
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
-
+  const { employerAuthState } = useContext(EmployerAuthContext);
   useEffect(() => {
     // Use axios to get job listing details
     axios
@@ -40,6 +40,13 @@ function AcceptUser() {
         );
       });
   };
+  if (!employerAuthState) {
+    return (
+      <div>
+        <h1>Not logged in</h1>
+      </div>
+    );
+  }
 
   return (
     <div>

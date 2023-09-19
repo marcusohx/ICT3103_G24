@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Box, Paper, Typography, Divider, Button } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 function EmployerJobListings() {
   const [jobListings, setJobListings] = useState([]);
-
+  const { employerAuthState } = useContext(EmployerAuthContext);
   useEffect(() => {
     axios
       .get(
@@ -24,6 +24,13 @@ function EmployerJobListings() {
 
   if (jobListings.length === 0) {
     return <Typography variant="h6">No job listings found</Typography>;
+  }
+  if (!employerAuthState) {
+    return (
+      <div>
+        <h1>Not logged in</h1>
+      </div>
+    );
   }
 
   return (
