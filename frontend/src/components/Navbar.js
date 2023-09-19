@@ -130,6 +130,7 @@ export default function PrimarySearchAppBar() {
     { text: "Employer Profile", path: "/employer/profile" },
     { text: "Job Listings", path: "/joblistings" },
     { text: "Create Job Listing", path: "/createjoblisting" },
+    { text: "Job listed", path: "/employerjoblistings" },
   ];
 
   const unAuthMenuItems = [{ text: "Login", path: "/chooserole" }];

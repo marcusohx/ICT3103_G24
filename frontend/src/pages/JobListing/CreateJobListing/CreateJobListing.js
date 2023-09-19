@@ -36,7 +36,10 @@ function CreateJobListingPage() {
       // Replace with your API endpoint to create a job listing
       const response = await axios.post(
         "http://localhost:3001/joblisting/createjoblisting",
-        formData
+        formData,
+        {
+          withCredentials: true,
+        }
       );
       console.log("Job listing created:", response.data);
       // Redirect to a different page or reset the form

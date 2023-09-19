@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Box } from "@mui/material"; // Import Box from MUI
 import Home from "./pages/Home/Home.js";
 import UserLogin from "./pages/Auth/UserLogin/Login.js";
 import EmployerLogin from "./pages/Auth/EmployerLogin/EmployerLogin.js";
@@ -9,12 +10,14 @@ import EmployerRegister from "./pages/Auth/EmployerRegister/EmployerRegister.js"
 import ChooseRole from "./pages/Auth/ChooseRole/ChooseRoleLogin/ChooseRoleLogin.js";
 import JobListings from "./pages/JobListing/JobListingPage.js";
 import CreateJobListingPage from "./pages/JobListing/CreateJobListing/CreateJobListing.js";
+import EmployerJobListings from "./pages/JobListing/EmployerJobListings/EmployerJobListings.js";
 import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { AuthProvider } from "./contexts/AuthContext";
 import { EmployerAuthProvider } from "./contexts/EmployerAuthContext"; // Import the EmployerAuthProvider
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme/theme.js";
+import AcceptUser from "./pages/JobListing/AcceptUser/AcceptUser.js";
 
 function App() {
   return (
@@ -23,24 +26,39 @@ function App() {
         <AuthProvider>
           <EmployerAuthProvider>
             <div className="App">
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/userlogin" element={<UserLogin />} />
-                <Route path="/employerlogin" element={<EmployerLogin />} />
-                <Route path="/userregister" element={<UserRegister />} />
-                <Route
-                  path="/employerregister"
-                  element={<EmployerRegister />}
-                />
-                <Route path="/chooserole" element={<ChooseRole />} />
-                <Route path="/joblistings" element={<JobListings />} />
-                <Route
-                  path="/createjoblisting"
-                  element={<CreateJobListingPage />}
-                />
-              </Routes>
-              <Footer />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                <Navbar />
+                <Box sx={{ flex: "1 0 auto" }}>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/userlogin" element={<UserLogin />} />
+                    <Route path="/employerlogin" element={<EmployerLogin />} />
+                    <Route path="/userregister" element={<UserRegister />} />
+                    <Route
+                      path="/employerregister"
+                      element={<EmployerRegister />}
+                    />
+                    <Route path="/chooserole" element={<ChooseRole />} />
+                    <Route path="/joblistings" element={<JobListings />} />
+                    <Route
+                      path="/createjoblisting"
+                      element={<CreateJobListingPage />}
+                    />
+                    <Route path="/acceptuser/:jobId" element={<AcceptUser />} />
+                    <Route
+                      path="/employerjoblistings"
+                      element={<EmployerJobListings />}
+                    />
+                  </Routes>
+                </Box>
+                <Footer />
+              </Box>
             </div>
           </EmployerAuthProvider>
         </AuthProvider>
