@@ -12,6 +12,16 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.toLowerCase());
+  };
+
+  const validatePassword = (password) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\-]).{8,}$/;
+    return re.test(password);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -24,6 +34,16 @@ function Register() {
       !confirmPassword
     ) {
       setMessage("All fields are required");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setMessage("Password must meet the requirements listed below.");
       return;
     }
 
@@ -81,6 +101,7 @@ function Register() {
           </Stack>
           <form noValidate onSubmit={handleRegister}>
             <Stack spacing={3}>
+              {/* ... other fields */}
               <TextField
                 type="text"
                 placeholder="First Name"
@@ -117,6 +138,15 @@ function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
+              <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
+                Password must:
+                <ul>
+                  <li>Be at least 8 characters long</li>
+                  <li>Include both uppercase and lowercase characters</li>
+                  <li>Contain at least one number</li>
+                  <li>Have at least one special character (e.g., !@#$%^&*-)</li>
+                </ul>
+              </Typography>
             </Stack>
             <Button
               fullWidth
@@ -128,6 +158,15 @@ function Register() {
               Register
             </Button>
           </form>
+          {message && (
+            <Typography
+              color="text.secondary"
+              variant="body2"
+              sx={{ mt: 2, color: "red" }}
+            >
+              {message}
+            </Typography>
+          )}
         </div>
       </Box>
     </Box>
