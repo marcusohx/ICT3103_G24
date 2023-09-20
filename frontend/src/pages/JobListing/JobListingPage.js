@@ -15,10 +15,10 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
-import { EmployerAuthContext } from "../../contexts/EmployerAuthContext";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import { keyframes } from "@emotion/react";
+import Chip from "@mui/material/Chip";
 
 const slideUp = keyframes`
   from {
@@ -66,11 +66,9 @@ function JobListingsPage() {
   const [jobListings, setJobListings] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const { authState } = useContext(AuthContext);
-  const { employerauthState } = useContext(EmployerAuthContext);
-
   useEffect(() => {
     axios
-      .get("http://localhost:3001/joblisting/job-listings")
+      .get("http://localhost:3001/joblisting/job-listings?status=open")
       .then((response) => {
         setJobListings(response.data);
       })
@@ -136,10 +134,10 @@ function JobListingsPage() {
       <Banner>
         <BannerText>
           <Typography variant="h3" gutterBottom>
-            Find the Job that Fits Your Life
+            Find the Project Tailored for Your Skills
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
-            Discover opportunities tailored just for you.
+            Discover opportunities and collaborations crafted for SIT students.
           </Typography>
         </BannerText>
         <TextField
@@ -227,10 +225,23 @@ function JobListingsPage() {
           {selectedJob ? (
             <StyledCard>
               <Typography variant="h5">{selectedJob.title}</Typography>
-              <Typography>{selectedJob.description}</Typography>
+              <Typography>Description: {selectedJob.description}</Typography>
               <Typography>Payment: ${selectedJob.payment}</Typography>
 
-              {/* Check if user is authenticated before allowing to apply for a job */}
+              {/* Skills section */}
+              <Box
+                sx={{ mt: 2, display: "flex", gap: "8px", flexWrap: "wrap" }}
+              >
+                {selectedJob.skills &&
+                  selectedJob.skills.map((skill, index) => (
+                    <Chip
+                      label={skill}
+                      key={index}
+                      variant="outlined"
+                      size="small"
+                    />
+                  ))}
+              </Box>
 
               <Button
                 variant="contained"
@@ -240,7 +251,6 @@ function JobListingsPage() {
               >
                 Apply for Job
               </Button>
-
               <Button
                 variant="contained"
                 onClick={() => setSelectedJob(null)}

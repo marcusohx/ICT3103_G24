@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Register.css";
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -11,6 +12,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,6 +63,7 @@ function Register() {
         password,
       });
       setMessage("User created");
+      navigate("/userlogin");
       console.log(response.data);
     } catch (error) {
       console.error(error);

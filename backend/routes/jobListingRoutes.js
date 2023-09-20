@@ -35,4 +35,11 @@ router.get(
   jobListingController.getJobListingsByEmployer
 );
 
+// Added new route to update job listing status
+router.put(
+  "/job-listings/status/:id",
+  authMiddleware,
+  jobListingController.updateJobListingStatus
+);
+
 module.exports = router;

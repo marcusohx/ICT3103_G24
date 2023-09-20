@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function EmployerRegister() {
   const [companyName, setCompanyName] = useState("");
@@ -8,7 +9,7 @@ function EmployerRegister() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
-
+  const navigate = useNavigate();
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
@@ -52,6 +53,7 @@ function EmployerRegister() {
         }
       );
       setMessage("Employer registered");
+      navigate("/employerlogin");
       console.log(response.data);
     } catch (error) {
       console.error(error);

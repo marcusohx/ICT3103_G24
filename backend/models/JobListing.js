@@ -10,7 +10,14 @@ const jobListingSchema = new mongoose.Schema({
   },
   appliedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   acceptedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  payment: { type: Number, required: true }, // Added payment field
+  payment: { type: Number, required: true },
+  skills: [{ type: String }], // Added skills array
+  status: {
+    type: String,
+    required: true,
+    enum: ["open", "in-progress", "closed"],
+    default: "open",
+  }, // Added status field
 });
 
 module.exports = mongoose.model("JobListing", jobListingSchema);

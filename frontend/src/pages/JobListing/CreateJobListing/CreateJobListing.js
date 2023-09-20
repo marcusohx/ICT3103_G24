@@ -11,6 +11,8 @@ function CreateJobListingPage() {
     description: "",
     payment: "",
     employer: "",
+    skills: [], // Adding skills array
+    status: "open", // Adding status field with default value "open"
   });
 
   const handleChange = (e) => {
@@ -18,6 +20,14 @@ function CreateJobListingPage() {
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+  const handleSkillsChange = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      skills: value.split(","), // Skills are stored as an array of strings
     });
   };
 
@@ -93,16 +103,41 @@ function CreateJobListingPage() {
           fullWidth
           margin="normal"
         />
+
         <TextField
-          label="Employer ID"
+          label="Skills (comma-separated)"
           variant="outlined"
-          name="employer"
-          value={formData.employer}
+          name="skills"
+          value={(formData.skills || []).join(",")}
+          onChange={handleSkillsChange}
+          fullWidth
+          margin="normal"
+          helperText="Enter skills separated by commas"
+        />
+        <TextField
+          label="Status"
+          variant="outlined"
+          name="status"
+          value={formData.status}
           onChange={handleChange}
           fullWidth
           margin="normal"
-          disabled
-        />
+          select
+          SelectProps={{ native: true }}
+        >
+          <TextField
+            label="Employer ID"
+            variant="outlined"
+            name="employer"
+            value={formData.employer}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            disabled
+          />
+          <option value="open">Open</option>
+          <option value="closed">Closed</option>
+        </TextField>
         <Button variant="contained" color="primary" type="submit">
           Create Job Listing
         </Button>

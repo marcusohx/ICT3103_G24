@@ -1,12 +1,24 @@
 const JobListing = require("../models/JobListing"); // Adjust the path to your JobListing model file
 
-// Route to get all job listings
 exports.getJobListings = async (req, res) => {
   try {
-    const jobListings = await JobListing.find()
+    const { status } = req.query;
+
+    // Validate the status query parameter
+    if (status && !["open", "closed"].includes(status)) {
+      return res.status(400).send("Invalid status value");
+    }
+
+    const filter = {};
+    if (status) {
+      filter.status = status;
+    }
+
+    const jobListings = await JobListing.find(filter)
       .populate("employer", "companyName")
       .populate("appliedUsers", "firstName lastName")
       .populate("acceptedUsers", "firstName lastName");
+
     res.json(jobListings);
   } catch (err) {
     console.error(err);
@@ -118,9 +130,37 @@ exports.getJobListingsByEmployer = async (req, res) => {
       .populate("appliedUsers", "firstName lastName") // Adjust fields as necessary
       .populate("acceptedUsers", "firstName lastName"); // Adjust fields as necessary
     res.json(jobListings);
-    console.log(jobListings);
   } catch (err) {
     console.error(err);
+    res.status(500).send("Server error");
+  }
+};
+
+exports.updateJobListingStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // Validate the status body parameter
+    if (!status || !["open", "in-progress", "closed"].includes(status)) {
+      return res.status(400).send("Invalid status value");
+    }
+
+    const jobListing = await JobListing.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!jobListing) {
+      return res.status(404).send("Job listing not found");
+    }
+
+    res.json(jobListing);
+  } catch (err) {
+    console.error(err);
+    if (err.kind === "ObjectId") {
+      return res.status(404).send("Job listing not found");
+    }
     res.status(500).send("Server error");
   }
 };

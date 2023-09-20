@@ -12,10 +12,9 @@ import {
   Container,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import ComputerIcon from "@mui/icons-material/Computer";
-import BusinessIcon from "@mui/icons-material/Business";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
+import SchoolIcon from "@mui/icons-material/School";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import RedeemIcon from "@mui/icons-material/Redeem";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -24,6 +23,7 @@ const HeroSection = styled(Box)(({ theme }) => ({
   padding: "100px 0",
   textAlign: "center",
 }));
+
 const HeroTitle = styled(Typography)({
   marginBottom: "20px",
   fontWeight: 700,
@@ -75,17 +75,15 @@ function HomePage() {
       duration: 1000,
     });
   }, []);
+
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-      }}
-    >
+    <Box sx={{ flexGrow: 1 }}>
       {/* Hero Section */}
       <HeroSection data-aos="fade-up">
-        <HeroTitle variant="h2">Find Your Dream Job</HeroTitle>
+        <HeroTitle variant="h2">Welcome to SIT Gigs</HeroTitle>
         <HeroSubtitle variant="h6">
-          Discover thousands of opportunities we have for you
+          Bridging SIT students with IT companies for unique opportunities and
+          collaborations.
         </HeroSubtitle>
         <Grid container justifyContent="center">
           <SearchField
@@ -101,32 +99,27 @@ function HomePage() {
       {/* Categories Section */}
       <Container sx={{ my: 10 }} data-aos="fade-up">
         <Typography variant="h4" gutterBottom>
-          Top Categories
+          Discover Opportunities in Top Categories
         </Typography>
         <Grid container spacing={4}>
           {[
             {
-              title: "Software",
-              icon: <ComputerIcon fontSize="large" />,
-              description: "Find your dream software job",
+              title: "Student Opportunities",
+              icon: <SchoolIcon fontSize="large" />,
+              description: "Projects tailored for SIT students",
             },
             {
-              title: "Finance",
-              icon: <BusinessIcon fontSize="large" />,
-              description: "Roles in the financial sector",
+              title: "Business Collaborations",
+              icon: <BusinessCenterIcon fontSize="large" />,
+              description: "Collaborations with IT companies",
             },
             {
-              title: "Marketing",
-              icon: <CampaignIcon fontSize="large" />,
-              description: "Marketing jobs and opportunities",
-            },
-            {
-              title: "Healthcare",
-              icon: <HealthAndSafetyIcon fontSize="large" />,
-              description: "Healthcare and medical field roles",
+              title: "Redeem Rewards",
+              icon: <RedeemIcon fontSize="large" />,
+              description: "Earn and redeem exclusive rewards",
             },
           ].map((category, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid item xs={12} sm={6} md={4} key={index}>
               <CategoryCard elevation={0}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   {category.icon}
@@ -148,15 +141,16 @@ function HomePage() {
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Typography variant="h4" gutterBottom>
-              JobBox
+              Project Opportunities at Your Fingertips
             </Typography>
             <Typography variant="h6" gutterBottom>
-              Millions Of Jobs. Find The One That’s Right For You
+              Find the perfect project tailored to your skills and ambitions
             </Typography>
             <Typography variant="body1" paragraph>
-              Search all the open positions on the web. Get your own
-              personalized salary estimate. Read reviews on over 600,000
-              companies worldwide. The right job is out there.
+              SIT Gigs streamlines the connection between talented students and
+              top IT companies. Explore the latest project listings, understand
+              the required skills and timelines, and take the next big step in
+              your career.
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -169,75 +163,29 @@ function HomePage() {
         </Grid>
       </Container>
 
-      <Container
-        sx={{
-          my: 10,
-          background: "#e0e0e0",
-          padding: "20px",
-          borderRadius: "15px",
-        }}
-        data-aos="fade-up"
-      >
-        <Grid container spacing={4}>
-          {[
-            {
-              title: "25K+",
-              subtitle: "Completed Cases",
-              description:
-                "We always provide people a complete solution focused on any business.",
-            },
-            {
-              title: "17+",
-              subtitle: "Our Offices",
-              description:
-                "We always provide people a complete solution focused on any business.",
-            },
-            {
-              title: "86+",
-              subtitle: "Skilled People",
-              description:
-                "We always provide people a complete solution focused on any business.",
-            },
-            {
-              title: "28+",
-              subtitle: "Happy Clients",
-              description:
-                "We always provide people a complete solution focused on any business.",
-            },
-          ].map((stat, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Box sx={{ textAlign: "center" }}>
-                <Typography variant="h6" component="div" gutterBottom>
-                  {stat.title}
-                </Typography>
-                <Typography variant="subtitle1" component="div" gutterBottom>
-                  {stat.subtitle}
-                </Typography>
-                <Typography variant="body2">{stat.description}</Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
       {/* Featured Jobs Section */}
       <Container sx={{ my: 10 }} data-aos="fade-up">
         <Typography variant="h4" gutterBottom>
-          Featured Jobs
+          Exclusive Benefits for SIT Students
         </Typography>
         <Grid container spacing={4}>
-          {["Job 1", "Job 2", "Job 3", "Job 4"].map((job, index) => (
-            <Grid item xs={12} md={6} key={index}>
+          {/* Featured jobs data to be mapped here. Use JobCard for individual job listings. */}
+          {[1, 2, 3].map((job, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
               <JobCard>
                 <CardMedia
                   component="img"
                   height="140"
-                  image={`https://via.placeholder.com/150?text=${job}`}
-                  alt={`${job} image`}
+                  image="https://via.placeholder.com/600x400"
+                  alt="Job Image"
                 />
                 <CardContent>
-                  <Typography variant="h6">{job}</Typography>
-                  <Typography variant="body2">Company Name</Typography>
+                  <Typography variant="h6" gutterBottom>
+                    Job Title {index}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Job description and details here
+                  </Typography>
                 </CardContent>
               </JobCard>
             </Grid>
