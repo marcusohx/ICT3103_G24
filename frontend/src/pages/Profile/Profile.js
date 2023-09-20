@@ -20,15 +20,16 @@ function Profile() {
   const { authState } = useContext(AuthContext);
   const [userData, setUserData] = useState(authState || null);
   const [formValues, setFormValues] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+    firstName: authState?.firstName || "",
+    lastName: authState?.lastName || "",
+    email: authState?.email || "",
   });
+  
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
-    console.log("name:", name); // Check the name being updated
-    console.log("value:", value); // Check the value being set
+    // console.log("name:", name); // Check the name being updated
+    // console.log("value:", value); // Check the value being set
     setFormValues((prevState) => ({
       ...prevState,
       [name]: value,
@@ -66,8 +67,9 @@ function Profile() {
   if (authState && userData) {
     const { email, firstName, lastName } = formValues;
 
-    console.log("first:", formValues.firstName);
-    console.log("last:", formValues.lastName);
+    console.log("authState:", authState);
+    console.log("userData:", userData);
+
 
     return (
         <Box component="main" sx={{ flexGrow: 1, py: 8 }}>
