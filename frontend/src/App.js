@@ -18,6 +18,7 @@ import { EmployerAuthProvider } from "./contexts/EmployerAuthContext"; // Import
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme/theme.js";
 import AcceptUser from "./pages/JobListing/AcceptUser/AcceptUser.js";
+import Profile  from "./pages/Profile/Profile.js";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
                       path="/employerjoblistings"
                       element={<EmployerJobListings />}
                     />
+                    <Route path="/user/profile" element= { <Profile/> } />
                   </Routes>
                 </Box>
                 <Footer />

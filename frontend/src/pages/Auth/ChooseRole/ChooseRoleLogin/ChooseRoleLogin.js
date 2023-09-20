@@ -29,7 +29,7 @@ function ChooseRole() {
         }}
       >
         <Stack spacing={1} sx={{ mb: 3 }}>
-          <Typography variant="h4">Money Making</Typography>
+          <Typography variant="h4">Sign In as</Typography>
           {/* <Typography color="text.secondary" variant="body2">
             Login
           </Typography> */}
@@ -42,7 +42,7 @@ function ChooseRole() {
           component={Link}
           href="/userlogin"
         >
-          Student Login
+          Student 
         </Button>
         <Button
           fullWidth
@@ -52,7 +52,7 @@ function ChooseRole() {
           component={Link}
           href="/employerlogin"
         >
-          Employer Login
+          Employer 
         </Button>
       </Box>
     </Box>
