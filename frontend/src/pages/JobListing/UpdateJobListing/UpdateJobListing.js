@@ -19,7 +19,7 @@ function UpdateJobListingPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/joblisting/${id}`
+          `http://localhost:3001/joblisting/job-listings/${id}`
         );
         setFormData(response.data);
       } catch (error) {
@@ -51,7 +51,10 @@ function UpdateJobListingPage() {
     try {
       const response = await axios.put(
         `http://localhost:3001/joblisting/update/${id}`,
-        formData
+        formData,
+        {
+          withCredentials: true,
+        }
       );
       console.log("Job listing updated:", response.data);
       // Here, add what should happen after successfully updating the job listing (e.g., redirect to a different page)
@@ -123,7 +126,7 @@ function UpdateJobListingPage() {
           label="Employer ID"
           variant="outlined"
           name="employer"
-          value={formData.employer}
+          value={formData.employer._id}
           onChange={handleChange}
           fullWidth
           margin="normal"

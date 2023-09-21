@@ -42,4 +42,16 @@ router.put(
   jobListingController.updateJobListingStatus
 );
 
+router.put(
+  "/update/:id",
+  authMiddleware,
+  jobListingController.updateJobListing
+);
+
+router.put(
+  "/job-listings/close/:jobId",
+  authMiddleware,
+  jobListingController.closeJobListingAndGiveCredits
+);
+
 module.exports = router;

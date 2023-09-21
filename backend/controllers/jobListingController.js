@@ -164,3 +164,57 @@ exports.updateJobListingStatus = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
+exports.updateJobListing = async (req, res) => {
+  try {
+    const updatedJobListing = await JobListing.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedJobListing) {
+      return res.status(404).send("Job listing not found");
+    }
+
+    res.json(updatedJobListing);
+  } catch (err) {
+    console.error(err);
+    if (err.kind === "ObjectId") {
+      return res.status(404).send("Job listing not found");
+    }
+    res.status(500).send("Server error");
+  }
+};
+
+exports.closeJobListingAndGiveCredits = async (req, res) => {
+  try {
+    const job = await JobListing.findById(req.params.jobId)
+      .populate("employer")
+      .populate("acceptedUsers");
+
+    if (!job) return res.status(404).send("Job not found");
+
+    // ... (ensure the job can be closed, the employer has enough credits, etc.)
+
+    job.status = "closed";
+
+    const creditPerUser = job.payment / job.acceptedUsers.length;
+
+    job.employer.credits -= job.payment; // Adjust the employer's credits
+
+    job.acceptedUsers.forEach((user) => {
+      console.log(user);
+      user.credits += creditPerUser; // Adjust each applied user's credits
+      user.save();
+    });
+
+    await job.save();
+    await job.employer.save();
+
+    res.json(job);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+};

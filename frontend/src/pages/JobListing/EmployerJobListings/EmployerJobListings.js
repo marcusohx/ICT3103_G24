@@ -7,6 +7,8 @@ import {
   Button,
   Tooltip,
   Switch,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -14,6 +16,8 @@ import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 function EmployerJobListings() {
   const [jobListings, setJobListings] = useState([]);
   const { employerAuthState } = useContext(EmployerAuthContext);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   useEffect(() => {
     axios
       .get(
@@ -56,6 +60,38 @@ function EmployerJobListings() {
       });
   };
 
+  const closeJobAndDistributeCredits = (jobId) => {
+    const job = jobListings.find((job) => job._id === jobId);
+
+    // Check if employer has enough credits to distribute to the accepted users
+    if (employerAuthState.credits >= job.acceptedUsers.length) {
+      axios
+        .put(
+          `http://localhost:3001/joblisting/job-listings/close/${jobId}`,
+          {},
+          { withCredentials: true }
+        )
+        .then((response) => {
+          setJobListings((prevListings) =>
+            prevListings.map((listing) =>
+              listing._id === jobId ? { ...listing, status: "closed" } : listing
+            )
+          );
+          // Assuming your response contains the updated employer details
+          // Update employer credits in context
+          // employerAuthDispatch({ type: 'UPDATE_CREDITS', payload: response.data.credits });
+        })
+        .catch((error) => {
+          console.error("Error closing job and distributing credits:", error);
+        });
+    } else {
+      setSnackbarMessage(
+        "Not enough credits to distribute to all accepted users."
+      );
+      setSnackbarOpen(true);
+    }
+  };
+
   if (jobListings.length === 0) {
     return <Typography variant="h6">No job listings found</Typography>;
   }
@@ -92,6 +128,8 @@ function EmployerJobListings() {
             borderRadius: 2,
             border: "1px solid #000",
             position: "relative",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Box sx={{ position: "absolute", top: 8, right: 8 }}>
@@ -120,6 +158,7 @@ function EmployerJobListings() {
             <Typography variant="h6" gutterBottom>
               Title: {job.title}
             </Typography>
+
             <Typography variant="body2" gutterBottom>
               Description: {job.description}
             </Typography>
@@ -197,6 +236,14 @@ function EmployerJobListings() {
               }}
             >
               <Link
+                to={`/updatejoblisting/${job._id}`}
+                style={{ textDecoration: "none", marginRight: "16px" }} // Added marginRight here
+              >
+                <Button variant="contained" color="secondary">
+                  Update
+                </Button>
+              </Link>
+              <Link
                 to={`/acceptuser/${job._id}`}
                 style={{ textDecoration: "none" }}
               >
@@ -206,8 +253,33 @@ function EmployerJobListings() {
               </Link>
             </Box>
           </Box>
+          <Box sx={{ alignSelf: "flex-end", mt: 2, mb: 1 }}>
+            <Button
+              variant="contained"
+              color="error"
+              disabled={job.status === "closed"}
+              onClick={() => closeJobAndDistributeCredits(job._id)}
+              sx={{ padding: "8px 16px" }}
+            >
+              Close and Distribute Credits
+            </Button>
+          </Box>
         </Paper>
       ))}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
