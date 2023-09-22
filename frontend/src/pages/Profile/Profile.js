@@ -6,9 +6,8 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
-  CardHeader,
   CardActions,
+  CardContent,
   Container,
   Divider,
   Grid,
@@ -63,53 +62,71 @@ function Profile() {
     const { email, firstName, lastName } = formValues;
 
     return (
-      <Box component="main" sx={{ flexGrow: 1, py: 8 }}>
-  <Container maxWidth="lg">
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={6} lg={4}>
-        <Card
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%", // Make the card fill the entire width
-            backgroundImage: "linear-gradient(180deg, #a0e7e5, #f8fff4)",
-            backgroundSize: "100% 50%",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "top",
-          }}
-        >
-          <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <Avatar
-              src="frontend/src/assets/blank-avatar.jpg"
+      <Box
+        sx={{
+          flex: "1 1 auto",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          backgroundColor: "background.paper",
+          marginTop: "24px", // Add margin to the top
+          marginBottom: "24px", // Add margin to the bottom
+        }}
+      >
+        <Container maxWidth="sm">
+          <Card
+            elevation={3}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%", // Make the card fill the entire width
+              backgroundImage: "linear-gradient(180deg, #a0e7e5, #f8fff4)",
+              backgroundSize: "100% 50%",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "top",
+            }}
+          >
+            <CardContent
               sx={{
-                height: 120,
-                width: 120,
-                mb: 2,
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
-            />
-            <Typography
-              gutterBottom
-              variant="h5"
-              align="center"
-              sx={{ marginBottom: 1 }}
             >
-              {firstName} {lastName}
-            </Typography>
-            <Typography variant="subtitle1" align="center" color="textSecondary">
-              {email}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Credits: {credits}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={6} lg={8}>
-      <Card>
-          <CardHeader title="General Info" />
-          <CardContent>
-            <Box sx={{ mt: -2 }}>
+              <Avatar
+                src="frontend/src/assets/blank-avatar.jpg"
+                sx={{
+                  height: 120,
+                  width: 120,
+                  mb: 2,
+                }}
+              />
+              <Divider sx={{ width: "100%" }} /> {/* Line separator */}
+              <Typography
+                gutterBottom
+                variant="h5"
+                align="center"
+                sx={{ marginBottom: 1 }}
+              >
+                {firstName} {lastName}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                align="center"
+                color="textSecondary"
+              >
+                {email}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                Credits: {credits}
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -143,32 +160,31 @@ function Profile() {
                   />
                 </Grid>
               </Grid>
-            </Box>
-          </CardContent>
-          <CardActions sx={{ justifyContent: "flex-end", padding: 2 }}>
-            <Button variant="contained" type="submit">
-              Save Changes
-            </Button>
-          </CardActions>
-        </Card>
+            </CardContent>
+            <CardActions
+              sx={{
+                justifyContent: "flex-end",
+                padding: 2,
+              }}
+            >
+              <Button variant="contained" type="submit">
+                Save Changes
+              </Button>
+            </CardActions>
+          </Card>
 
-        <Card sx={{ mt: 3 }}>
-          <CardHeader title="Jobs" />
-          <CardContent>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Applied Jobs: {appliedJobs.length}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Accepted Jobs: {acceptedJobs.length}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
-  </Container>
-</Box>
-
-
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                Applied Jobs: {appliedJobs.length}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                Accepted Jobs: {acceptedJobs.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
     );
   } else {
     return <div>User is not logged in or data is loading...</div>;

@@ -1,27 +1,31 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../../../contexts/AuthContext"; // Adjust the path as necessary
-import { useNavigate } from "react-router-dom"; // Import useHistory
+import { AuthContext } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   Alert,
   Box,
   Button,
+  Container,
+  Grid,
   Link,
   Stack,
   TextField,
   Typography,
+  Paper,
+  InputAdornment,
 } from "@mui/material";
+import { Email as EmailIcon, Lock as LockIcon } from "@mui/icons-material";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null); // State to hold error messages
-
+  const [error, setError] = useState(null);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent form from reloading the page
+    e.preventDefault();
     try {
       const response = await axios.post(
         "http://localhost:3001/user/login",
@@ -30,28 +34,22 @@ function Login() {
           password,
         },
         {
-          withCredentials: true, // Ensure credentials are included
+          withCredentials: true,
         }
       );
 
-      // Check the response status and data to determine the outcome of the login attempt
       if (response.status === 200) {
         await login({ email, password });
-        navigate("/"); // If status is 200, login was successful, navigate to home
+        navigate("/");
       } else {
-        setError(response.data); // If status is not 200, set the error message based on the response data
+        setError(response.data);
       }
     } catch (error) {
-      // Handle errors that occur during the Axios request (network errors, server errors, etc.)
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        setError(error.response.data); // Display the server's response message
+        setError(error.response.data);
       } else if (error.request) {
-        // The request was made but no response was received
         setError("No response received from server. Please try again later.");
       } else {
-        // Something happened in setting up the request that triggered an error
         setError("An unknown error occurred. Please try again later.");
       }
       console.error(error);
@@ -61,49 +59,60 @@ function Login() {
   return (
     <Box
       sx={{
-        backgroundColor: "background.paper",
+        backgroundColor: "#f5f5f5", // Light gray background color
         flex: "1 1 auto",
-        alignItems: "center",
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh", // Center the content vertically
       }}
     >
-      <Box
-        sx={{
-          maxWidth: 550,
-          px: 3,
-          py: "100px",
-          width: "100%",
-        }}
-      >
-        <div>
-          <Stack spacing={1} sx={{ mb: 3 }}>
-            <Typography variant="h4">Login</Typography>
-            <Typography color="text.secondary" variant="body2">
-              {" "}
-              Don&apos;t have an account? &nbsp;
-              <Link href="/userregister" underline="hover" variant="subtitle2">
-                Register{" "}
-              </Link>
-            </Typography>
-          </Stack>
-          {error && <Alert severity="error">{error}</Alert>}{" "}
-          {/* Display error message if there is an error */}
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ padding: 3 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Login
+          </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+            align="center"
+            gutterBottom
+          >
+            Don't have an account? &nbsp;
+            <Link href="/userregister" underline="hover" variant="subtitle2">
+              Register
+            </Link>
+          </Typography>
+          {error && <Alert severity="error">{error}</Alert>}
           <form noValidate onSubmit={handleLogin}>
-            {" "}
-            {/* Add onSubmit handler to the form */}
-            <Stack spacing={3}>
+            <Stack spacing={2}>
               <TextField
+                fullWidth
                 type="text"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Stack>
             <Button
@@ -116,8 +125,8 @@ function Login() {
               Login
             </Button>
           </form>
-        </div>
-      </Box>
+        </Paper>
+      </Container>
     </Box>
   );
 }

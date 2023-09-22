@@ -1,7 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+  Paper,
+  InputAdornment,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {
+  Business as BusinessIcon,
+  Email as EmailIcon,
+  Lock as LockIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
 
 function EmployerRegister() {
   const [companyName, setCompanyName] = useState("");
@@ -10,6 +26,7 @@ function EmployerRegister() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
@@ -53,7 +70,7 @@ function EmployerRegister() {
         }
       );
       setMessage("Employer registered");
-      navigate("/employerlogin");
+      navigate("/employer-login");
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -72,55 +89,93 @@ function EmployerRegister() {
         alignItems: "center",
         display: "flex",
         justifyContent: "center",
+        backgroundColor: "background.paper",
+        marginTop: "24px", // Add margin to the top
+        marginBottom: "24px", // Add margin to the bottom
       }}
     >
-      <Box
-        sx={{
-          maxWidth: 550,
-          px: 3,
-          py: "100px",
-          width: "100%",
-        }}
-      >
-        <div>
-          <Stack spacing={1} sx={{ mb: 3 }}>
-            <Typography variant="h4">Employer Register</Typography>
-            <Typography color="text.secondary" variant="body2">
-              Already have an account? &nbsp;
-              <Link
-                href="/employer-login"
-                underline="hover"
-                variant="subtitle2"
-              >
-                Log in
-              </Link>
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ padding: 3 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Employer Register
+          </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+            align="center"
+            gutterBottom
+          >
+            Already have an account? &nbsp;
+            <Link href="/employer-login" underline="hover" variant="subtitle2">
+              Log in
+            </Link>
+          </Typography>
+          {message && (
+            <Typography
+              color="text.secondary"
+              variant="body2"
+              sx={{ mt: 2, color: "red" }}
+            >
+              {message}
             </Typography>
-          </Stack>
+          )}
           <form noValidate onSubmit={handleRegister}>
-            <Stack spacing={3}>
+            <Stack spacing={2}>
               <TextField
+                fullWidth
                 type="text"
                 placeholder="Company Name"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
                 Password must:
@@ -142,13 +197,8 @@ function EmployerRegister() {
               Register
             </Button>
           </form>
-          {message && (
-            <Typography sx={{ mt: 2 }} color="text.secondary" variant="body2">
-              {message}
-            </Typography>
-          )}
-        </div>
-      </Box>
+        </Paper>
+      </Container>
     </Box>
   );
 }

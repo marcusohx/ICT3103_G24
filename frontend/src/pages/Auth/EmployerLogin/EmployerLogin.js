@@ -6,11 +6,17 @@ import {
   Alert,
   Box,
   Button,
+  Container,
+  Grid,
   Link,
   Stack,
   TextField,
   Typography,
+  Paper,
+  InputAdornment,
 } from "@mui/material";
+import { Email as EmailIcon, Lock as LockIcon } from "@mui/icons-material";
+
 
 function EmployerLogin() {
   const [email, setEmail] = useState("");
@@ -55,49 +61,60 @@ function EmployerLogin() {
   return (
     <Box
       sx={{
-        backgroundColor: "background.paper",
+        backgroundColor: "#f5f5f5", // Light gray background color
         flex: "1 1 auto",
-        alignItems: "center",
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh", // Center the content vertically
       }}
     >
-      <Box
-        sx={{
-          maxWidth: 550,
-          px: 3,
-          py: "100px",
-          width: "100%",
-        }}
-      >
-        <div>
-          <Stack spacing={1} sx={{ mb: 3 }}>
-            <Typography variant="h4">Employer Login</Typography>
-            <Typography color="text.secondary" variant="body2">
-              Don’t have an account?&nbsp;
-              <Link
-                href="/employerregister"
-                underline="hover"
-                variant="subtitle2"
-              >
-                Register
-              </Link>
-            </Typography>
-          </Stack>
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ padding: 3 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Employer Login
+          </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+            align="center"
+            gutterBottom
+          >
+            Don't have an account? &nbsp;
+            <Link href="/employerregister" underline="hover" variant="subtitle2">
+              Register
+            </Link>
+          </Typography>
           {error && <Alert severity="error">{error}</Alert>}
           <form noValidate onSubmit={handleLogin}>
-            <Stack spacing={3}>
+            <Stack spacing={2}>
               <TextField
+                fullWidth
                 type="text"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Stack>
             <Button
@@ -110,8 +127,8 @@ function EmployerLogin() {
               Login
             </Button>
           </form>
-        </div>
-      </Box>
+        </Paper>
+      </Container>
     </Box>
   );
 }

@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./Register.css";
-import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+  Paper,
+  InputAdornment,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {
+  Email as EmailIcon,
+  Lock as LockIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -82,64 +96,121 @@ function Register() {
         alignItems: "center",
         display: "flex",
         justifyContent: "center",
+        backgroundColor: "background.paper",
+        marginTop: "24px", // Add margin to the top
+        marginBottom: "24px", // Add margin to the bottom
       }}
     >
-      <Box
-        sx={{
-          maxWidth: 550,
-          px: 3,
-          py: "100px",
-          width: "100%",
-        }}
-      >
-        <div>
-          <Stack spacing={1} sx={{ mb: 3 }}>
-            <Typography variant="h4">Register</Typography>
-            <Typography color="text.secondary" variant="body2">
-              Already have an account? &nbsp;
-              <Link href="/login" underline="hover" variant="subtitle2">
-                Log in
-              </Link>
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ padding: 3 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Register
+          </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+            align="center"
+            gutterBottom
+          >
+            Already have an account? &nbsp;
+            <Link href="/userlogin" underline="hover" variant="subtitle2">
+              Log in
+            </Link>
+          </Typography>
+          {message && (
+            <Typography
+              color="text.secondary"
+              variant="body2"
+              sx={{ mt: 2, color: "red" }}
+            >
+              {message}
             </Typography>
-          </Stack>
+          )}
           <form noValidate onSubmit={handleRegister}>
-            <Stack spacing={3}>
-              {/* ... other fields */}
+            <Stack spacing={2}>
               <TextField
+                fullWidth
                 type="text"
                 placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="text"
                 placeholder="Last Name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="text"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
+                fullWidth
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
                 Password must:
@@ -161,17 +232,8 @@ function Register() {
               Register
             </Button>
           </form>
-          {message && (
-            <Typography
-              color="text.secondary"
-              variant="body2"
-              sx={{ mt: 2, color: "red" }}
-            >
-              {message}
-            </Typography>
-          )}
-        </div>
-      </Box>
+        </Paper>
+      </Container>
     </Box>
   );
 }

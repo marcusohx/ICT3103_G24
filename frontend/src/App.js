@@ -42,21 +42,12 @@ function App() {
                     <Route path="/userlogin" element={<UserLogin />} />
                     <Route path="/employerlogin" element={<EmployerLogin />} />
                     <Route path="/userregister" element={<UserRegister />} />
-                    <Route
-                      path="/employerregister"
-                      element={<EmployerRegister />}
-                    />
+                    <Route path="/employerregister" element={<EmployerRegister />} />
                     <Route path="/chooserole" element={<ChooseRole />} />
                     <Route path="/joblistings" element={<JobListings />} />
-                    <Route
-                      path="/createjoblisting"
-                      element={<CreateJobListingPage />}
-                    />
+                    <Route path="/createjoblisting" element={<CreateJobListingPage />} />
                     <Route path="/acceptuser/:jobId" element={<AcceptUser />} />
-                    <Route
-                      path="/employerjoblistings"
-                      element={<EmployerJobListings />}
-                    />
+                    <Route path="/employerjoblistings" element={<EmployerJobListings />} />
                     <Route path="/user/profile/" element={<Profile />} />
                     <Route path="/updatejoblisting/:id" element={<UpdateJobListingPage />} />
                     <Route path="/about" element= {<About />} />
