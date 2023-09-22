@@ -1,58 +1,69 @@
 import React from "react";
-import { Box, Button, Link, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Link, Stack, Typography } from "@mui/material";
 
 function ChooseRole() {
   return (
     <Box
       sx={{
-        flex: "1 1 auto",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         gap: "2rem",
         padding: "2rem",
-        height: "100vh",
+        minHeight: "100vh",
+        background: "#fff", // Modern white background
       }}
     >
       <Box
         sx={{
-          maxWidth: 550,
+          maxWidth: 500,
           width: "100%",
-          px: 3,
-          py: "100px",
-          backgroundColor: "#f9f9f9", // Add your preferred background color
+          p: 4,
+          backgroundColor: "#fff",
           textAlign: "center",
-          border: "1px solid #ccc", // Add your preferred border color
-          borderRadius: "8px", // Optional: for rounded corners
-          margin: "auto", // Center the box
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+          borderRadius: "8px",
         }}
       >
-        <Stack spacing={1} sx={{ mb: 3 }}>
-          <Typography variant="h4">Sign In as</Typography>
-          {/* <Typography color="text.secondary" variant="body2">
-            Login
-          </Typography> */}
+        <Typography variant="h4" color="primary">
+          Welcome!
+        </Typography>
+        <Stack spacing={3} sx={{ mt: 3, mb: 3 }}>
+          <Typography variant="h6">Sign In as</Typography>
         </Stack>
         <Button
           fullWidth
           size="large"
-          sx={{ mt: 3 }}
+          sx={{
+            backgroundColor: "#2196F3",
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: "#1976D2",
+            },
+          }}
           variant="contained"
           component={Link}
           href="/userlogin"
         >
-          Student 
+          Student
         </Button>
+        <Divider sx={{ my: 2 }} /> {/* Straight line separator */}
         <Button
           fullWidth
           size="large"
-          sx={{ mt: 3 }}
+          sx={{
+            backgroundColor: "#FF5722",
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: "#E64A19",
+            },
+          }}
           variant="contained"
           component={Link}
           href="/employerlogin"
         >
-          Employer 
+          Employer
         </Button>
       </Box>
     </Box>

@@ -20,6 +20,7 @@ import theme from "./theme/theme.js";
 import AcceptUser from "./pages/JobListing/AcceptUser/AcceptUser.js";
 import Profile from "./pages/Profile/Profile.js";
 import UpdateJobListingPage from "./pages/JobListing/UpdateJobListing/UpdateJobListing.js";
+import About from "./pages/About/About.js";
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -56,11 +57,9 @@ function App() {
                       path="/employerjoblistings"
                       element={<EmployerJobListings />}
                     />
-                    <Route path="/user/profile" element={<Profile />} />
-                    <Route
-                      path="/updatejoblisting/:id"
-                      element={<UpdateJobListingPage />}
-                    />
+                    <Route path="/user/profile/" element={<Profile />} />
+                    <Route path="/updatejoblisting/:id" element={<UpdateJobListingPage />} />
+                    <Route path="/about" element= {<About />} />
                   </Routes>
                 </Box>
                 <Footer />
