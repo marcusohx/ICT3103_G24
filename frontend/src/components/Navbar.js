@@ -95,6 +95,7 @@ export default function PrimarySearchAppBar() {
     },
     { text: "User Settings", path: "/user/profilesettings" },
     { text: "Job Listings", path: "/joblistings" },
+    { text: "Shop", path: "/shop"},
   ];
 
   const employerMenuItems = [

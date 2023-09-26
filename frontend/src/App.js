@@ -22,6 +22,7 @@ import Profile from "./pages/Profile/Profile.js";
 import ProfileSettings from "./pages/Profile/ProfileSettings.js";
 import UpdateJobListingPage from "./pages/JobListing/UpdateJobListing/UpdateJobListing.js";
 import About from "./pages/About/About.js";
+import Shop from "./pages/Shop/Shop.js";
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -43,34 +44,17 @@ function App() {
                     <Route path="/userlogin" element={<UserLogin />} />
                     <Route path="/employerlogin" element={<EmployerLogin />} />
                     <Route path="/userregister" element={<UserRegister />} />
-                    <Route
-                      path="/employerregister"
-                      element={<EmployerRegister />}
-                    />
+                    <Route path="/employerregister" element={<EmployerRegister />} />
                     <Route path="/chooserole" element={<ChooseRole />} />
                     <Route path="/joblistings" element={<JobListings />} />
-                    <Route
-                      path="/createjoblisting"
-                      element={<CreateJobListingPage />}
-                    />
+                    <Route path="/createjoblisting" element={<CreateJobListingPage />} />
                     <Route path="/acceptuser/:jobId" element={<AcceptUser />} />
-                    <Route
-                      path="/employerjoblistings"
-                      element={<EmployerJobListings />}
-                    />
-                    <Route
-                      path="/user/profile/:username"
-                      element={<Profile />}
-                    />
-                    <Route
-                      path="/updatejoblisting/:id"
-                      element={<UpdateJobListingPage />}
-                    />
+                    <Route path="/employerjoblistings" element={<EmployerJobListings />} />
+                    <Route path="/user/profile/:username" element={<Profile />} />
+                    <Route path="/updatejoblisting/:id" element={<UpdateJobListingPage />} />
                     <Route path="/about" element={<About />} />
-                    <Route
-                      path="/user/profilesettings"
-                      element={<ProfileSettings />}
-                    />
+                    <Route path="/user/profilesettings" element={<ProfileSettings />} />
+                    <Route path="/shop" element ={< Shop />}/>
                   </Routes>
                 </Box>
                 <Footer />
