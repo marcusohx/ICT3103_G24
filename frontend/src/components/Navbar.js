@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import * as React from "react";
+import { useContext, useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,7 +12,10 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import MenuIcon from "@mui/icons-material/Menu";
+// import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
@@ -24,9 +28,9 @@ export default function PrimarySearchAppBar() {
   const { authState, logout: userLogout } = useContext(AuthContext);
   const { employerAuthState, employerlogout: employerLogout } =
     useContext(EmployerAuthContext);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -34,7 +38,6 @@ export default function PrimarySearchAppBar() {
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [useProfile, setUseProfile] = useState("empty");
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -71,28 +74,15 @@ export default function PrimarySearchAppBar() {
     handleMenuClose();
   };
 
-  // Simulating fetching the auth state - you would typically do this when fetching from an API
-  useEffect(() => {
-    if (authState || employerAuthState) {
-      setUseProfile(
-        authState ? authState.username : employerAuthState.username
-      );
-    }
-  }, [authState, employerAuthState]);
-
   const commonMenuItems = [
     { text: "Home", path: "/" },
     { text: "About", path: "/about" },
   ];
 
   const userMenuItems = [
-    {
-      text: "User Profile",
-      path: `/user/profile/${useProfile}`,
-    },
-    { text: "User Settings", path: "/user/profilesettings" },
+    { text: "User Profile", path: "/user/profile" },
+    { text: "User Settings", path: "/user/settings" },
     { text: "Job Listings", path: "/joblistings" },
-    { text: "Shop", path: "/shop" },
   ];
 
   const employerMenuItems = [
@@ -190,24 +180,11 @@ export default function PrimarySearchAppBar() {
     pt: location.pathname === "/" ? "0px" : "64px",
   };
 
-  // Conditionally render the Drawer based on authState or employerAuthState
-  const renderDrawer = () => {
-    if (!authState && !employerAuthState) {
-      return null; // Hide the Drawer when neither authState nor employerAuthState is logged in
-    }
-
-    return (
-      <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerClose}>
-        {list}
-      </Drawer>
-    );
-  };
-
   return (
     <Box sx={mainContainerStyles}>
       <AppBar position="fixed" sx={appBarStyles}>
         <Toolbar>
-          {/* <IconButton
+          <IconButton
             size="large"
             edge="start"
             color="inherit"
@@ -216,17 +193,20 @@ export default function PrimarySearchAppBar() {
             onClick={handleDrawerOpen}
           >
             <MenuIcon />
-          </IconButton> */}
+          </IconButton>
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "left" }}>
-            <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", color: "inherit" }}>
-            <img src="../assets/SITGigs-Logo.png" width="40" height="40" style={{ marginRight: "8px" }} />
-            <Typography variant="h6" noWrap component="div" sx={{ textAlign: "center", color: "gray" }} >
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ textAlign: "center", color: "gray" }}
+            >
               SIT Gigs
             </Typography>
-    </Link>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" }, color: "gray" }}>
+            {/* Add Typography component here to show credit amount */}
             {authState && (
               <Typography
                 variant="h6"
@@ -247,27 +227,6 @@ export default function PrimarySearchAppBar() {
                 Employer Credits: {employerAuthState.credits}
               </Typography>
             )}
-                    {/* Add navigation links for Login and About pages */}
-            <Link to="/chooserole" style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ pr: 2, pt: 1, textAlign: "center", color: "gray" }}
-              >
-                Login
-              </Typography>
-            </Link>
-            <Link to="/about" style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ pr: 2, pt: 1, textAlign: "center", color: "gray" }}
-              >
-                About
-              </Typography>
-            </Link>
             <IconButton
               size="large"
               edge="end"
@@ -294,9 +253,11 @@ export default function PrimarySearchAppBar() {
           </Box>
         </Toolbar>
       </AppBar>
-      {renderDrawer()} {/* Conditionally render the Drawer */}
       {renderMobileMenu}
       {renderMenu}
+      <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerClose}>
+        {list}
+      </Drawer>
     </Box>
   );
 }
