@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -11,55 +11,43 @@ import {
   Container,
   Divider,
   Grid,
-  TextField,
   Typography,
 } from "@mui/material";
 
 function Profile() {
-  const { authState } = useContext(AuthContext);
-  const [userData, setUserData] = useState(authState || null);
+  const { username } = useParams();
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
   const [formValues, setFormValues] = useState({
-    firstName: authState?.firstName || "",
-    lastName: authState?.lastName || "",
-    email: authState?.email || "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    resumeLink: "",
+    linkedinLink: "",
   });
 
-  const [appliedJobs, setAppliedJobs] = useState([]);
-  const [acceptedJobs, setAcceptedJobs] = useState([]);
-  const [credits, setCredits] = useState(0);
-
-  const handleChange = useCallback((event) => {
-    const { name, value } = event.target;
-    setFormValues((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }, []);
-
   useEffect(() => {
-    if (authState) {
-      axios
-        .get("http://localhost:3001/api/user-data")
-        .then((response) => {
-          setUserData(response.data);
-          const { firstName, lastName, email } = response.data;
-          setFormValues({ firstName, lastName, email });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
+    axios
+      .get(`http://localhost:3001/user/getuser/${username}`)
+      .then((response) => {
+        setUserData(response.data);
+        const { firstName, lastName, email, resumeLink, linkedinLink } =
+          response.data;
+        setFormValues({
+          firstName,
+          lastName,
+          email,
+          resumeLink,
+          linkedinLink,
         });
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, [username]);
 
-      // Simulate fetching applied jobs, accepted jobs, and credits
-      setTimeout(() => {
-        setAppliedJobs([/* ... */]);
-        setAcceptedJobs([/* ... */]);
-        setCredits(500);
-      }, 1000);
-    }
-  }, [authState]);
-
-  if (authState && userData) {
-    const { email, firstName, lastName } = formValues;
+  if (userData) {
+    const { email, firstName, lastName, resumeLink, linkedinLink } = formValues;
 
     return (
       <Box
@@ -69,8 +57,8 @@ function Profile() {
           display: "flex",
           justifyContent: "center",
           backgroundColor: "background.paper",
-          marginTop: "24px", // Add margin to the top
-          marginBottom: "24px", // Add margin to the bottom
+          marginTop: "24px",
+          marginBottom: "24px",
         }}
       >
         <Container maxWidth="sm">
@@ -80,7 +68,7 @@ function Profile() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              width: "100%", // Make the card fill the entire width
+              width: "100%",
               backgroundImage: "linear-gradient(180deg, #a0e7e5, #f8fff4)",
               backgroundSize: "100% 50%",
               backgroundRepeat: "no-repeat",
@@ -103,7 +91,7 @@ function Profile() {
                   mb: 2,
                 }}
               />
-              <Divider sx={{ width: "100%" }} /> {/* Line separator */}
+              <Divider sx={{ width: "100%" }} />
               <Typography
                 gutterBottom
                 variant="h5"
@@ -120,7 +108,7 @@ function Profile() {
                 {email}
               </Typography>
               <Typography variant="body1" sx={{ mb: 2 }}>
-                Credits: {credits}
+                Credits: {userData.credits}
               </Typography>
             </CardContent>
           </Card>
@@ -128,36 +116,76 @@ function Profile() {
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    helperText="Please specify your first name"
-                    label="First name"
-                    name="firstName"
-                    onChange={handleChange}
-                    required
-                    value={formValues.firstName}
-                  />
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Typography variant="subtitle1" gutterBottom>
+                      <strong>Name:</strong> {formValues.firstName}{" "}
+                      {formValues.lastName}
+                    </Typography>
+                  </Box>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Last name"
-                    name="lastName"
-                    onChange={handleChange}
-                    required
-                    value={formValues.lastName}
-                  />
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Typography variant="subtitle1" gutterBottom>
+                      <strong>Email Address:</strong> {formValues.email}
+                    </Typography>
+                  </Box>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Email Address"
-                    name="email"
-                    onChange={handleChange}
-                    required
-                    value={formValues.email}
-                  />
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Typography variant="subtitle1" gutterBottom>
+                      <strong>Resume Link:</strong>
+                      <a
+                        href={formValues.resumeLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {formValues.resumeLink
+                          ? " View Resume"
+                          : " No Link Provided"}
+                      </a>
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Typography variant="subtitle1" gutterBottom>
+                      <strong>LinkedIn Profile:</strong>
+                      <a
+                        href={formValues.linkedinLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {formValues.linkedinLink
+                          ? " View LinkedIn Profile"
+                          : " No Link Provided"}
+                      </a>
+                    </Typography>
+                  </Box>
                 </Grid>
               </Grid>
             </CardContent>
@@ -166,20 +194,16 @@ function Profile() {
                 justifyContent: "flex-end",
                 padding: 2,
               }}
-            >
-              <Button variant="contained" type="submit">
-                Save Changes
-              </Button>
-            </CardActions>
+            ></CardActions>
           </Card>
 
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="body1" sx={{ mb: 2 }}>
-                Applied Jobs: {appliedJobs.length}
+                Applied Jobs: {userData.appliedJobs.length}
               </Typography>
               <Typography variant="body1" sx={{ mb: 2 }}>
-                Accepted Jobs: {acceptedJobs.length}
+                Accepted Jobs: {userData.acceptedJobs.length}
               </Typography>
             </CardContent>
           </Card>
@@ -187,7 +211,7 @@ function Profile() {
       </Box>
     );
   } else {
-    return <div>User is not logged in or data is loading...</div>;
+    return <div>User data is loading...</div>;
   }
 }
 

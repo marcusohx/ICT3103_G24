@@ -7,5 +7,6 @@ router.post("/register", userController.register);
 router.post("/login", userController.login);
 router.post("/logout", userController.logout);
 router.get("/user-data", authMiddleware, userController.getUserData);
-
+router.get("/getuser/:username", userController.getUserByName);
+router.put("/updateuser", authMiddleware, userController.updateUser);
 module.exports = router;

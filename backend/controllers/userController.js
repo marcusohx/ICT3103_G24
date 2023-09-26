@@ -33,6 +33,25 @@ exports.login = async (req, res) => {
   res.status(200).send("Logged in successfully");
 };
 
+exports.getUserByName = async (req, res) => {
+  try {
+    // Get the username from the request parameters
+    const { username } = req.params;
+
+    // Fetch the user from the database using the provided username and exclude password and _id fields
+    const user = await User.findOne({ username }).select("-password -_id");
+
+    // If user doesn't exist, return a 404 Not Found response
+    if (!user) return res.status(404).send("User not found");
+
+    // If the user exists, send their data back as a response
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Something went wrong");
+  }
+};
+
 exports.register = async (req, res) => {
   const { email, username, password, firstName, lastName } = req.body;
   console.log(req.body);
@@ -70,6 +89,40 @@ exports.register = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+    // Obtain the user ID from the JWT passed in the request (assuming you have some middleware
+    // that decodes the JWT and puts the user object in the req)
+    const userId = req.user._id;
+
+    // Extract updatable fields from the request body
+    const { email, username, firstName, lastName, resumeLink, linkedinLink } =
+      req.body;
+
+    // Fetch the user from the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Update the user fields if they are provided
+    if (email) user.email = email;
+    if (username) user.username = username;
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (resumeLink) user.resumeLink = resumeLink;
+    if (linkedinLink) user.linkedinLink = linkedinLink;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Send a success response
+    res.status(200).send("User updated successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Something went wrong while updating user");
+  }
+};
 exports.logout = (req, res) => {
   res.clearCookie("token");
   res.status(200).send("Logout successful");

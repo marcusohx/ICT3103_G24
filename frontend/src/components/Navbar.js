@@ -38,6 +38,7 @@ export default function PrimarySearchAppBar() {
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [useProfile, setUseProfile] = useState("empty");
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -73,6 +74,14 @@ export default function PrimarySearchAppBar() {
     navigate("/");
     handleMenuClose();
   };
+  // Simulating fetching the auth state - you would typically do this when fetching from an API
+  useEffect(() => {
+    if (authState || employerAuthState) {
+      setUseProfile(
+        authState ? authState.username : employerAuthState.username
+      );
+    }
+  }, [authState, employerAuthState]);
 
   const commonMenuItems = [
     { text: "Home", path: "/" },
@@ -80,8 +89,11 @@ export default function PrimarySearchAppBar() {
   ];
 
   const userMenuItems = [
-    { text: "User Profile", path: "/user/profile" },
-    { text: "User Settings", path: "/user/settings" },
+    {
+      text: "User Profile",
+      path: `/user/profile/${useProfile}`,
+    },
+    { text: "User Settings", path: "/user/profilesettings" },
     { text: "Job Listings", path: "/joblistings" },
   ];
 
