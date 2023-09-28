@@ -301,15 +301,29 @@ function EmployerJobListings() {
             </Box>
           </Box>
           <Box sx={{ alignSelf: "flex-end", mt: 2, mb: 1 }}>
-            <Button
-              variant="contained"
-              color="error"
-              disabled={job.status === "closed"}
-              onClick={() => requestCloseJob(job._id)}
-              sx={{ padding: "8px 16px" }}
+            <Tooltip
+              title={
+                job.acceptedUsers.length === 0
+                  ? "Cannot distribute credits as there are no accepted users."
+                  : ""
+              }
             >
-              Close and Distribute Credits
-            </Button>
+              <span>
+                {" "}
+                {/* Span is needed because a disabled Button doesn't trigger the Tooltip */}
+                <Button
+                  variant="contained"
+                  color="error"
+                  disabled={
+                    job.status === "closed" || job.acceptedUsers.length === 0
+                  }
+                  onClick={() => requestCloseJob(job._id)}
+                  sx={{ padding: "8px 16px" }}
+                >
+                  Close and Distribute Credits
+                </Button>
+              </span>
+            </Tooltip>
           </Box>
         </Paper>
       ))}

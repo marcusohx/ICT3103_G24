@@ -136,7 +136,7 @@ function CreateJobListingPage() {
             disabled
           />
           <option value="open">Open</option>
-          <option value="closed">Closed</option>
+          <option value="closed">in-progress</option>
         </TextField>
         <Button variant="contained" color="primary" type="submit">
           Create Job Listing
