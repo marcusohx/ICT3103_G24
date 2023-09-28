@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
-  Box,
   Typography,
   Button,
   Grid,
@@ -9,34 +9,44 @@ import {
   CardMedia,
   Container,
 } from "@mui/material";
-import { styled } from "@mui/system";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-const products = [
-  {
-    id: 1,
-    name: "Pen",
-    description: "A high-quality ballpoint pen for smooth writing.",
-    price: "200 Credits",
-    image: "pen.jpg", // Replace with your product image
-  },
-  {
-    id: 2,
-    name: "Notebook",
-    description: "A ruled notebook for all your note-taking needs.",
-    price: "$500 Credits",
-    image: "notebook.jpg", // Replace with your product image
-  },
-  {
-    id: 3,
-    name: "T-shirt",
-    description: "A comfortable T-shirt with a modern design.",
-    price: "1000 Credits",
-    image: "tshirt.jpg", // Replace with your product image
-  },
-];
-
 const Shop = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch products from backend when component mounts
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/product");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []); // The empty array means this useEffect runs once when the component mounts
+
+  const handlePurchase = async (productId, price) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/purchase/purchaseItem",
+        { productId },
+        {
+          withCredentials: true, // This is the default
+        }
+      );
+
+      alert(response.data.message || "Purchase successful!");
+      // Giving feedback to the user. You can replace this with a more sophisticated notification system if you have one in place.
+    } catch (error) {
+      console.error("Error purchasing product:", error);
+      alert(error.response?.data?.message || "Error purchasing product.");
+      // Error handling. This assumes your backend sends meaningful error messages.
+    }
+  };
+
   return (
     <Container sx={{ marginTop: "2rem" }}>
       <Typography variant="h4" color="primary" sx={{ marginBottom: "1rem" }}>
@@ -44,7 +54,7 @@ const Shop = () => {
       </Typography>
       <Grid container spacing={2}>
         {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4}>
+          <Grid item key={product._id} xs={12} sm={6} md={4}>
             <Card sx={{ height: "100%" }}>
               <CardMedia
                 component="img"
@@ -59,7 +69,11 @@ const Shop = () => {
                 <Typography variant="body2" color="text.secondary">
                   {product.description}
                 </Typography>
-                <Typography variant="h6" color="primary" sx={{ marginTop: "1rem" }}>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  sx={{ marginTop: "1rem" }}
+                >
                   {product.price}
                 </Typography>
                 <Button
@@ -68,8 +82,9 @@ const Shop = () => {
                   fullWidth
                   startIcon={<ShoppingCartIcon />}
                   sx={{ marginTop: "1rem" }}
+                  onClick={() => handlePurchase(product._id, product.price)} // Assuming product.price is numerical
                 >
-                  Add to Cart
+                  Buy
                 </Button>
               </CardContent>
             </Card>

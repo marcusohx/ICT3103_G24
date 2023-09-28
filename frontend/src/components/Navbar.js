@@ -14,8 +14,6 @@ import ListItem from "@mui/material/ListItem";
 import MenuIcon from "@mui/icons-material/Menu";
 // import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
@@ -38,6 +36,7 @@ export default function PrimarySearchAppBar() {
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [useProfile, setUseProfile] = useState("empty");
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -53,6 +52,14 @@ export default function PrimarySearchAppBar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (authState || employerAuthState) {
+      setUseProfile(
+        authState ? authState.username : employerAuthState.username
+      );
+    }
+  }, [authState, employerAuthState]);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -80,9 +87,13 @@ export default function PrimarySearchAppBar() {
   ];
 
   const userMenuItems = [
-    { text: "User Profile", path: "/user/profile" },
-    { text: "User Settings", path: "/user/settings" },
+    {
+      text: "User Profile",
+      path: `/user/profile/${useProfile}`,
+    },
+    { text: "User Settings", path: "/user/profilesettings" },
     { text: "Job Listings", path: "/joblistings" },
+    { text: "Shop", path: "/shop" },
   ];
 
   const employerMenuItems = [
