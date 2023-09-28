@@ -129,219 +129,229 @@ function JobListingsPage() {
       });
   };
 
-  return (
-    <Container>
-      <Banner>
-        <BannerText>
-          <Typography variant="h3" gutterBottom>
-            Find the Project Tailored for Your Skills
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            Discover opportunities and collaborations crafted for SIT students.
-          </Typography>
-        </BannerText>
-        <TextField
-          variant="outlined"
-          placeholder="Search for jobs..."
-          fullWidth
-          sx={{
-            maxWidth: "500px",
-            bgcolor: "background.paper",
-            m: 0,
-            borderRadius: 2,
-          }}
-        />
-      </Banner>
-
-      <Grid container spacing={4}>
-        <Grid item md={3}>
-          <Sidebar>
-            <Typography variant="h6" gutterBottom>
-              Advanced Filters
+  if (authState) {
+    return (
+      <Container>
+        <Banner>
+          <BannerText>
+            <Typography variant="h3" gutterBottom>
+              Find the Project Tailored for Your Skills
             </Typography>
-            <Divider />
-
-            {/* Salary Range Filter */}
-            <Typography variant="subtitle1" gutterBottom mt={2}>
-              Salary Range
+            <Typography variant="subtitle1" gutterBottom>
+              Discover opportunities and collaborations crafted for SIT
+              students.
             </Typography>
-            <FormControl component="fieldset">
-              <FormGroup>
-                <FormControlLabel control={<Checkbox />} label="< $50k" />
-                <FormControlLabel control={<Checkbox />} label="$50k - $100k" />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="$100k - $150k"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="$150k - $200k"
-                />
-                <FormControlLabel control={<Checkbox />} label="> $200k" />
-              </FormGroup>
-            </FormControl>
-            <Divider />
+          </BannerText>
+          <TextField
+            variant="outlined"
+            placeholder="Search for jobs..."
+            fullWidth
+            sx={{
+              maxWidth: "500px",
+              bgcolor: "background.paper",
+              m: 0,
+              borderRadius: 2,
+            }}
+          />
+        </Banner>
 
-            {/* Popular Keywords Filter */}
-            <Typography variant="subtitle1" gutterBottom mt={2}>
-              Popular Keywords
+        <Grid container spacing={4}>
+          <Grid item md={3}>
+            <Sidebar>
+              <Typography variant="h6" gutterBottom>
+                Advanced Filters
+              </Typography>
+              <Divider />
+
+              {/* Salary Range Filter */}
+              <Typography variant="subtitle1" gutterBottom mt={2}>
+                Salary Range
+              </Typography>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox />} label="< $50k" />
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="$50k - $100k"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="$100k - $150k"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="$150k - $200k"
+                  />
+                  <FormControlLabel control={<Checkbox />} label="> $200k" />
+                </FormGroup>
+              </FormControl>
+              <Divider />
+
+              {/* Popular Keywords Filter */}
+              <Typography variant="subtitle1" gutterBottom mt={2}>
+                Popular Keywords
+              </Typography>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox />} label="Remote" />
+                  <FormControlLabel control={<Checkbox />} label="Full-time" />
+                  <FormControlLabel control={<Checkbox />} label="Part-time" />
+                  <FormControlLabel control={<Checkbox />} label="Contract" />
+                  <FormControlLabel control={<Checkbox />} label="Internship" />
+                </FormGroup>
+              </FormControl>
+              <Divider />
+
+              {/* Industry Filter */}
+              <Typography variant="subtitle1" gutterBottom mt={2}>
+                Industry
+              </Typography>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox />} label="Tech" />
+                  <FormControlLabel control={<Checkbox />} label="Finance" />
+                  <FormControlLabel control={<Checkbox />} label="Healthcare" />
+                  <FormControlLabel control={<Checkbox />} label="Education" />
+                  <FormControlLabel control={<Checkbox />} label="Government" />
+                  {/* Add more industries as necessary */}
+                </FormGroup>
+              </FormControl>
+              <Divider />
+
+              {/* Add more filters as needed with dividers in between */}
+            </Sidebar>
+          </Grid>
+
+          <Grid item md={9}>
+            <Typography variant="h6" gutterBottom sx={{ mt: 2, ml: 2 }}>
+              Projects
             </Typography>
-            <FormControl component="fieldset">
-              <FormGroup>
-                <FormControlLabel control={<Checkbox />} label="Remote" />
-                <FormControlLabel control={<Checkbox />} label="Full-time" />
-                <FormControlLabel control={<Checkbox />} label="Part-time" />
-                <FormControlLabel control={<Checkbox />} label="Contract" />
-                <FormControlLabel control={<Checkbox />} label="Internship" />
-              </FormGroup>
-            </FormControl>
-            <Divider />
+            <Divider sx={{ mb: 2 }} />
+            {selectedJob ? (
+              <StyledCard>
+                <Typography variant="h5">{selectedJob.title}</Typography>
+                <Typography>Description: {selectedJob.description}</Typography>
+                <Typography>Payment: ${selectedJob.payment}</Typography>
 
-            {/* Industry Filter */}
-            <Typography variant="subtitle1" gutterBottom mt={2}>
-              Industry
-            </Typography>
-            <FormControl component="fieldset">
-              <FormGroup>
-                <FormControlLabel control={<Checkbox />} label="Tech" />
-                <FormControlLabel control={<Checkbox />} label="Finance" />
-                <FormControlLabel control={<Checkbox />} label="Healthcare" />
-                <FormControlLabel control={<Checkbox />} label="Education" />
-                <FormControlLabel control={<Checkbox />} label="Government" />
-                {/* Add more industries as necessary */}
-              </FormGroup>
-            </FormControl>
-            <Divider />
-
-            {/* Add more filters as needed with dividers in between */}
-          </Sidebar>
-        </Grid>
-
-        <Grid item md={9}>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2, ml: 2 }}>
-            Projects
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-          {selectedJob ? (
-            <StyledCard>
-              <Typography variant="h5">{selectedJob.title}</Typography>
-              <Typography>Description: {selectedJob.description}</Typography>
-              <Typography>Payment: ${selectedJob.payment}</Typography>
-
-              {/* Skills section */}
-              <Box
-                sx={{ mt: 2, display: "flex", gap: "8px", flexWrap: "wrap" }}
-              >
-                {selectedJob.skills &&
-                  selectedJob.skills.map((skill, index) => (
-                    <Chip
-                      label={skill}
-                      key={index}
-                      variant="outlined"
-                      size="small"
-                    />
-                  ))}
-              </Box>
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleApplyJob(selectedJob)}
-                sx={{ mt: 2 }}
-              >
-                Apply for Job
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => setSelectedJob(null)}
-                sx={{ mt: 2 }}
-              >
-                Back
-              </Button>
-            </StyledCard>
-          ) : (
-            <Grid
-              container
-              spacing={2}
-              style={{ display: "flex", alignItems: "stretch" }}
-            >
-              {jobListings.map((job) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  key={job._id}
-                  style={{ display: "flex" }}
+                {/* Skills section */}
+                <Box
+                  sx={{ mt: 2, display: "flex", gap: "8px", flexWrap: "wrap" }}
                 >
-                  <StyledCard>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid item>
-                        <Avatar
-                          src={job.companyLogoUrl}
-                          alt={job.companyName}
-                          sx={{ mt: 2 }} // Adjust margin top as necessary to align it properly
-                        />
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="subtitle1">
-                          {job.companyName}
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          mt={2}
-                          style={{
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            height: "3em",
-                          }}
-                        >
-                          {job.title}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Typography
-                      variant="body2"
-                      mt={2}
-                      ml={1}
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3, // Adjust this value to control the number of lines shown for description
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {job.description}
-                    </Typography>
+                  {selectedJob.skills &&
+                    selectedJob.skills.map((skill, index) => (
+                      <Chip
+                        label={skill}
+                        key={index}
+                        variant="outlined"
+                        size="small"
+                      />
+                    ))}
+                </Box>
 
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        mt: 2,
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        onClick={() => viewDetails(job)}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleApplyJob(selectedJob)}
+                  sx={{ mt: 2 }}
+                >
+                  Apply for Job
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setSelectedJob(null)}
+                  sx={{ mt: 2 }}
+                >
+                  Back
+                </Button>
+              </StyledCard>
+            ) : (
+              <Grid
+                container
+                spacing={2}
+                style={{ display: "flex", alignItems: "stretch" }}
+              >
+                {jobListings.map((job) => (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    key={job._id}
+                    style={{ display: "flex" }}
+                  >
+                    <StyledCard>
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid item>
+                          <Avatar
+                            src={job.companyLogoUrl}
+                            alt={job.companyName}
+                            sx={{ mt: 2 }} // Adjust margin top as necessary to align it properly
+                          />
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="subtitle1">
+                            {job.companyName}
+                          </Typography>
+                          <Typography
+                            variant="h6"
+                            mt={2}
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              height: "3em",
+                            }}
+                          >
+                            {job.title}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                      <Typography
+                        variant="body2"
+                        mt={2}
+                        ml={1}
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3, // Adjust this value to control the number of lines shown for description
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
                       >
-                        View Details
-                      </Button>
-                    </Box>
-                  </StyledCard>
-                </Grid>
-              ))}
-            </Grid>
-          )}
+                        {job.description}
+                      </Typography>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          mt: 2,
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          onClick={() => viewDetails(job)}
+                        >
+                          View Details
+                        </Button>
+                      </Box>
+                    </StyledCard>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
-  );
+      </Container>
+    );
+  } else {
+    <div>
+      <h1>Not logged in</h1>
+    </div>;
+  }
 }
 
 export default JobListingsPage;

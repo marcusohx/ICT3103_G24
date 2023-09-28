@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -16,7 +15,6 @@ import {
 
 function Profile() {
   const { username } = useParams();
-  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [formValues, setFormValues] = useState({
     firstName: "",

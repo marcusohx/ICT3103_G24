@@ -13,11 +13,24 @@ import {
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+} from "@mui/material";
+
 function EmployerJobListings() {
   const [jobListings, setJobListings] = useState([]);
   const { employerAuthState } = useContext(EmployerAuthContext);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [pinDialogOpen, setPinDialogOpen] = useState(false);
+  const [enteredPin, setEnteredPin] = useState("");
+  const [currentJobId, setCurrentJobId] = useState(null); // This state keeps track of which jobId the user wants to close
+
   useEffect(() => {
     axios
       .get(
@@ -57,6 +70,40 @@ function EmployerJobListings() {
       })
       .catch((error) => {
         console.error("Error updating job listing status:", error);
+      });
+  };
+
+  const requestCloseJob = (jobId) => {
+    setCurrentJobId(jobId); // Store the jobId
+    setPinDialogOpen(true); // Open the pin dialog
+  };
+
+  const verifyPinAndCloseJob = () => {
+    axios
+      .post(
+        "http://localhost:3001/employer/verifyPin",
+        { pin: enteredPin },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        if (response.data.success) {
+          setPinDialogOpen(false);
+          closeJobAndDistributeCredits(currentJobId);
+        } else {
+          // Using the 'message' from the server response for feedback
+          setSnackbarMessage(response.data.message || "An error occurred.");
+          setSnackbarOpen(true);
+        }
+      })
+      .catch((error) => {
+        // Using the 'message' from the server response for feedback, if available
+        const serverMessage =
+          error.response && error.response.data && error.response.data.message;
+        setSnackbarMessage(
+          serverMessage || "Error verifying the pin. Please try again."
+        );
+        setSnackbarOpen(true);
+        console.error("Error verifying pin:", error);
       });
   };
 
@@ -258,7 +305,7 @@ function EmployerJobListings() {
               variant="contained"
               color="error"
               disabled={job.status === "closed"}
-              onClick={() => closeJobAndDistributeCredits(job._id)}
+              onClick={() => requestCloseJob(job._id)}
               sx={{ padding: "8px 16px" }}
             >
               Close and Distribute Credits
@@ -280,6 +327,32 @@ function EmployerJobListings() {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      <Dialog open={pinDialogOpen} onClose={() => setPinDialogOpen(false)}>
+        <DialogTitle>Enter Pin</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter your pin to continue.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="pin"
+            label="Pin"
+            type="password" // for obfuscation
+            fullWidth
+            value={enteredPin}
+            onChange={(e) => setEnteredPin(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPinDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={verifyPinAndCloseJob} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

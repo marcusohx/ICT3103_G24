@@ -25,11 +25,15 @@ function EmployerRegister() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [pin, setPin] = useState("");
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
+  };
+  const validatePin = (pin) => {
+    return /^\d{6}$/.test(pin);
   };
 
   const validatePassword = (password) => {
@@ -47,6 +51,10 @@ function EmployerRegister() {
 
     if (!validateEmail(email)) {
       setMessage("Please enter a valid email address.");
+      return;
+    }
+    if (!validatePin(pin)) {
+      setMessage("Pin must be a 6-digit number.");
       return;
     }
 
@@ -67,10 +75,11 @@ function EmployerRegister() {
           companyName,
           email,
           password,
+          pin,
         }
       );
       setMessage("Employer registered");
-      navigate("/employer-login");
+      navigate("/employerlogin");
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -145,6 +154,21 @@ function EmployerRegister() {
                   startAdornment: (
                     <InputAdornment position="start">
                       <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                fullWidth
+                type="password"
+                placeholder="6-digit Pin"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                InputProps={{
+                  inputProps: { maxLength: 6 },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
                     </InputAdornment>
                   ),
                 }}

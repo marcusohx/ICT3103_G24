@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const employeruserController = require("../controllers/employerController");
-
 const authMiddleware = require("../middlewares/auth");
 
 router.post("/register", employeruserController.register);
@@ -12,5 +11,19 @@ router.get(
   authMiddleware,
   employeruserController.getEmployerData
 );
+router.get(
+  "/getEmployer/:companyName",
+  employeruserController.getEmployerByCompanyName
+);
+
+// Adding the updateEmployer route
+router.put(
+  "/updateemployer",
+  authMiddleware,
+  employeruserController.updateEmployer
+);
+
+// Adding the verifyPin route
+router.post("/verifyPin", authMiddleware, employeruserController.verifyPin);
 
 module.exports = router;

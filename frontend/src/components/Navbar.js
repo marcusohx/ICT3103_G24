@@ -56,7 +56,7 @@ export default function PrimarySearchAppBar() {
   useEffect(() => {
     if (authState || employerAuthState) {
       setUseProfile(
-        authState ? authState.username : employerAuthState.username
+        authState ? authState.username : employerAuthState.companyName
       );
     }
   }, [authState, employerAuthState]);
@@ -97,10 +97,16 @@ export default function PrimarySearchAppBar() {
   ];
 
   const employerMenuItems = [
-    { text: "Employer Profile", path: "/employer/profile" },
-    { text: "Job Listings", path: "/joblistings" },
     { text: "Create Job Listing", path: "/createjoblisting" },
     { text: "Job listed", path: "/employerjoblistings" },
+    {
+      text: "Employer Profile",
+      path: `/employer/profile/${useProfile}`,
+    },
+    {
+      text: "Employer Settings",
+      path: `/employer/profilesettings`,
+    },
   ];
 
   const unAuthMenuItems = [{ text: "Login", path: "/chooserole" }];

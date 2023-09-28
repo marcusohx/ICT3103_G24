@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { AuthContext } from "../../contexts/AuthContext";
+import { EmployerAuthContext } from "../../contexts/EmployerAuthContext";
 import {
   Avatar,
   Box,
@@ -17,23 +17,18 @@ import {
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-function Profile() {
-  const { authState } = useContext(AuthContext);
+function EmployerProfile() {
+  const { employerAuthState } = useContext(EmployerAuthContext);
   const [formValues, setFormValues] = useState({
-    firstName: authState?.firstName || "",
-    lastName: authState?.lastName || "",
-    email: authState?.email || "",
-    resumeLink: authState?.resumeLink || "",
-    linkedinLink: authState?.linkedinLink || "",
+    companyName: employerAuthState?.companyName || "",
+    email: employerAuthState?.email || "",
   });
 
-  const [appliedJobs, setAppliedJobs] = useState(authState?.appliedJobs || []);
-  const [acceptedJobs, setAcceptedJobs] = useState(
-    authState?.acceptedJobs || []
+  const [postedJobs, setPostedJobs] = useState(
+    employerAuthState?.postedJobs || []
   );
-  const [credits, setCredits] = useState(authState?.credits || 0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
+  const [snackbarType, setSnackbarType] = useState("success");
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -44,27 +39,22 @@ function Profile() {
   }, []);
 
   useEffect(() => {
-    if (authState) {
+    if (employerAuthState) {
       setFormValues((prevFormData) => ({
         ...prevFormData,
-        firstName: authState.firstName || "",
-        lastName: authState.lastName || "",
-        email: authState.email || "",
-        resumeLink: authState.resumeLink || "",
-        linkedinLink: authState.linkedinLink || "",
+        companyName: employerAuthState.companyName || "",
+        email: employerAuthState.email || "",
       }));
-      setAppliedJobs(authState.appliedJobs || []);
-      setAcceptedJobs(authState.acceptedJobs || []);
-      setCredits(authState.credits || 0);
+      setPostedJobs(employerAuthState.postedJobs || []);
     }
-  }, [authState]);
+  }, [employerAuthState]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const response = await axios.put(
-        "http://localhost:3001/user/updateuser",
+        "http://localhost:3001/employer/updateemployer",
         formValues,
         {
           withCredentials: true,
@@ -77,17 +67,17 @@ function Profile() {
       } else {
         setSnackbarType("error");
         setOpenSnackbar(true);
-        console.log("Error updating user:", response.data);
+        console.log("Error updating employer:", response.data);
       }
     } catch (error) {
       setSnackbarType("error");
       setOpenSnackbar(true);
-      console.error("Error updating user:", error);
+      console.error("Error updating employer:", error);
     }
   };
 
-  if (authState) {
-    const { email, firstName, lastName } = formValues;
+  if (employerAuthState) {
+    const { email, companyName } = formValues;
 
     return (
       <Box
@@ -97,8 +87,8 @@ function Profile() {
           display: "flex",
           justifyContent: "center",
           backgroundColor: "background.paper",
-          marginTop: "24px", // Add margin to the top
-          marginBottom: "24px", // Add margin to the bottom
+          marginTop: "24px",
+          marginBottom: "24px",
         }}
       >
         <Container maxWidth="sm">
@@ -108,7 +98,7 @@ function Profile() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              width: "100%", // Make the card fill the entire width
+              width: "100%",
               backgroundImage: "linear-gradient(180deg, #a0e7e5, #f8fff4)",
               backgroundSize: "100% 50%",
               backgroundRepeat: "no-repeat",
@@ -124,21 +114,21 @@ function Profile() {
               }}
             >
               <Avatar
-                src="frontend/src/assets/blank-avatar.jpg"
+                src="/path-to-your-employer-avatar-image.jpg"
                 sx={{
                   height: 120,
                   width: 120,
                   mb: 2,
                 }}
               />
-              <Divider sx={{ width: "100%" }} /> {/* Line separator */}
+              <Divider sx={{ width: "100%" }} />
               <Typography
                 gutterBottom
                 variant="h5"
                 align="center"
                 sx={{ marginBottom: 1 }}
               >
-                {firstName} {lastName}
+                {companyName}
               </Typography>
               <Typography
                 variant="subtitle1"
@@ -147,9 +137,6 @@ function Profile() {
               >
                 {email}
               </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                Credits: {credits}
-              </Typography>
             </CardContent>
           </Card>
 
@@ -157,28 +144,18 @@ function Profile() {
             <form onSubmit={handleSubmit}>
               <CardContent>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12}>
                     <TextField
                       fullWidth
-                      helperText="Please specify your first name"
-                      label="First name"
-                      name="firstName"
+                      helperText="Please specify your company name"
+                      label="Company Name"
+                      name="companyName"
                       onChange={handleChange}
                       required
-                      value={formValues.firstName}
+                      value={formValues.companyName}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Last name"
-                      name="lastName"
-                      onChange={handleChange}
-                      required
-                      value={formValues.lastName}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12}>
                     <TextField
                       fullWidth
                       label="Email Address"
@@ -186,26 +163,6 @@ function Profile() {
                       onChange={handleChange}
                       required
                       value={formValues.email}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Resume Link"
-                      name="resumeLink"
-                      onChange={handleChange}
-                      required
-                      value={formValues.resumeLink}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Linkedin Link"
-                      name="linkedinLink"
-                      onChange={handleChange}
-                      required
-                      value={formValues.linkedinLink}
                     />
                   </Grid>
                 </Grid>
@@ -226,10 +183,7 @@ function Profile() {
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="body1" sx={{ mb: 2 }}>
-                Applied Jobs: {appliedJobs.length}
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                Accepted Jobs: {acceptedJobs.length}
+                Posted Jobs: {postedJobs.length}
               </Typography>
             </CardContent>
           </Card>
@@ -242,15 +196,15 @@ function Profile() {
         >
           <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarType}>
             {snackbarType === "success"
-              ? "User updated successfully!"
-              : "Error updating user."}
+              ? "Employer updated successfully!"
+              : "Error updating employer."}
           </Alert>
         </Snackbar>
       </Box>
     );
   } else {
-    return <div>User is not logged in or data is loading...</div>;
+    return <div>Employer is not logged in or data is loading...</div>;
   }
 }
 
-export default Profile;
+export default EmployerProfile;
