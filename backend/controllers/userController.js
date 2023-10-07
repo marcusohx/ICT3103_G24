@@ -80,6 +80,24 @@ exports.register = async (req, res) => {
     // Save the new user in the database
     await user.save();
 
+    // Regenerate JWT token with updated user information
+    const updatedToken = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    // Setting the updated JWT as a cookie
+    res.cookie("token", updatedToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 3600000, // 1 hour
+      path: "/", // add this line
+    });
+
     // Respond with a success message
     res.status(201).send("User created");
   } catch (error) {

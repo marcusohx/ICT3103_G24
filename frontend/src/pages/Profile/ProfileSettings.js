@@ -34,6 +34,7 @@ function Profile() {
   const [credits, setCredits] = useState(authState?.credits || 0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -59,8 +60,32 @@ function Profile() {
     }
   }, [authState]);
 
+  const validateLinkedIn = useCallback((url) => {
+    const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/.+/;
+    return linkedinRegex.test(url);
+  }, []);
+
+  const validateEmail = useCallback((email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!validateEmail(formValues.email)) {
+      setSnackbarType("error");
+      setSnackbarMessage("Invalid email address");
+      setOpenSnackbar(true);
+      return; // Exit early if email is invalid
+    }
+
+    if (!validateLinkedIn(formValues.linkedinLink)) {
+      setSnackbarType("error");
+      setSnackbarMessage("Invalid LinkedIn URL");
+      setOpenSnackbar(true);
+      return; // Exit early if LinkedIn URL is invalid
+    }
 
     try {
       const response = await axios.put(
@@ -166,6 +191,7 @@ function Profile() {
                       onChange={handleChange}
                       required
                       value={formValues.firstName}
+                      inputProps={{ maxLength: 8 }} // Limit input to 8 characters
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
@@ -176,6 +202,7 @@ function Profile() {
                       onChange={handleChange}
                       required
                       value={formValues.lastName}
+                      inputProps={{ maxLength: 8 }} // Limit input to 8 characters
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
