@@ -1,4 +1,5 @@
 const JobListing = require("../models/JobListing"); // Adjust the path to your JobListing model file
+const User = require("../models/User"); // Adjust the path to your User model file
 
 exports.getJobListings = async (req, res) => {
   try {
@@ -75,6 +76,7 @@ exports.applyForJob = async (req, res) => {
       console.log(jobListing);
       return res.status(401).send("Not authenticated");
     }
+
     // Check if user or employer has already applied
     if (
       jobListing.appliedUsers.some(
@@ -85,6 +87,17 @@ exports.applyForJob = async (req, res) => {
     }
     jobListing.appliedUsers.push(authenticatedId);
     await jobListing.save();
+
+    // Find the user and update their appliedJobs array
+    const user = await User.findById(authenticatedId);
+    if (user) {
+      user.appliedJobs.push(req.params.jobId);
+      await user.save();
+    } else {
+      // Handle the case where the user is not found (optional)
+      console.error("User not found:", authenticatedId);
+    }
+
     res.json({ msg: "Job application successful" });
   } catch (err) {
     console.error(err);

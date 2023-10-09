@@ -93,22 +93,6 @@ exports.updateEmployer = async (req, res) => {
 
     await employer.save();
 
-    // Regenerate JWT token with updated employer information
-    const updatedToken = jwt.sign(
-      { employerId: employer._id, email: employer.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    // Setting the updated JWT as a cookie
-    res.cookie("token", updatedToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 3600000, // 1 hour
-      path: "/",
-    });
-
     res.status(200).send("Employer updated successfully");
   } catch (error) {
     console.error("Error updating employer:", error);

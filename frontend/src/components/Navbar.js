@@ -5,25 +5,29 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import MenuIcon from "@mui/icons-material/Menu";
-// import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { EmployerAuthContext } from "../contexts/EmployerAuthContext";
 import { useLocation } from "react-router-dom";
+import { NavBarRefreshContext } from "../contexts/NavBarRefreshContext";
 
 export default function PrimarySearchAppBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { authState, logout: userLogout } = useContext(AuthContext);
+  const { refresh } = useContext(NavBarRefreshContext);
+  const {
+    authState,
+    logout: userLogout,
+    fetchUserData: fetch,
+  } = useContext(AuthContext);
   const { employerAuthState, employerlogout: employerLogout } =
     useContext(EmployerAuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -60,6 +64,11 @@ export default function PrimarySearchAppBar() {
       );
     }
   }, [authState, employerAuthState]);
+
+  useEffect(() => {
+    // This effect will run every time `refresh` changes, effectively re-rendering your Navbar.
+    // You can add more dependencies to this array if you need to.fetch
+  }, [refresh]);
 
   const handleMenuClose = () => {
     setAnchorEl(null);

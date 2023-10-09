@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [authState, setAuthState] = useState(null);
+  const [refresh, setRefresh] = useState(false); // New state for refreshing
 
   const fetchUserData = async () => {
     try {
@@ -18,16 +19,20 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const toggleRefresh = () => {
+    setRefresh((prev) => !prev); // Toggle the refresh state
+  };
+
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    fetchUserData(); // Fetch user data whenever the component mounts or refresh changes
+  }, [refresh]);
 
   const login = async (credentials) => {
     try {
       await axios.post("http://localhost:3001/user/login", credentials, {
         withCredentials: true,
       });
-      await fetchUserData();
+      await fetchUserData(); // Fetch user data again after logging in
     } catch (error) {
       console.error(error);
     }
@@ -47,7 +52,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ authState, login, logout }}>
+    <AuthContext.Provider value={{ authState, login, logout, toggleRefresh }}>
       {children}
     </AuthContext.Provider>
   );

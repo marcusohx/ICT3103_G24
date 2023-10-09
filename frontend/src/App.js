@@ -15,6 +15,7 @@ import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { AuthProvider } from "./contexts/AuthContext";
 import { EmployerAuthProvider } from "./contexts/EmployerAuthContext"; // Import the EmployerAuthProvider
+import { NavBarRefreshProvider } from "./contexts/NavBarRefreshContext";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme/theme.js";
 import AcceptUser from "./pages/JobListing/AcceptUser/AcceptUser.js";
@@ -31,63 +32,71 @@ function App() {
       <Router>
         <AuthProvider>
           <EmployerAuthProvider>
-            <div className="App">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  minHeight: "100vh",
-                }}
-              >
-                <Navbar />
-                <Box sx={{ flex: "1 0 auto" }}>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/userlogin" element={<UserLogin />} />
-                    <Route path="/employerlogin" element={<EmployerLogin />} />
-                    <Route path="/userregister" element={<UserRegister />} />
-                    <Route
-                      path="/employerregister"
-                      element={<EmployerRegister />}
-                    />
-                    <Route path="/chooserole" element={<ChooseRole />} />
-                    <Route path="/joblistings" element={<JobListings />} />
-                    <Route
-                      path="/createjoblisting"
-                      element={<CreateJobListingPage />}
-                    />
-                    <Route path="/acceptuser/:jobId" element={<AcceptUser />} />
-                    <Route
-                      path="/employerjoblistings"
-                      element={<EmployerJobListings />}
-                    />
-                    <Route
-                      path="/user/profile/:username"
-                      element={<Profile />}
-                    />
-                    <Route
-                      path="/updatejoblisting/:id"
-                      element={<UpdateJobListingPage />}
-                    />
-                    <Route path="/about" element={<About />} />
-                    <Route
-                      path="/user/profilesettings"
-                      element={<ProfileSettings />}
-                    />
-                    <Route path="/shop" element={<Shop />} />
-                    <Route
-                      path="/employer/profile/:companyName"
-                      element={<EmployerProfile />}
-                    />
-                    <Route
-                      path="/employer/profilesettings"
-                      element={<EmployerProfileSettings />}
-                    />
-                  </Routes>
+            <NavBarRefreshProvider>
+              <div className="App">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: "100vh",
+                  }}
+                >
+                  <Navbar />
+                  <Box sx={{ flex: "1 0 auto" }}>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/userlogin" element={<UserLogin />} />
+                      <Route
+                        path="/employerlogin"
+                        element={<EmployerLogin />}
+                      />
+                      <Route path="/userregister" element={<UserRegister />} />
+                      <Route
+                        path="/employerregister"
+                        element={<EmployerRegister />}
+                      />
+                      <Route path="/chooserole" element={<ChooseRole />} />
+                      <Route path="/joblistings" element={<JobListings />} />
+                      <Route
+                        path="/createjoblisting"
+                        element={<CreateJobListingPage />}
+                      />
+                      <Route
+                        path="/acceptuser/:jobId"
+                        element={<AcceptUser />}
+                      />
+                      <Route
+                        path="/employerjoblistings"
+                        element={<EmployerJobListings />}
+                      />
+                      <Route
+                        path="/user/profile/:username"
+                        element={<Profile />}
+                      />
+                      <Route
+                        path="/updatejoblisting/:id"
+                        element={<UpdateJobListingPage />}
+                      />
+                      <Route path="/about" element={<About />} />
+                      <Route
+                        path="/user/profilesettings"
+                        element={<ProfileSettings />}
+                      />
+                      <Route path="/shop" element={<Shop />} />
+                      <Route
+                        path="/employer/profile/:companyName"
+                        element={<EmployerProfile />}
+                      />
+                      <Route
+                        path="/employer/profilesettings"
+                        element={<EmployerProfileSettings />}
+                      />
+                    </Routes>
+                  </Box>
+                  <Footer />
                 </Box>
-                <Footer />
-              </Box>
-            </div>
+              </div>
+            </NavBarRefreshProvider>
           </EmployerAuthProvider>
         </AuthProvider>
       </Router>

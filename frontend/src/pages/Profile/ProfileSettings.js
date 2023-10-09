@@ -34,7 +34,6 @@ function Profile() {
   const [credits, setCredits] = useState(authState?.credits || 0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -43,6 +42,23 @@ function Profile() {
       [name]: value,
     }));
   }, []);
+
+  // useEffect(() => {
+  //   // Assuming the API endpoint is http://localhost:3001/user/getJobs/${username}
+  //   axios
+  //     .get(`http://localhost:3001/user/getJobs/${username}`)
+  //     .then((response) => {
+  //       const { appliedJobs, acceptedJobs } = response.data;
+  //       setAppliedJobs(appliedJobs || []);
+  //       setAcceptedJobs(acceptedJobs || []);
+  //     })
+  //     .catch((error) => {
+  //       console.error("There was an error fetching jobs:", error);
+  //       // Optionally set default empty arrays if the fetch fails
+  //       setAppliedJobs([]);
+  //       setAcceptedJobs([]);
+  //     });
+  // }, [username]);
 
   useEffect(() => {
     if (authState) {
@@ -54,11 +70,24 @@ function Profile() {
         resumeLink: authState.resumeLink || "",
         linkedinLink: authState.linkedinLink || "",
       }));
-      setAppliedJobs(authState.appliedJobs || []);
-      setAcceptedJobs(authState.acceptedJobs || []);
-      setCredits(authState.credits || 0);
+
+      // Now fetch the applied and accepted jobs using authState.username
+      axios
+        .get(`http://localhost:3001/user/getuser/${authState.username}`)
+        .then((response) => {
+          const { appliedJobs, acceptedJobs, credits } = response.data;
+          setAppliedJobs(appliedJobs || []);
+          setAcceptedJobs(acceptedJobs || []);
+          setCredits(credits || 0);
+        })
+        .catch((error) => {
+          console.error("There was an error fetching jobs:", error);
+          // Optionally set default empty arrays if the fetch fails
+          setAppliedJobs([]);
+          setAcceptedJobs([]);
+        });
     }
-  }, [authState]);
+  }, [authState]); // Dependency array includes `authState` as both state setting and fetching jobs depends on it
 
   const validateLinkedIn = useCallback((url) => {
     const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/.+/;
@@ -75,14 +104,14 @@ function Profile() {
 
     if (!validateEmail(formValues.email)) {
       setSnackbarType("error");
-      setSnackbarMessage("Invalid email address");
+
       setOpenSnackbar(true);
       return; // Exit early if email is invalid
     }
 
     if (!validateLinkedIn(formValues.linkedinLink)) {
       setSnackbarType("error");
-      setSnackbarMessage("Invalid LinkedIn URL");
+
       setOpenSnackbar(true);
       return; // Exit early if LinkedIn URL is invalid
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
   Typography,
@@ -10,10 +10,13 @@ import {
   Container,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-
+import { NavBarRefreshContext } from "../../contexts/NavBarRefreshContext";
 const Shop = () => {
   const [products, setProducts] = useState([]);
-
+  const { toggleRefresh } = useContext(NavBarRefreshContext);
+  const refreshPage = () => {
+    window.location.reload();
+  };
   useEffect(() => {
     // Fetch products from backend when component mounts
     const fetchProducts = async () => {
@@ -37,6 +40,8 @@ const Shop = () => {
           withCredentials: true, // This is the default
         }
       );
+
+      refreshPage();
 
       alert(response.data.message || "Purchase successful!");
       // Giving feedback to the user. You can replace this with a more sophisticated notification system if you have one in place.
