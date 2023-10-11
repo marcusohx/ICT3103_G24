@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import { AuthContext } from "../../contexts/AuthContext";
 import {
   Avatar,
@@ -72,8 +72,8 @@ function Profile() {
       }));
 
       // Now fetch the applied and accepted jobs using authState.username
-      axios
-        .get(`http://localhost:3001/user/getuser/${authState.username}`)
+      api
+        .get(`user/getuser/${authState.username}`)
         .then((response) => {
           const { appliedJobs, acceptedJobs, credits } = response.data;
           setAppliedJobs(appliedJobs || []);
@@ -117,8 +117,8 @@ function Profile() {
     }
 
     try {
-      const response = await axios.put(
-        "http://localhost:3001/user/updateuser",
+      const response = await api.put(
+        "user/updateuser",
         formValues,
         {
           withCredentials: true,

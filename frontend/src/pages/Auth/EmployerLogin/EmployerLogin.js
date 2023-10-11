@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext"; // Adjust the path as necessary
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import {
@@ -29,8 +29,8 @@ function EmployerLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3001/employer/login", // Update the URL to your employer login endpoint
+      const response = await api.post(
+        "employer/login", // Update the URL to your employer login endpoint
         {
           email,
           password,

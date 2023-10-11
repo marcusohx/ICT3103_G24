@@ -13,7 +13,7 @@ import {
   Checkbox,
   Divider,
 } from "@mui/material";
-import axios from "axios";
+import { api } from 'services/api';
 import { AuthContext } from "../../contexts/AuthContext";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
@@ -67,8 +67,8 @@ function JobListingsPage() {
   const [selectedJob, setSelectedJob] = useState(null);
   const { authState } = useContext(AuthContext);
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/joblisting/job-listings?status=open")
+    api
+      .get("joblisting/job-listings?status=open")
       .then((response) => {
         setJobListings(response.data);
       })
@@ -78,8 +78,8 @@ function JobListingsPage() {
   }, []);
 
   const viewDetails = (job) => {
-    axios
-      .get(`http://localhost:3001/joblisting/job-listings/${job._id}`)
+    api
+      .get(`joblisting/job-listings/${job._id}`)
       .then((response) => {
         setSelectedJob(response.data);
       })
@@ -89,9 +89,9 @@ function JobListingsPage() {
   };
 
   const handleApplyJob = (selectedJob) => {
-    axios
+    api
       .post(
-        `http://localhost:3001/joblisting/job-listings/apply/${selectedJob._id}`,
+        `joblisting/job-listings/apply/${selectedJob._id}`,
         {},
         { withCredentials: true }
       )

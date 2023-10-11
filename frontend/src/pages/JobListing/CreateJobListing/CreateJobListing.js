@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Container, TextField, Button } from "@mui/material";
-import axios from "axios";
+import { api } from 'services/api';
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 
 function CreateJobListingPage() {
@@ -44,8 +44,8 @@ function CreateJobListingPage() {
     e.preventDefault();
     try {
       // Replace with your API endpoint to create a job listing
-      const response = await axios.post(
-        "http://localhost:3001/joblisting/createjoblisting",
+      const response = await api.post(
+        "joblisting/createjoblisting",
         formData,
         {
           withCredentials: true,

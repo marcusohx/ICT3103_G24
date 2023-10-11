@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import {
   Box,
   Button,
@@ -69,7 +69,7 @@ function Register() {
     }
 
     try {
-      const response = await axios.post("http://localhost:3001/user/register", {
+      const response = await api.post("user/register", {
         firstName,
         lastName,
         email,
