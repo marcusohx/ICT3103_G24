@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { EmployerAuthContext } from "../../contexts/EmployerAuthContext";
 import {
   Avatar,
@@ -53,13 +53,9 @@ function EmployerProfile() {
     event.preventDefault();
 
     try {
-      const response = await api.put(
-        "employer/updateemployer",
-        formValues,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.put("employer/updateemployer", formValues, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         setSnackbarType("success");
@@ -153,6 +149,7 @@ function EmployerProfile() {
                       onChange={handleChange}
                       required
                       value={formValues.companyName}
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={12}>
