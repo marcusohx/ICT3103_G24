@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import { EmployerAuthContext } from "../../contexts/EmployerAuthContext";
 import {
   Avatar,
@@ -53,8 +53,8 @@ function EmployerProfile() {
     event.preventDefault();
 
     try {
-      const response = await axios.put(
-        "http://localhost:3001/employer/updateemployer",
+      const response = await api.put(
+        "employer/updateemployer",
         formValues,
         {
           withCredentials: true,

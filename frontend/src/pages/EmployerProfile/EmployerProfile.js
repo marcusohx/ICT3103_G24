@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import { useParams } from "react-router-dom";
 import {
   Avatar,
@@ -17,8 +17,8 @@ function EmployerProfile() {
   const [employerData, setEmployerData] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3001/employer/getEmployer/${companyName}`)
+    api
+      .get(`employer/getEmployer/${companyName}`)
       .then((response) => {
         setEmployerData(response.data);
       })

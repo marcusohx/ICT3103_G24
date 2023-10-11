@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button } from "@mui/material";
-import axios from "axios";
+import { api } from 'services/api';
 import { useParams } from "react-router-dom";
 
 function UpdateJobListingPage() {
@@ -18,8 +18,8 @@ function UpdateJobListingPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3001/joblisting/job-listings/${id}`
+        const response = await api.get(
+          `joblisting/job-listings/${id}`
         );
         setFormData(response.data);
       } catch (error) {
@@ -49,8 +49,8 @@ function UpdateJobListingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        `http://localhost:3001/joblisting/update/${id}`,
+      const response = await api.put(
+        `joblisting/update/${id}`,
         formData,
         {
           withCredentials: true,
