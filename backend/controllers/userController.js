@@ -1,17 +1,31 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const otplib = require('otplib');
+
 
 require("dotenv").config(); // Ensure this is at the very top of your file
 const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, totpCode} = req.body;
   const user = await User.findOne({ email });
-  // console.log(email, password, user);
+  //console.log(email, password, user);
+
   if (!user) return res.status(404).send("User not found");
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) return res.status(401).send("Invalid password");
+
+   
+  // Checking 2FA is correct
+  if (user.is2FAEnabled) {
+    // Verify TOTP code
+    const isValid = otplib.authenticator.check(totpCode, user.totpSecret);
+
+    if (!isValid) {
+      return res.status(401).send("Invalid 2FA code");
+    }
+  }
 
   // JWT token generation
   const token = jwt.sign(
@@ -77,6 +91,7 @@ exports.register = async (req, res) => {
       lastName,
     });
 
+
     // Save the new user in the database
     await user.save();
 
@@ -89,6 +104,35 @@ exports.register = async (req, res) => {
   }
 };
 
+// Enable 2FA for a user
+exports.enable2FA = async (req, res) => {
+  try {
+    // Generate a TOTP secret key
+    const totpSecret = otplib.authenticator.generateSecret();
+
+    // Store this secret key in the database and update the user's 'is2FAEnabled' flag
+    const userId = req.user._id; // Assuming you have user data in the request
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    user.totpSecret = totpSecret;
+    user.is2FAEnabled = true;
+
+    await user.save();
+
+    // Provide the user with the TOTP secret key and a QR code
+    const otpauthURL = otplib.authenticator.keyuri(user.email, 'YourApp', totpSecret);
+    // Generate and send a QR code to the user for scanning
+
+    res.json({ totpSecret, otpauthURL });
+  } catch (error) {
+    res.status(500).send('Error enabling 2FA');
+  }
+};
+
 exports.updateUser = async (req, res) => {
   try {
     // Obtain the user ID from the JWT passed in the request (assuming you have some middleware
@@ -96,7 +140,7 @@ exports.updateUser = async (req, res) => {
     const userId = req.user._id;
 
     // Extract updatable fields from the request body
-    const { email, username, firstName, lastName, resumeLink, linkedinLink } =
+    const { email, username, firstName, lastName, resumeLink, linkedinLink, is2FAEnabled } =
       req.body;
 
     // Fetch the user from the database
@@ -112,6 +156,7 @@ exports.updateUser = async (req, res) => {
     if (lastName) user.lastName = lastName;
     if (resumeLink) user.resumeLink = resumeLink;
     if (linkedinLink) user.linkedinLink = linkedinLink;
+    if (is2FAEnabled) user.is2FAEnabled = is2FAEnabled;
 
     // Save the updated user to the database
     await user.save();

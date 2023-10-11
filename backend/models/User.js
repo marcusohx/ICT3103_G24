@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
   credits: { type: Number, default: 0 },
   resumeLink: { type: String, default: "" }, // Added resumeLink field with a default value of empty string
   linkedinLink: { type: String, default: "" }, // Added linkedinLink field with a default value of empty string
+  totpSecret: { type: String },
+  is2FAEnabled: { type: Boolean, default: false},
 });
 
 module.exports = mongoose.model("User", userSchema);

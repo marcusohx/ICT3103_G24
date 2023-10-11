@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "https://www.sitgigs.online", // replace with your frontend application's URL
+    origin: "http://localhost:3000", // replace with your frontend application's URL
     credentials: true,
   })
 );
