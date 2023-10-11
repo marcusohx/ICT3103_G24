@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import {
   Box,
   Button,
@@ -69,8 +69,8 @@ function EmployerRegister() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/employer/register",
+      const response = await api.post(
+        "employer/register",
         {
           companyName,
           email,

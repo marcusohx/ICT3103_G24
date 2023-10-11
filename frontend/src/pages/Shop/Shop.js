@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import {
   Typography,
   Button,
@@ -21,7 +21,7 @@ const Shop = () => {
     // Fetch products from backend when component mounts
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/product");
+        const response = await api.get("product");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -33,8 +33,8 @@ const Shop = () => {
 
   const handlePurchase = async (productId, price) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/purchase/purchaseItem",
+      const response = await api.post(
+        "purchase/purchaseItem",
         { productId },
         {
           withCredentials: true, // This is the default

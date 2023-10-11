@@ -10,7 +10,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import axios from "axios";
+import { api } from 'services/api';
 import { Link } from "react-router-dom";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 import {
@@ -32,9 +32,9 @@ function EmployerJobListings() {
   const [currentJobId, setCurrentJobId] = useState(null); // This state keeps track of which jobId the user wants to close
 
   useEffect(() => {
-    axios
+    api
       .get(
-        "http://localhost:3001/joblisting/job-listings/employer/by-employer",
+        "joblisting/job-listings/employer/by-employer",
         {
           withCredentials: true,
         }
@@ -55,9 +55,9 @@ function EmployerJobListings() {
     }
     const newStatus = event.target.checked ? "open" : "in-progress";
 
-    axios
+    api
       .put(
-        `http://localhost:3001/joblisting/job-listings/status/${jobId}`,
+        `joblisting/job-listings/status/${jobId}`,
         { status: newStatus },
         { withCredentials: true }
       )
@@ -79,9 +79,9 @@ function EmployerJobListings() {
   };
 
   const verifyPinAndCloseJob = () => {
-    axios
+    api
       .post(
-        "http://localhost:3001/employer/verifyPin",
+        "employer/verifyPin",
         { pin: enteredPin },
         { withCredentials: true }
       )
@@ -112,9 +112,9 @@ function EmployerJobListings() {
 
     // Check if employer has enough credits to distribute to the accepted users
     if (employerAuthState.credits >= job.acceptedUsers.length) {
-      axios
+      api
         .put(
-          `http://localhost:3001/joblisting/job-listings/close/${jobId}`,
+          `joblisting/job-listings/close/${jobId}`,
           {},
           { withCredentials: true }
         )

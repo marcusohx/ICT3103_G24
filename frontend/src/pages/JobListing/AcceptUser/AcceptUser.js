@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { api } from 'services/api';
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 function AcceptUser() {
   const { jobId } = useParams();
@@ -9,8 +9,8 @@ function AcceptUser() {
   const { employerAuthState } = useContext(EmployerAuthContext);
   useEffect(() => {
     // Use axios to get job listing details
-    axios
-      .get(`http://localhost:3001/joblisting/job-listings/${jobId}`)
+    api
+      .get(`joblisting/job-listings/${jobId}`)
       .then((response) => {
         setUsers(response.data.appliedUsers);
       })
@@ -21,9 +21,9 @@ function AcceptUser() {
 
   const handleAcceptUser = () => {
     // Use axios to accept a user for a job listing
-    axios
+    api
       .put(
-        `http://localhost:3001/joblisting/job-listings/${jobId}/accept-user/${selectedUser}`,
+        `joblisting/job-listings/${jobId}/accept-user/${selectedUser}`,
         {},
         {
           withCredentials: true,

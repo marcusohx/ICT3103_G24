@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 
 export const EmployerAuthContext = createContext();
 
@@ -10,8 +10,8 @@ export function EmployerAuthProvider({ children }) {
 
   const fetchEmployerData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/employer/employer-data",
+      const response = await api.get(
+        "employer/employer-data",
         {
           withCredentials: true,
         }
@@ -34,7 +34,7 @@ export function EmployerAuthProvider({ children }) {
   const login = async (credentials) => {
     try {
       setLoading(true);
-      await axios.post("http://localhost:3001/employer/login", credentials, {
+      await api.post("employer/login", credentials, {
         withCredentials: true,
       });
       await fetchEmployerData();
@@ -49,8 +49,8 @@ export function EmployerAuthProvider({ children }) {
   const employerlogout = async () => {
     try {
       setLoading(true);
-      await axios.post(
-        "http://localhost:3001/employer/logout",
+      await api.post(
+        "employer/logout",
         {},
         { withCredentials: true }
       );

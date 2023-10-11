@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 import { useParams } from "react-router-dom";
 import {
   Avatar,
@@ -25,8 +25,8 @@ function Profile() {
   });
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3001/user/getuser/${username}`)
+    api
+      .get(`user/getuser/${username}`)
       .then((response) => {
         setUserData(response.data);
         const { firstName, lastName, email, resumeLink, linkedinLink } =

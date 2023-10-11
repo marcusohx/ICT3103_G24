@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import { api } from 'services/api';
 
 export const AuthContext = createContext();
 
@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/user/user-data", {
+      const response = await api.get("user/user-data", {
         withCredentials: true,
       });
       // console.log(response.data);
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
 
   const login = async (credentials) => {
     try {
-      await axios.post("http://localhost:3001/user/login", credentials, {
+      await api.post("user/login", credentials, {
         withCredentials: true,
       });
       await fetchUserData(); // Fetch user data again after logging in
@@ -40,8 +40,8 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await axios.post(
-        "http://localhost:3001/user/logout",
+      await api.post(
+        "user/logout",
         {},
         { withCredentials: true }
       );
