@@ -9,8 +9,9 @@ const userSchema = new mongoose.Schema({
   appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "JobListing" }],
   acceptedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "JobListing" }],
   credits: { type: Number, default: 0 },
-  resumeLink: { type: String, default: "" }, // Added resumeLink field with a default value of empty string
   linkedinLink: { type: String, default: "" }, // Added linkedinLink field with a default value of empty string
+  twoFASecret: { type: String, default: "" },
+  twoFAEnabled: { type: Boolean, default: false }, // Optional: to know if 2FA is enabled for the user
 });
 
 module.exports = mongoose.model("User", userSchema);

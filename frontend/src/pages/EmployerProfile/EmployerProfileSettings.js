@@ -16,9 +16,11 @@ import {
 } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 function EmployerProfile() {
   const { employerAuthState } = useContext(EmployerAuthContext);
+  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     companyName: employerAuthState?.companyName || "",
     email: employerAuthState?.email || "",
@@ -26,6 +28,10 @@ function EmployerProfile() {
 
   const [postedJobs, setPostedJobs] = useState(
     employerAuthState?.postedJobs || []
+  );
+
+  const [twoFAEnabled, setTwoFAEnabled] = useState(
+    employerAuthState?.twoFAEnabled || false
   );
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success");
@@ -44,10 +50,15 @@ function EmployerProfile() {
         ...prevFormData,
         companyName: employerAuthState.companyName || "",
         email: employerAuthState.email || "",
+        twoFAEnabled: employerAuthState.twoFAEnabled || false,
       }));
       setPostedJobs(employerAuthState.postedJobs || []);
     }
   }, [employerAuthState]);
+
+  const redirectToTwoFA = () => {
+    navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -73,7 +84,7 @@ function EmployerProfile() {
   };
 
   if (employerAuthState) {
-    const { email, companyName } = formValues;
+    const { email, companyName, twoFAEnabled } = formValues;
 
     return (
       <Box
@@ -175,6 +186,17 @@ function EmployerProfile() {
                 </Button>
               </CardActions>
             </form>
+          </Card>
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={redirectToTwoFA}
+              >
+                {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
+              </Button>
+            </CardContent>
           </Card>
 
           <Card sx={{ mt: 3 }}>

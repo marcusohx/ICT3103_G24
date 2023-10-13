@@ -8,6 +8,7 @@ const employerRoutes = require("./routes/employerRoutes");
 const jobListingRoutes = require("./routes/jobListingRoutes");
 const productRoutes = require("./routes/productRoutes");
 const purcaseRoutes = require("./routes/purchaseRoutes");
+const twoFARoutes = require("./routes/twoFARoutes");
 const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -30,7 +31,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "https://www.sitgigs.online", // replace with your frontend application's URL
+    origin: "http://localhost:3000", // replace with your frontend application's URL
     credentials: true,
   })
 );
@@ -40,6 +41,7 @@ app.use("/employer", employerRoutes);
 app.use("/joblisting", jobListingRoutes);
 app.use("/product", productRoutes);
 app.use("/purchase", purcaseRoutes);
+app.use("/twofa", twoFARoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

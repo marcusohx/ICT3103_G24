@@ -11,6 +11,11 @@ exports.login = async (req, res) => {
   const validPassword = await bcrypt.compare(password, employer.password);
   if (!validPassword) return res.status(401).send("Invalid password");
 
+  // Check if 2FA is enabled for the user
+  if (employer.twoFAEnabled) {
+    return res.status(206).send({ message: "2FA verification required" }); // 206 Partial Content
+  }
+
   const token = jwt.sign(
     { employerId: employer._id, email: employer.email },
     process.env.JWT_SECRET,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { useParams } from "react-router-dom";
 import {
   Avatar,
@@ -20,7 +20,6 @@ function Profile() {
     firstName: "",
     lastName: "",
     email: "",
-    resumeLink: "",
     linkedinLink: "",
   });
 
@@ -29,13 +28,11 @@ function Profile() {
       .get(`user/getuser/${username}`)
       .then((response) => {
         setUserData(response.data);
-        const { firstName, lastName, email, resumeLink, linkedinLink } =
-          response.data;
+        const { firstName, lastName, email, linkedinLink } = response.data;
         setFormValues({
           firstName,
           lastName,
           email,
-          resumeLink,
           linkedinLink,
         });
       })
@@ -45,7 +42,7 @@ function Profile() {
   }, [username]);
 
   if (userData) {
-    const { email, firstName, lastName, resumeLink, linkedinLink } = formValues;
+    const { email, firstName, lastName, linkedinLink } = formValues;
 
     return (
       <Box
@@ -138,28 +135,6 @@ function Profile() {
                   >
                     <Typography variant="subtitle1" gutterBottom>
                       <strong>Email Address:</strong> {formValues.email}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      p: 1,
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <Typography variant="subtitle1" gutterBottom>
-                      <strong>Resume Link:</strong>
-                      <a
-                        href={formValues.resumeLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {formValues.resumeLink
-                          ? " View Resume"
-                          : " No Link Provided"}
-                      </a>
                     </Typography>
                   </Box>
                 </Grid>

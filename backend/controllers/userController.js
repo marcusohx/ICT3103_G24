@@ -7,12 +7,16 @@ const jwt = require("jsonwebtoken");
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  // console.log(email, password, user);
+
   if (!user) return res.status(404).send("User not found");
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) return res.status(401).send("Invalid password");
 
+  // Check if 2FA is enabled for the user
+  if (user.twoFAEnabled) {
+    return res.status(206).send({ message: "2FA verification required" }); // 206 Partial Content
+  }
   // JWT token generation
   const token = jwt.sign(
     { userId: user._id, email: user.email },
@@ -96,8 +100,7 @@ exports.updateUser = async (req, res) => {
     const userId = req.user._id;
 
     // Extract updatable fields from the request body
-    const { email, username, firstName, lastName, resumeLink, linkedinLink } =
-      req.body;
+    const { email, username, firstName, lastName, linkedinLink } = req.body;
 
     // Fetch the user from the database
     const user = await User.findById(userId);
@@ -110,7 +113,6 @@ exports.updateUser = async (req, res) => {
     if (username) user.username = username;
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-    if (resumeLink) user.resumeLink = resumeLink;
     if (linkedinLink) user.linkedinLink = linkedinLink;
 
     // Save the updated user to the database

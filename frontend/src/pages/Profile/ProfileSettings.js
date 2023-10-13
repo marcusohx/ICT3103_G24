@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import {
   Avatar,
@@ -16,16 +16,20 @@ import {
 } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const { authState } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     firstName: authState?.firstName || "",
     lastName: authState?.lastName || "",
     email: authState?.email || "",
-    resumeLink: authState?.resumeLink || "",
     linkedinLink: authState?.linkedinLink || "",
   });
+  const [twoFAEnabled, setTwoFAEnabled] = useState(
+    authState?.twoFAEnabled || false
+  );
 
   const [appliedJobs, setAppliedJobs] = useState(authState?.appliedJobs || []);
   const [acceptedJobs, setAcceptedJobs] = useState(
@@ -60,6 +64,10 @@ function Profile() {
   //     });
   // }, [username]);
 
+  const redirectToTwoFA = () => {
+    navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
+  };
+
   useEffect(() => {
     if (authState) {
       setFormValues((prevFormData) => ({
@@ -67,7 +75,6 @@ function Profile() {
         firstName: authState.firstName || "",
         lastName: authState.lastName || "",
         email: authState.email || "",
-        resumeLink: authState.resumeLink || "",
         linkedinLink: authState.linkedinLink || "",
       }));
 
@@ -75,10 +82,12 @@ function Profile() {
       api
         .get(`user/getuser/${authState.username}`)
         .then((response) => {
-          const { appliedJobs, acceptedJobs, credits } = response.data;
+          const { appliedJobs, acceptedJobs, credits, twoFAEnabled } =
+            response.data;
           setAppliedJobs(appliedJobs || []);
           setAcceptedJobs(acceptedJobs || []);
           setCredits(credits || 0);
+          setTwoFAEnabled(twoFAEnabled);
         })
         .catch((error) => {
           console.error("There was an error fetching jobs:", error);
@@ -117,13 +126,9 @@ function Profile() {
     }
 
     try {
-      const response = await api.put(
-        "user/updateuser",
-        formValues,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.put("user/updateuser", formValues, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         setSnackbarType("success");
@@ -247,16 +252,6 @@ function Profile() {
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label="Resume Link"
-                      name="resumeLink"
-                      onChange={handleChange}
-                      required
-                      value={formValues.resumeLink}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
                       label="Linkedin Link"
                       name="linkedinLink"
                       onChange={handleChange}
@@ -277,6 +272,18 @@ function Profile() {
                 </Button>
               </CardActions>
             </form>
+          </Card>
+
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={redirectToTwoFA}
+              >
+                {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
+              </Button>
+            </CardContent>
           </Card>
 
           <Card sx={{ mt: 3 }}>
