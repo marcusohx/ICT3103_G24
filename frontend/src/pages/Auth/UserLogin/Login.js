@@ -71,6 +71,7 @@ function Login() {
         {
           email,
           token: enteredPin,
+          type: "user",
         },
         {
           withCredentials: true,

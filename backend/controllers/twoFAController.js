@@ -77,26 +77,29 @@ exports.verifyToken = async (req, res) => {
 };
 exports.verify2FAAndLogin = async (req, res) => {
   try {
-    const { email, token } = req.body;
-    if (!email) {
-      return res.status(400).send("Email not provided");
+    const { email, token, type } = req.body;
+
+    if (!email || !type) {
+      return res.status(400).send("Email or type not provided");
     }
 
     let userOrEmployer;
-    let isUser = false;
+    let model;
 
-    // First, try to find a User with the provided email
-    userOrEmployer = await User.findOne({ email });
-    if (userOrEmployer) {
-      isUser = true; // Set flag to indicate we found a User
+    if (type === "user") {
+      model = User;
+    } else if (type === "employer") {
+      model = Employer;
     } else {
-      // If no User is found, try to find an Employer with the provided email
-      userOrEmployer = await Employer.findOne({ email });
+      return res.status(400).send("Invalid type provided");
     }
 
-    // If no User or Employer is found, send a 404 response
+    userOrEmployer = await model.findOne({ email });
+
     if (!userOrEmployer) {
-      return res.status(404).send("User or Employer not found");
+      return res
+        .status(404)
+        .send(`${type.charAt(0).toUpperCase() + type.slice(1)} not found`);
     }
 
     if (!token) {
@@ -110,16 +113,15 @@ exports.verify2FAAndLogin = async (req, res) => {
     });
 
     if (verified) {
-      // JWT token generation
-      const tokenPayload = isUser
-        ? { userId: userOrEmployer._id, email: userOrEmployer.email }
-        : { employerId: userOrEmployer._id, email: userOrEmployer.email };
+      const tokenPayload =
+        type === "user"
+          ? { userId: userOrEmployer._id, email: userOrEmployer.email }
+          : { employerId: userOrEmployer._id, email: userOrEmployer.email };
 
       const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
 
-      // Setting the JWT as a cookie
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

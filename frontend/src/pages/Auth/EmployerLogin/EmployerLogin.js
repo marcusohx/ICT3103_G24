@@ -71,6 +71,7 @@ function EmployerLogin() {
         {
           email,
           token: enteredPin,
+          type: "employer", // Add the type field to the request body
         },
         {
           withCredentials: true,
