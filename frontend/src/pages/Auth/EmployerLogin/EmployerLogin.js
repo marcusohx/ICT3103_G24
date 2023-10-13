@@ -28,6 +28,8 @@ function EmployerLogin() {
   const [error, setError] = useState(null);
   const [pinDialogOpen, setPinDialogOpen] = useState(false);
   const { login } = useContext(EmployerAuthContext);
+  const [tempAuthToken, setTempAuthToken] = useState(null);
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -45,6 +47,7 @@ function EmployerLogin() {
       );
 
       if (response.status === 206) {
+        setTempAuthToken(response.data.tempAuthToken); // Store the temporary auth token
         setPinDialogOpen(true); // Open the 2FA dialog if 2FA is required
       } else if (response.status === 200) {
         await login({ email, password });
@@ -64,6 +67,10 @@ function EmployerLogin() {
     }
   };
   const verifyPinAndCloseJob = async () => {
+    if (!tempAuthToken) {
+      setError("Please log in to verify 2FA");
+      return;
+    }
     try {
       // Replace the URL and request body with your actual verify 2FA endpoint and request body
       const response = await api.post(
@@ -71,6 +78,7 @@ function EmployerLogin() {
         {
           email,
           token: enteredPin,
+          tempAuthToken,
           type: "employer", // Add the type field to the request body
         },
         {

@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 
 require("dotenv").config(); // Ensure this is at the very top of your file
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -15,7 +16,13 @@ exports.login = async (req, res) => {
 
   // Check if 2FA is enabled for the user
   if (user.twoFAEnabled) {
-    return res.status(206).send({ message: "2FA verification required" }); // 206 Partial Content
+    const tempAuthToken = crypto.randomBytes(32).toString("hex");
+
+    user.tempAuthToken = tempAuthToken;
+    await user.save();
+    return res
+      .status(206)
+      .send({ tempAuthToken, message: "2FA verification required" }); // 206 Partial Content
   }
   // JWT token generation
   const token = jwt.sign(

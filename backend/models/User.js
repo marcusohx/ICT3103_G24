@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
   linkedinLink: { type: String, default: "" }, // Added linkedinLink field with a default value of empty string
   twoFASecret: { type: String, default: "" },
   twoFAEnabled: { type: Boolean, default: false }, // Optional: to know if 2FA is enabled for the user
+  tempAuthToken: { type: String }, // Added tempAuthToken field
 });
 
 module.exports = mongoose.model("User", userSchema);

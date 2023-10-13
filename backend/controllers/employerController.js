@@ -2,6 +2,7 @@ const Employer = require("../models/Employer");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -13,7 +14,17 @@ exports.login = async (req, res) => {
 
   // Check if 2FA is enabled for the user
   if (employer.twoFAEnabled) {
-    return res.status(206).send({ message: "2FA verification required" }); // 206 Partial Content
+    // Generate a temporary authentication token
+    const tempAuthToken = crypto.randomBytes(32).toString("hex");
+
+    // Optionally, store the temporary auth token in the database associated with the user
+    // This step is recommended to allow for token verification later
+    employer.tempAuthToken = tempAuthToken;
+    await employer.save();
+
+    return res
+      .status(206)
+      .send({ tempAuthToken, message: "2FA verification required" }); // 206 Partial Content
   }
 
   const token = jwt.sign(
