@@ -10,13 +10,19 @@ import {
   CardContent,
   Container,
   Divider,
+  Dialog, 
+  DialogTitle,
+  DialogContent,
   Grid,
   TextField,
   Typography,
+  IconButton
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import TwoFASetup from '../Auth/2FA/TwoFA'; // Import the TwoFASetup component
 
 function Profile() {
   const { authState } = useContext(AuthContext);
@@ -38,6 +44,10 @@ function Profile() {
   const [credits, setCredits] = useState(authState?.credits || 0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
+
+  const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
+
+  
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -64,9 +74,9 @@ function Profile() {
   //     });
   // }, [username]);
 
-  const redirectToTwoFA = () => {
-    navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
-  };
+  //const redirectToTwoFA = () => {
+    //navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
+  //};
 
   useEffect(() => {
     if (authState) {
@@ -279,7 +289,8 @@ function Profile() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={redirectToTwoFA}
+                //onClick={redirectToTwoFA}
+                onClick={() => setOpenTwoFADialog(true)}
               >
                 {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
               </Button>
@@ -296,6 +307,30 @@ function Profile() {
               </Typography>
             </CardContent>
           </Card>
+          <Dialog open={openTwoFADialog} 
+                  //onClose={() => setOpenTwoFADialog(false)}
+                  disableBackdropClick
+                  disableEscapeKeyDown 
+                  >
+            <IconButton edge="end" color="inherit" 
+                        onClick={() => setOpenTwoFADialog(false)} 
+                        aria-label="close" 
+                        style={{
+                          position: 'absolute',
+                          top: '0px',
+                          right: '8px',
+                          color: 'red',
+                          fontSize: '1rem',
+                        }}
+                      >
+                        <CloseIcon /></IconButton>
+            <DialogTitle>Two-Factor Authentication Setup
+              
+            </DialogTitle>
+            <DialogContent>
+              <TwoFASetup onClose={() => setOpenTwoFADialog(false)} />
+            </DialogContent>
+          </Dialog>
         </Container>
         <Snackbar
           open={openSnackbar}

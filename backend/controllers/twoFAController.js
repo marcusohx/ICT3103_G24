@@ -75,6 +75,7 @@ exports.verifyToken = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
 exports.verify2FAAndLogin = async (req, res) => {
   try {
     const { email, token, type } = req.body;

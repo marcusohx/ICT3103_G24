@@ -10,6 +10,9 @@ import {
   CardContent,
   Container,
   Divider,
+  Dialog, 
+  DialogTitle,
+  DialogContent,
   Grid,
   TextField,
   Typography,
@@ -17,6 +20,7 @@ import {
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import TwoFASetup from '../Auth/2FA/TwoFA'; // Import the TwoFASetup component
 
 function EmployerProfile() {
   const { employerAuthState } = useContext(EmployerAuthContext);
@@ -35,6 +39,8 @@ function EmployerProfile() {
   );
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success");
+
+  const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -192,13 +198,19 @@ function EmployerProfile() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={redirectToTwoFA}
+                //onClick={redirectToTwoFA}
+                onClick={() => setOpenTwoFADialog(true)}
               >
                 {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
               </Button>
             </CardContent>
           </Card>
-
+          <Dialog open={openTwoFADialog} onClose={() => setOpenTwoFADialog(false)}>
+            <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
+            <DialogContent>
+              <TwoFASetup onClose={() => setOpenTwoFADialog(false)} />
+            </DialogContent>
+          </Dialog>
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="body1" sx={{ mb: 2 }}>
