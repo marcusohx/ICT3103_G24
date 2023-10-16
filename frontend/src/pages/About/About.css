@@ -1,0 +1,6 @@
+body {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    background: linear-gradient(180deg, #a0e7e5, #f8fff4);
+    font-family: sans-serif; /* Specify a font for the entire page */
+  }

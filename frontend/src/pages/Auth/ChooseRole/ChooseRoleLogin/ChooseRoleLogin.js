@@ -1,6 +1,9 @@
 import React from "react";
 import { Box, Button, Divider, Link, Stack, Typography } from "@mui/material";
 
+
+import logoPNG from "../../../../assets/SITGigs-Logo.png"
+
 function ChooseRole() {
   return (
       <Box
@@ -16,12 +19,21 @@ function ChooseRole() {
     }}
   >
     {/* Logo */}
-    <Box sx={{ marginBottom: "2rem" }}>
-      <img
-        src="\frontend\src\assets\SITGigs-Logo.png" // Replace with the actual path to your logo image
-        style={{ maxWidth: "100%" }} // Ensure the logo fits within the container
-      />
-    </Box>
+    <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "2rem",
+          width: "100%",
+        }}
+      >
+        <img
+          src={logoPNG}
+          style={{ maxWidth: "50%" }}
+          alt="SITGigs Logo"
+        />
+      </Box>
 
     <Box
       sx={{

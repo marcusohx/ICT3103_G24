@@ -10,13 +10,20 @@ import {
   Typography,
   Paper,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   Email as EmailIcon,
   Lock as LockIcon,
   Person as PersonIcon,
+  Visibility,
+  VisibilityOff 
 } from "@mui/icons-material";
+
+import ReCAPTCHA from "react-google-recaptcha";
+
+
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -25,8 +32,25 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
+
   const navigate = useNavigate();
+
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  }
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,7 +71,8 @@ function Register() {
       !email ||
       !username ||
       !password ||
-      !confirmPassword
+      !confirmPassword ||
+      !recaptchaValue
     ) {
       setMessage("All fields are required");
       return;
@@ -65,6 +90,11 @@ function Register() {
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match");
+      return;
+    }
+
+    if (!recaptchaValue) {
+      setMessage("Please complete the reCAPTCHA.");
       return;
     }
 
@@ -186,7 +216,7 @@ function Register() {
               />
               <TextField
                 fullWidth
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -196,21 +226,35 @@ function Register() {
                       <LockIcon />
                     </InputAdornment>
                   ),
-                }}
-              />
-              <TextField
-                fullWidth
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon />
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility}>
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
+              />
+             <TextField
+              fullWidth
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                      <LockIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => toggleConfirmPasswordVisibility('confirmPassword')}>
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               />
               <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
                 Password must:
@@ -222,6 +266,10 @@ function Register() {
                 </ul>
               </Typography>
             </Stack>
+            {/* <ReCAPTCHA
+              sitekey="6LcLBKcoAAAAAFXfzXTVIfkq5Bnynu58l_Kqo3hL"
+              onChange={handleRecaptchaChange}
+            /> */}
             <Button
               fullWidth
               size="large"
