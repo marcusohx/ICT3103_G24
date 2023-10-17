@@ -3,6 +3,9 @@ const speakeasy = require("speakeasy");
 const { toDataURL } = require("qrcode");
 const User = require("../models/User");
 const Employer = require("../models/Employer");
+const AESKey = require("../models/AESKey"); 
+const crypto = require("crypto");
+
 
 require("dotenv").config(); // Ensure this is at the very top of your file
 const jwt = require("jsonwebtoken");
@@ -23,10 +26,21 @@ exports.generateSecret = async (req, res) => {
     }
 
     const secret = speakeasy.generateSecret({ length: 20 });
-    const dataURL = await toDataURL(secret.otpauth_url);
-
+    const aesKey = crypto.randomBytes(32).toString("hex"); // Generate an AES key
+    
     userOrEmployer.twoFASecret = secret.base32;
+
+    // Create and save the AES key for the user or employer
+    const aesKeyRecord = new AESKey({
+      userId: userOrEmployer._id,
+      aesKey,
+    });
+    
+    await aesKeyRecord.save();
+    
     await userOrEmployer.save();
+
+    const dataURL = await toDataURL(secret.otpauth_url);
 
     res.json({ secret: secret.base32, dataURL }); // send secret and dataURL to client
   } catch (error) {

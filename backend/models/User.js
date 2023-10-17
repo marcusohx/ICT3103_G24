@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const fieldEncryption = require("mongoose-field-encryption");
+const AESKey = require("../models/AESKey"); 
+
 
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
@@ -14,5 +17,16 @@ const userSchema = new mongoose.Schema({
   twoFAEnabled: { type: Boolean, default: false }, // Optional: to know if 2FA is enabled for the user
   tempAuthToken: { type: String }, // Added tempAuthToken field
 });
+
+// Encryption Configuration
+userSchema.plugin(fieldEncryption, {
+  fields: ["twoFASecret"],
+  secret: async (document) => {
+    // Retrieve the AES key associated with the user
+    const aesKeyRecord = await AESKey.findOne({ userId: document._id });
+    return aesKeyRecord.aesKey;
+  },
+});
+
 
 module.exports = mongoose.model("User", userSchema);
