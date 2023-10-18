@@ -17,7 +17,9 @@ services:
       - backend
       
   jenkins:
-    build: .
+    build:
+      context: ./jenkins
+      dockerfile: jenkins-dockerfile
     image: jenkins/jenkins:lts
     restart: always
     privileged: true
@@ -29,7 +31,7 @@ services:
     volumes:
       - jenkins-docker-certs:/certs/client
       - jenkins-data:/var/jenkins_home
-      - .:/var/jenkins_home/tmp
+      - C:\Users\JRUI\Documents\GitHub\ICT3103_G24:/var/jenkins_home/tmp/gitrepo
 
 volumes:
   jenkins-docker-certs:
