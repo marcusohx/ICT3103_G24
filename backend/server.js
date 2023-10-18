@@ -10,8 +10,10 @@ const productRoutes = require("./routes/productRoutes");
 const purcaseRoutes = require("./routes/purchaseRoutes");
 const twoFARoutes = require("./routes/twoFARoutes");
 const cookieParser = require("cookie-parser");
+const csrf = require("csurf");
 const app = express();
 const PORT = process.env.PORT || 3001;
+
 
 // Connect to MongoDB
 mongoose
@@ -35,6 +37,20 @@ app.use(
     credentials: true,
   })
 );
+
+// Create CSRF Token
+app.use(csrf({
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true
+  }
+}));
+
+// Use CSRF Token in all request
+app.use((req, res, next) => {
+  res.cookie("XSRF-TOKEN", req.csrfToken()); // Default cookie name for CSRF in Axios
+  next();
+});
 
 app.use("/user", userRoutes);
 app.use("/employer", employerRoutes);
