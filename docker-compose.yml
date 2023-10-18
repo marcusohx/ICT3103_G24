@@ -5,12 +5,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: always
     env_file: .backend_env
   
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "443:443"
     depends_on:
@@ -31,7 +33,7 @@ services:
     volumes:
       - jenkins-docker-certs:/certs/client
       - jenkins-data:/var/jenkins_home
-      - C:\Users\JRUI\Documents\GitHub\ICT3103_G24:/var/jenkins_home/tmp/gitrepo
+      - /home/student73/test/ICT3103_G24:/var/jenkins_home/gitrepo
 
 volumes:
   jenkins-docker-certs:
