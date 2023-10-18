@@ -7,6 +7,7 @@ const aesKeySchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  userType: { type: String, enum: ["User", "Employer"], required: true }, // Type of user
   aesKey: { type: String, required: true },
 });
 
