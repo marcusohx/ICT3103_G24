@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import {
   Box,
   Button,
@@ -18,12 +18,10 @@ import {
   Lock as LockIcon,
   Person as PersonIcon,
   Visibility,
-  VisibilityOff 
+  VisibilityOff,
 } from "@mui/icons-material";
 
 import ReCAPTCHA from "react-google-recaptcha";
-
-
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -50,7 +48,7 @@ function Register() {
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
-  }
+  };
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,8 +69,8 @@ function Register() {
       !email ||
       !username ||
       !password ||
-      !confirmPassword ||
-      !recaptchaValue
+      !confirmPassword
+      // !recaptchaValue
     ) {
       setMessage("All fields are required");
       return;
@@ -93,10 +91,10 @@ function Register() {
       return;
     }
 
-    if (!recaptchaValue) {
-      setMessage("Please complete the reCAPTCHA.");
-      return;
-    }
+    // if (!recaptchaValue) {
+    //   setMessage("Please complete the reCAPTCHA.");
+    //   return;
+    // }
 
     try {
       const response = await api.post("user/register", {
@@ -216,7 +214,7 @@ function Register() {
               />
               <TextField
                 fullWidth
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -235,26 +233,34 @@ function Register() {
                   ),
                 }}
               />
-             <TextField
-              fullWidth
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
+              <TextField
+                fullWidth
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
                       <LockIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => toggleConfirmPasswordVisibility('confirmPassword')}>
-                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          toggleConfirmPasswordVisibility("confirmPassword")
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <Typography color="text.secondary" variant="body2" sx={{ mb: 2 }}>
                 Password must:
