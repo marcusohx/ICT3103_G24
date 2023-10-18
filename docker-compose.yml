@@ -34,10 +34,6 @@ services:
       - jenkins-docker-certs:/certs/client
       - jenkins-data:/var/jenkins_home
       - /home/student73/test/ICT3103_G24:/var/jenkins_home/gitrepo
-    environment:
-      - DOCKER_CERT_PATH=/certs/client
-      - DOCKER_TLS_VERIFY=1
-      - JENKINS_HTTPS_KEYSTORE=/var/jenkins_home/gitrepo/jenkins/ssl
 
 volumes:
   jenkins-docker-certs:
