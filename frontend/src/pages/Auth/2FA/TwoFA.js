@@ -33,11 +33,13 @@ function TwoFASetup() {
       }, 1000);
 
       try {
+        // Step 1: Generate the two-factor authentication secret
         const response = await api.get("/twofa/generate-secret", {
           withCredentials: true,
         });
         const data = response.data;
         setSecret(data.secret);
+
         setDataURL(data.dataURL);
       } catch (error) {
         console.error("Error generating secret:", error);
@@ -94,7 +96,7 @@ function TwoFASetup() {
           </button>
         </div>
         <div>
-          <p>Step 2: Scan the QR code</p>
+          <p>Step 2: Scan the QR code in Google Authenticator</p>
           {dataURL && <img src={dataURL} alt="Scan this QR code with Google Authenticator" />}
         </div>
         <div>

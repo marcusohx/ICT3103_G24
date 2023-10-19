@@ -16,7 +16,9 @@ import {
   Grid,
   TextField,
   Typography,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
@@ -205,8 +207,26 @@ function EmployerProfile() {
               </Button>
             </CardContent>
           </Card>
-          <Dialog open={openTwoFADialog} onClose={() => setOpenTwoFADialog(false)}>
-            <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
+          <Dialog open={openTwoFADialog} 
+                  //onClose={() => setOpenTwoFADialog(false)}
+                  disableBackdropClick
+                  disableEscapeKeyDown 
+                  >
+            <IconButton edge="end" color="inherit" 
+                        onClick={() => setOpenTwoFADialog(false)} 
+                        aria-label="close" 
+                        style={{
+                          position: 'absolute',
+                          top: '0px',
+                          right: '8px',
+                          color: 'red',
+                          fontSize: '1rem',
+                        }}
+                      >
+                        <CloseIcon /></IconButton>
+            <DialogTitle>Two-Factor Authentication Setup
+              
+            </DialogTitle>
             <DialogContent>
               <TwoFASetup onClose={() => setOpenTwoFADialog(false)} />
             </DialogContent>
