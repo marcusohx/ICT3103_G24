@@ -35,7 +35,7 @@ services:
     volumes:
       - jenkins-docker-certs:/certs/client
       - jenkins-data:/var/jenkins_home
-      - /home/student73/test/ICT3103_G24:/var/jenkins_home/gitrepo
+      - /home/student73/ICT3103_G24:/var/jenkins_home/gitrepo
 
 volumes:
   jenkins-docker-certs:
