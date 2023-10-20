@@ -9,10 +9,10 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (!user) return res.status(404).send("User not found");
+  if (!user) return res.status(401).send("Invalid username/password");
 
   const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) return res.status(401).send("Invalid password");
+  if (!validPassword) return res.status(401).send("Invalid username/password");
 
   // Check if 2FA is enabled for the user
   if (user.twoFAEnabled) {
@@ -116,12 +116,31 @@ exports.updateUser = async (req, res) => {
     }
 
     // Update the user fields if they are provided
-    if (email) user.email = email;
+
+    // Regular Expression Patterns to validate user input
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/.+/;
+    
+    if (email) {
+      if (emailRegex.test(email)) {
+        user.email = email;
+      } else {
+        throw new Error("Invalid Email");
+      }
+    }
     if (username) user.username = username;
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-    if (linkedinLink) user.linkedinLink = linkedinLink;
-
+    
+    if (linkedinLink) {
+      if (linkedinRegex.test(linkedinLink)) {
+        user.linkedinLink = linkedinLink;
+      } else {
+        throw new Error("Invalid linkedin URL"); 
+      }
+    }
+    
+    
     // Save the updated user to the database
     await user.save();
 
