@@ -1,33 +1,18 @@
 pipeline {
-  agent any
-  stages {
-    stage('checkout scm') {
-      steps {
-        echo 'Building..'
-      }
-    }
+    agent any
 
-    // Check for vulnerabilities in git repo against OWASP
-    stage('OWASP Dependency-Check Vulnerabilities') {
-      steps {
-        // dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-        // dependencyCheck additionalArguments: ''' 
-        //             -o './'
-        //             -s './'
-        //             -f 'ALL' 
-        //             --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/marcusohx/ICT3103_G24.git'
+            }
+        }
         
-        // dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-        dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default'
-        // dependencyCheck additionalArguments: '--scan target/', odcInstallation: 'owasp'
-      }
+        // Check for vulnerabilities in git repo against OWASP
+        stage('OWASP Dependency-Check') {
+            steps {
+                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+            }
+        }
     }
-
-    stage('Deploy') {
-      steps {
-        echo 'Deploying.....'
-      }
-    }
-
-  }
 }
