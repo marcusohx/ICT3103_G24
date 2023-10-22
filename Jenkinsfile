@@ -8,7 +8,7 @@ pipeline {
             }
         }
         
-        // Check for vulnerabilities in git repo against OWASP
+        // Check for vulnerabilities in git repo against OWASP.
         stage('OWASP Dependency-Check') {
             steps {
                 dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
