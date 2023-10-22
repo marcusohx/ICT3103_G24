@@ -8,8 +8,19 @@ pipeline {
     }
 
     stage('Test') {
-      steps {
-        echo 'Testing..'
+      parallel {
+        stage('Test') {
+          steps {
+            echo 'Testing..'
+          }
+        }
+
+        stage('OWASP Dependency-Check Vulnerabilities') {
+          steps {
+            echo 'yes'
+          }
+        }
+
       }
     }
 
