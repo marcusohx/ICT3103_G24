@@ -1,30 +1,9 @@
 pipeline {
   agent any
-  parameters {
-      booleanParam(name: 'Refresh',
-                  defaultValue: false,
-                  description: 'Read Jenkinsfile and exit.')
-  }
-
-  // Jenkins Stages
   stages {
-    // Checks Jenkinsfile for update, refresh if there is
-    stage('Read Jenkinsfile') {
-            when {
-                expression { return parameters.Refresh == true }
-            }
-            steps {
-                echo("Ended pipeline early.")        
-            }
-        }
-
-    // Run Jenkinsfile
-    stage('Run Jenkinsfile') {
-      when {
-        expression { return parameters.Refresh == false }
-      }
+    stage('Build') {
       steps {
-        echo 'Running Jenkinsfile... Building...'
+        echo 'Building..'
       }
     }
 
@@ -41,13 +20,11 @@ pipeline {
       }
     }
 
-    // Deployment placeholder
     stage('Deploy') {
       steps {
         echo 'Deploying.....'
       }
     }
 
-      
   }
 }
