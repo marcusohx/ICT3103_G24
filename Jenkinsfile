@@ -18,7 +18,8 @@ pipeline {
         //             --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
         
         // dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-        dependencyCheck additionalArguments: '--scan target/', odcInstallation: 'owasp'
+        dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'owasp'
+        // dependencyCheck additionalArguments: '--scan target/', odcInstallation: 'owasp'
       }
     }
 
