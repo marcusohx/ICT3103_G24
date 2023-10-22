@@ -7,20 +7,9 @@ pipeline {
       }
     }
 
-    stage('Test') {
-      parallel {
-        stage('Test') {
-          steps {
-            echo 'Testing..'
-          }
-        }
-
-        stage('OWASP Dependency-Check Vulnerabilities') {
-          steps {
-            echo 'yes'
-          }
-        }
-
+    stage('OWASP Dependency-Check Vulnerabilities') {
+      steps {
+        echo 'yes'
       }
     }
 
