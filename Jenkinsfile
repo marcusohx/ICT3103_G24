@@ -7,9 +7,9 @@ pipeline {
       }
     }
 
-    stage('OWASP Dependency-Check Vulnerabilities') {
+    stage('Test') {
       steps {
-        echo 'yes'
+        echo 'Testing..'
       }
     }
 
