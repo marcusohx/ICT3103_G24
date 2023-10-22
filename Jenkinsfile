@@ -5,7 +5,10 @@ pipeline {
                   defaultValue: false,
                   description: 'Read Jenkinsfile and exit.')
   }
+
+  // Jenkins Stages
   stages {
+    // Checks Jenkinsfile for update, refresh if there is
     stage('Read Jenkinsfile') {
             when {
                 expression { return parameters.Refresh == true }
@@ -14,31 +17,37 @@ pipeline {
                 echo("Ended pipeline early.")        
             }
         }
+
+    // Run Jenkinsfile
     stage('Run Jenkinsfile') {
       when {
         expression { return parameters.Refresh == false }
       }
       steps {
-        echo 'Building..'
+        echo 'Running Jenkinsfile... Building...'
       }
-      stage('OWASP Dependency-Check Vulnerabilities') {
-        steps {
-          dependencyCheck additionalArguments: ''' 
-                      -o './'
-                      -s './'
-                      -f 'ALL' 
-                      --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-          
-          dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-        }
+    }
+
+    // Check for vulnerabilities in git repo against OWASP
+    stage('OWASP Dependency-Check Vulnerabilities') {
+      steps {
+        dependencyCheck additionalArguments: ''' 
+                    -o './'
+                    -s './'
+                    -f 'ALL' 
+                    --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+        
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
       }
-      stage('Deploy') {
-        steps {
-          echo 'Deploying.....'
-        }
+    }
+
+    // Deployment placeholder
+    stage('Deploy') {
+      steps {
+        echo 'Deploying.....'
       }
+    }
 
       
-    }
   }
 }
