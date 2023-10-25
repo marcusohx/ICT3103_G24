@@ -53,17 +53,17 @@ function EmployerLogin() {
         await login({ email, password });
         navigate("/");
       } else {
-        setError(response.data.message || "An error occurred");
+        setError(response.data || "An error occurred");
       }
     } catch (error) {
       if (error.response) {
-        setError(error.response.data.message || "An error occurred");
+        setError(error.response.data || "An error occurred");
       } else if (error.request) {
         setError("No response received from server. Please try again later.");
       } else {
         setError("An unknown error occurred. Please try again later.");
       }
-      console.error(error);
+      
     }
   };
   const verifyPinAndCloseJob = async () => {

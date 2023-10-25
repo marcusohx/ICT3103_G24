@@ -7,10 +7,10 @@ const crypto = require("crypto");
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const employer = await Employer.findOne({ email });
-  if (!employer) return res.status(404).send("Employer not found");
+  if (!employer) return res.status(401).send("Invalid Username/Password");
 
   const validPassword = await bcrypt.compare(password, employer.password);
-  if (!validPassword) return res.status(401).send("Invalid password");
+  if (!validPassword) return res.status(401).send("Invalid Username/Password");
 
   // Check if 2FA is enabled for the user
   if (employer.twoFAEnabled) {

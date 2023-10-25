@@ -62,7 +62,6 @@ function Login() {
       } else {
         setError("An unknown error occurred. Please try again later.");
       }
-      console.error(error);
     }
   };
   const verifyPinAndCloseJob = async () => {
