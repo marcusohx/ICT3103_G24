@@ -44,7 +44,7 @@ function Profile() {
   const [credits, setCredits] = useState(authState?.credits || 0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
-
+  const [errorMsg, setErrorMsg] = useState(""); // Use to display error message in snack bar
   const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
 
   
@@ -123,14 +123,14 @@ function Profile() {
 
     if (!validateEmail(formValues.email)) {
       setSnackbarType("error");
-
+      setErrorMsg("Invalid Email input.");
       setOpenSnackbar(true);
       return; // Exit early if email is invalid
     }
 
     if (!validateLinkedIn(formValues.linkedinLink)) {
       setSnackbarType("error");
-
+      setErrorMsg("Invalid Linkedin URL.");
       setOpenSnackbar(true);
       return; // Exit early if LinkedIn URL is invalid
     }
@@ -145,13 +145,13 @@ function Profile() {
         setOpenSnackbar(true);
       } else {
         setSnackbarType("error");
+        setErrorMsg(response.data);
         setOpenSnackbar(true);
-        console.log("Error updating user:", response.data);
       }
     } catch (error) {
       setSnackbarType("error");
+      setErrorMsg(error);
       setOpenSnackbar(true);
-      console.error("Error updating user:", error);
     }
   };
 
@@ -341,7 +341,7 @@ function Profile() {
           <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarType}>
             {snackbarType === "success"
               ? "User updated successfully!"
-              : "Error updating user."}
+              : errorMsg || "Error updating user."}
           </Alert>
         </Snackbar>
       </Box>
