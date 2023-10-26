@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config(); // Ensure this is at the very top of your file
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const axios = require("axios");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -151,6 +152,35 @@ exports.updateUser = async (req, res) => {
     res.status(500).send("Something went wrong while updating user");
   }
 };
+
+exports.recaptcha = async (req, res) => {
+  const { token } = req.body;
+
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+
+  try {
+    const response = await axios.post(
+      "https://www.google.com/recaptcha/api/siteverify",
+      null,
+      {
+        params: {
+          secret: secretKey,
+          response: token,
+        },
+      }
+    );
+
+    if (response.data.success) {
+      res.json({ success: true });
+    } else {
+      res.status(400).json({ success: false });
+    }
+  } catch (error) {
+    console.error("reCAPTCHA verification error:", error);
+    res.status(500).json({ success: false });
+  }
+};
+
 exports.logout = (req, res) => {
   res.clearCookie("token");
   res.status(200).send("Logout successful");

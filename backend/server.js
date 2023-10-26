@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require("cors"); // Import the cors package
+const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const employerRoutes = require("./routes/employerRoutes");
 const jobListingRoutes = require("./routes/jobListingRoutes");
@@ -11,6 +11,8 @@ const purcaseRoutes = require("./routes/purchaseRoutes");
 const twoFARoutes = require("./routes/twoFARoutes");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
+const axios = require("axios");
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -38,19 +40,19 @@ app.use(
   })
 );
 
-// Create CSRF Token
-app.use(csrf({
-  cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true
-  }
-}));
+// // Create CSRF Token
+// app.use(csrf({
+//   cookie: {
+//     secure: process.env.NODE_ENV === "production",
+//     httpOnly: true
+//   }
+// }));
 
-// Use CSRF Token in all request
-app.use((req, res, next) => {
-  res.cookie("XSRF-TOKEN", req.csrfToken()); // Default cookie name for CSRF in Axios
-  next();
-});
+// // Use CSRF Token in all request
+// app.use((req, res, next) => {
+//   res.cookie("XSRF-TOKEN", req.csrfToken()); // Default cookie name for CSRF in Axios
+//   next();
+// });
 
 app.use("/user", userRoutes);
 app.use("/employer", employerRoutes);

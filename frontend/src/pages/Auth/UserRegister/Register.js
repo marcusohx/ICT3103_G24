@@ -22,6 +22,7 @@ import {
 } from "@mui/icons-material";
 
 import ReCAPTCHA from "react-google-recaptcha";
+import axios from "axios";
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -33,7 +34,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
-
   const [recaptchaValue, setRecaptchaValue] = useState(null);
 
   const navigate = useNavigate();
@@ -69,8 +69,8 @@ function Register() {
       !email ||
       !username ||
       !password ||
-      !confirmPassword
-      // !recaptchaValue
+      !confirmPassword ||
+      !recaptchaValue
     ) {
       setMessage("All fields are required");
       return;
@@ -91,27 +91,41 @@ function Register() {
       return;
     }
 
-    // if (!recaptchaValue) {
-    //   setMessage("Please complete the reCAPTCHA.");
-    //   return;
-    // }
+    if (!recaptchaValue) {
+      setMessage("Please complete the reCAPTCHA.");
+      return;
+    }
 
     try {
-      const response = await api.post("user/register", {
-        firstName,
-        lastName,
-        email,
-        username,
-        password,
+      //recaptcha response
+      const recaptchaResponse = await api.post("user/recaptcha", { 
+        token: recaptchaValue
       });
-      setMessage("User created");
-      navigate("/userlogin");
-      console.log(response.data);
-    } catch (error) {
+
+      if (recaptchaResponse.data.success) {
+        //register response
+        const response = await api.post("user/register", {
+          firstName,
+          lastName,
+          email,
+          username,
+          password,
+        });
+        setMessage("User created");
+        navigate("/userlogin");
+        console.log(response.data);
+      } 
+
+      else {
+        setMessage("reCAPTCHA verification failed");
+      }
+    }
+    catch (error) {
       console.error(error);
       if (error.response) {
         setMessage(error.response.data);
-      } else {
+      }
+      else {
         setMessage("Unable to register. Please try again later.");
       }
     }
@@ -272,10 +286,10 @@ function Register() {
                 </ul>
               </Typography>
             </Stack>
-            {/* <ReCAPTCHA
-              sitekey="6LcLBKcoAAAAAFXfzXTVIfkq5Bnynu58l_Kqo3hL"
+            { <ReCAPTCHA
+              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
               onChange={handleRecaptchaChange}
-            /> */}
+            /> }
             <Button
               fullWidth
               size="large"
