@@ -54,4 +54,9 @@ router.put(
   jobListingController.closeJobListingAndGiveCredits
 );
 
+router.delete(
+  "/job-listings/:id",
+  authMiddleware,
+  jobListingController.deleteJobListing
+);
 module.exports = router;

@@ -98,6 +98,7 @@ export default function PrimarySearchAppBar() {
     },
     { text: "User Settings", path: "/user/profilesettings" },
     { text: "Job Listings", path: "/joblistings" },
+    { text: "Transactions", path: "/user/transactions" },
     { text: "Shop", path: "/shop" },
   ];
 

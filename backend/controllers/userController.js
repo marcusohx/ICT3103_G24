@@ -65,7 +65,7 @@ exports.getUserByName = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { email, username, password, firstName, lastName } = req.body;
+  const { email, username, password, firstName, lastName, pin } = req.body;
   console.log(req.body);
   try {
     // Checking if the email already exists
@@ -79,11 +79,12 @@ exports.register = async (req, res) => {
     // Hash the password before storing it in the database
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
+    const hashedPin = await bcrypt.hash(pin, salt); // Hashing the pin
     // Create a new user
     const user = new User({
       email,
       username,
+      pin: hashedPin, // Storing the hashed pin
       password: hashedPassword,
       firstName,
       lastName,
@@ -121,7 +122,7 @@ exports.updateUser = async (req, res) => {
     // Regular Expression Patterns to validate user input
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/.+/;
-    
+
     if (email) {
       if (emailRegex.test(email)) {
         user.email = email;
@@ -132,16 +133,15 @@ exports.updateUser = async (req, res) => {
     if (username) user.username = username;
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-    
+
     if (linkedinLink) {
       if (linkedinRegex.test(linkedinLink)) {
         user.linkedinLink = linkedinLink;
       } else {
-        throw new Error("Invalid linkedin URL"); 
+        throw new Error("Invalid linkedin URL");
       }
     }
-    
-    
+
     // Save the updated user to the database
     await user.save();
 
@@ -178,6 +178,45 @@ exports.recaptcha = async (req, res) => {
   } catch (error) {
     console.error("reCAPTCHA verification error:", error);
     res.status(500).json({ success: false });
+  }
+};
+
+exports.verifyPin = async (req, res) => {
+  const { pin } = req.body;
+  const userId = req.user._id; // Assuming the userId is stored in the request object from middleware or JWT
+
+  try {
+    if (!pin) {
+      return res
+        .status(400)
+        .json({ success: false, message: "PIN is required" });
+    }
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const validPin = await bcrypt.compare(pin, user.pin); // Compare entered PIN with stored hashed PIN
+
+    if (validPin) {
+      res
+        .status(200)
+        .json({ success: true, message: "PIN verified successfully" });
+    } else {
+      res.status(401).json({ success: false, message: "Invalid PIN" });
+    }
+  } catch (error) {
+    console.error("Error verifying PIN:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 

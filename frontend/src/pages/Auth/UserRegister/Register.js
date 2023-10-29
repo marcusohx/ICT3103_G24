@@ -29,6 +29,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -49,6 +50,9 @@ function Register() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const validatePin = (pin) => {
+    return /^\d{6}$/.test(pin);
+  };
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
@@ -78,6 +82,10 @@ function Register() {
 
     if (!validateEmail(email)) {
       setMessage("Please enter a valid email address.");
+      return;
+    }
+    if (!validatePin(pin)) {
+      setMessage("Pin must be a 6-digit number.");
       return;
     }
 
@@ -110,6 +118,7 @@ function Register() {
           email,
           username,
           password,
+          pin,
         });
         setMessage("User created");
         navigate("/userlogin");
@@ -120,7 +129,7 @@ function Register() {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        setMessage(error.response.data);
+        setMessage(JSON.stringify(error.response.data));
       } else {
         setMessage("Unable to register. Please try again later.");
       }
@@ -218,6 +227,21 @@ function Register() {
                   startAdornment: (
                     <InputAdornment position="start">
                       <PersonIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                fullWidth
+                type="password"
+                placeholder="6-digit Pin"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                InputProps={{
+                  inputProps: { maxLength: 6 },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
                     </InputAdornment>
                   ),
                 }}

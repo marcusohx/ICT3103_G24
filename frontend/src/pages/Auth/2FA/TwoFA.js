@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { api } from "services/api";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
@@ -6,7 +6,7 @@ import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 function TwoFASetup() {
   const { authState } = useContext(AuthContext);
   const { employerAuthState } = useContext(EmployerAuthContext);
-  const [secret, setSecret] = useState("");
+  // const [secret, setSecret] = useState("");
   const [dataURL, setDataURL] = useState("");
   const [token, setToken] = useState("");
   const [message, setMessage] = useState("");
@@ -37,7 +37,7 @@ function TwoFASetup() {
           withCredentials: true,
         });
         const data = response.data;
-        setSecret(data.secret);
+        // setSecret(data.secret);
 
         setDataURL(data.dataURL);
       } catch (error) {

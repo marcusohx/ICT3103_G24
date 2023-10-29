@@ -8,9 +8,20 @@ import {
   CardContent,
   CardMedia,
   Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
 const Shop = () => {
+  const [pinDialogOpen, setPinDialogOpen] = useState(false);
+  const [enteredPin, setEnteredPin] = useState("");
+  const [currentProductId, setCurrentProductId] = useState(null);
+  const [currentPrice, setCurrentPrice] = useState(null);
   const [products, setProducts] = useState([]);
   const refreshPage = () => {
     window.location.reload();
@@ -50,6 +61,36 @@ const Shop = () => {
     }
   };
 
+  const requestPurchase = (productId, price) => {
+    // Store productId and price for later use
+    setCurrentProductId(productId);
+    setCurrentPrice(price);
+    setPinDialogOpen(true); // Open the pin dialog
+  };
+
+  const verifyPinAndPurchase = async () => {
+    try {
+      const response = await api.post(
+        "user/verifyPin",
+        { pin: enteredPin },
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        setPinDialogOpen(false); // Close the pin dialog
+        handlePurchase(currentProductId, currentPrice);
+      } else {
+        alert(response.data.message || "An error occurred.");
+      }
+    } catch (error) {
+      alert(
+        error.response?.data?.message ||
+          "Error verifying the pin. Please try again."
+      );
+      console.error("Error verifying pin:", error);
+    }
+  };
+
   return (
     <Container sx={{ marginTop: "2rem" }}>
       <Typography variant="h4" color="primary" sx={{ marginBottom: "1rem" }}>
@@ -85,7 +126,7 @@ const Shop = () => {
                   fullWidth
                   startIcon={<ShoppingCartIcon />}
                   sx={{ marginTop: "1rem" }}
-                  onClick={() => handlePurchase(product._id, product.price)} // Assuming product.price is numerical
+                  onClick={() => requestPurchase(product._id, product.price)} // Assuming product.price is numerical
                 >
                   Buy
                 </Button>
@@ -94,6 +135,32 @@ const Shop = () => {
           </Grid>
         ))}
       </Grid>
+      <Dialog open={pinDialogOpen} onClose={() => setPinDialogOpen(false)}>
+        <DialogTitle>Enter Pin</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter your pin to continue.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="pin"
+            label="Pin"
+            type="password" // for obfuscation
+            fullWidth
+            value={enteredPin}
+            onChange={(e) => setEnteredPin(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPinDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={verifyPinAndPurchase} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

@@ -9,13 +9,13 @@ const jobListingRoutes = require("./routes/jobListingRoutes");
 const productRoutes = require("./routes/productRoutes");
 const purcaseRoutes = require("./routes/purchaseRoutes");
 const twoFARoutes = require("./routes/twoFARoutes");
+const transactionRoutes = require("./routes/transactionRoutes");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
 const axios = require("axios");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
 
 // Connect to MongoDB
 mongoose
@@ -60,6 +60,7 @@ app.use("/joblisting", jobListingRoutes);
 app.use("/product", productRoutes);
 app.use("/purchase", purcaseRoutes);
 app.use("/twofa", twoFARoutes);
+app.use("/transaction", transactionRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

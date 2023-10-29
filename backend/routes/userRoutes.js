@@ -10,4 +10,5 @@ router.post("/logout", userController.logout);
 router.get("/user-data", authMiddleware, userController.getUserData);
 router.get("/getuser/:username", userController.getUserByName);
 router.put("/updateuser", authMiddleware, userController.updateUser);
+router.post("/verifyPin", authMiddleware, userController.verifyPin);
 module.exports = router;

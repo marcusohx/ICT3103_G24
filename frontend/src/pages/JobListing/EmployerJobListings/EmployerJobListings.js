@@ -10,7 +10,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { Link } from "react-router-dom";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 import {
@@ -33,12 +33,9 @@ function EmployerJobListings() {
 
   useEffect(() => {
     api
-      .get(
-        "joblisting/job-listings/employer/by-employer",
-        {
-          withCredentials: true,
-        }
-      )
+      .get("joblisting/job-listings/employer/by-employer", {
+        withCredentials: true,
+      })
       .then((response) => {
         setJobListings(response.data);
       })
@@ -76,6 +73,26 @@ function EmployerJobListings() {
   const requestCloseJob = (jobId) => {
     setCurrentJobId(jobId); // Store the jobId
     setPinDialogOpen(true); // Open the pin dialog
+  };
+  const handleDelete = (jobId) => {
+    // Show a confirmation dialog
+    const userConfirmed = window.confirm(
+      "Are you sure you want to delete this job listing?"
+    );
+
+    // If the user clicks "OK", proceed with deletion
+    if (userConfirmed) {
+      api
+        .delete(`joblisting/job-listings/${jobId}`, { withCredentials: true })
+        .then((response) => {
+          setJobListings((prevListings) =>
+            prevListings.filter((listing) => listing._id !== jobId)
+          );
+        })
+        .catch((error) => {
+          console.error("Error deleting job listing:", error);
+        });
+    }
   };
 
   const verifyPinAndCloseJob = () => {
@@ -276,6 +293,7 @@ function EmployerJobListings() {
                 </Box>
               ))}
             </Box>
+
             <Box
               sx={{
                 display: "flex",
@@ -323,6 +341,18 @@ function EmployerJobListings() {
                   Close and Distribute Credits
                 </Button>
               </span>
+            </Tooltip>
+          </Box>
+          <Box sx={{}}>
+            <Tooltip title={"Are you sure you want to delete?"}>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => handleDelete(job._id)}
+                sx={{ padding: "8px 16px" }}
+              >
+                Delete
+              </Button>
             </Tooltip>
           </Box>
         </Paper>
