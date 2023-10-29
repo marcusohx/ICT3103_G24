@@ -4,7 +4,6 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 
 function TwoFASetup() {
-
   const { authState } = useContext(AuthContext);
   const { employerAuthState } = useContext(EmployerAuthContext);
   const [secret, setSecret] = useState("");
@@ -69,7 +68,6 @@ function TwoFASetup() {
     return <div>You must be logged in to view this page</div>;
   }
 
-
   return (
     /*<div>
       <button onClick={generateSecret}>Generate Secret</button>
@@ -90,14 +88,17 @@ function TwoFASetup() {
         <div>
           <p>Step 1: Generate QR code</p>
           <button onClick={generateSecret} disabled={isGenerating}>
-            {isGenerating
-              ? `Generating... (${countdown}s)`
-              : "Generate Secret"}
+            {isGenerating ? `Generating... (${countdown}s)` : "Generate Secret"}
           </button>
         </div>
         <div>
           <p>Step 2: Scan the QR code in Google Authenticator</p>
-          {dataURL && <img src={dataURL} alt="Scan this QR code with Google Authenticator" />}
+          {dataURL && (
+            <img
+              src={dataURL}
+              alt="Scan this QR code with Google Authenticator"
+            />
+          )}
         </div>
         <div>
           <p>Step 3: Enter the code shown in Google Authenticator</p>

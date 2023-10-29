@@ -10,7 +10,7 @@ import {
   CardContent,
   Container,
   Divider,
-  Dialog, 
+  Dialog,
   DialogTitle,
   DialogContent,
   Grid,
@@ -18,15 +18,13 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { useNavigate } from "react-router-dom";
-import TwoFASetup from '../Auth/2FA/TwoFA'; // Import the TwoFASetup component
+import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
 
 function Profile() {
   const { authState } = useContext(AuthContext);
-  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     firstName: authState?.firstName || "",
     lastName: authState?.lastName || "",
@@ -46,8 +44,6 @@ function Profile() {
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
   const [errorMsg, setErrorMsg] = useState(""); // Use to display error message in snack bar
   const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
-
-  
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -75,7 +71,7 @@ function Profile() {
   // }, [username]);
 
   //const redirectToTwoFA = () => {
-    //navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
+  //navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
   //};
 
   useEffect(() => {
@@ -307,26 +303,28 @@ function Profile() {
               </Typography>
             </CardContent>
           </Card>
-          <Dialog open={openTwoFADialog} 
-                  //onClose={() => setOpenTwoFADialog(false)}
-                  disableBackdropClick
-                  disableEscapeKeyDown 
-                  >
-            <IconButton edge="end" color="inherit" 
-                        onClick={() => setOpenTwoFADialog(false)} 
-                        aria-label="close" 
-                        style={{
-                          position: 'absolute',
-                          top: '0px',
-                          right: '8px',
-                          color: 'red',
-                          fontSize: '1rem',
-                        }}
-                      >
-                        <CloseIcon /></IconButton>
-            <DialogTitle>Two-Factor Authentication Setup
-              
-            </DialogTitle>
+          <Dialog
+            open={openTwoFADialog}
+            //onClose={() => setOpenTwoFADialog(false)}
+            disableBackdropClick
+            disableEscapeKeyDown
+          >
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={() => setOpenTwoFADialog(false)}
+              aria-label="close"
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "8px",
+                color: "red",
+                fontSize: "1rem",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
             <DialogContent>
               <TwoFASetup onClose={() => setOpenTwoFADialog(false)} />
             </DialogContent>

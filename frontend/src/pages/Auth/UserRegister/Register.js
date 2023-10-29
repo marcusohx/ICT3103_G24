@@ -22,7 +22,6 @@ import {
 } from "@mui/icons-material";
 
 import ReCAPTCHA from "react-google-recaptcha";
-import axios from "axios";
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -56,7 +55,8 @@ function Register() {
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\-]).{8,}$/;
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*-]).{8,}$/;
+
     return re.test(password);
   };
 
@@ -98,8 +98,8 @@ function Register() {
 
     try {
       //recaptcha response
-      const recaptchaResponse = await api.post("user/recaptcha", { 
-        token: recaptchaValue
+      const recaptchaResponse = await api.post("user/recaptcha", {
+        token: recaptchaValue,
       });
 
       if (recaptchaResponse.data.success) {
@@ -114,18 +114,14 @@ function Register() {
         setMessage("User created");
         navigate("/userlogin");
         console.log(response.data);
-      } 
-
-      else {
+      } else {
         setMessage("reCAPTCHA verification failed");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
       if (error.response) {
         setMessage(error.response.data);
-      }
-      else {
+      } else {
         setMessage("Unable to register. Please try again later.");
       }
     }
@@ -286,10 +282,12 @@ function Register() {
                 </ul>
               </Typography>
             </Stack>
-            { <ReCAPTCHA
-              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-              onChange={handleRecaptchaChange}
-            /> }
+            {
+              <ReCAPTCHA
+                sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                onChange={handleRecaptchaChange}
+              />
+            }
             <Button
               fullWidth
               size="large"

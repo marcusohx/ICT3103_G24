@@ -69,17 +69,22 @@ function CreateJobListingPage() {
       const response = await api.post("joblisting/createjoblisting", formData, {
         withCredentials: true,
       });
-      setNotification({
-        open: true,
-        message: "Job listing created successfully!",
-        severity: "success",
-      });
-      setFormData({
-        title: "",
-        description: "",
-        payment: "",
-      });
+      if (response.status === 200) {
+        setNotification({
+          open: true,
+          message: "Job listing created successfully!",
+          severity: "success",
+        });
+        setFormData({
+          title: "",
+          description: "",
+          payment: "",
+        });
+      } else {
+        throw new Error(`Unexpected response: ${response.statusText}`);
+      }
     } catch (error) {
+      console.error(error);
       setNotification({
         open: true,
         message: "There was an error creating the job listing!",

@@ -73,13 +73,31 @@ function UpdateJobListingPage() {
       const response = await api.put(`joblisting/update/${id}`, formData, {
         withCredentials: true,
       });
-      setNotification({
-        open: true,
-        message: "Job listing updated successfully!",
-        severity: "success",
-      });
-      // Here, add what should happen after successfully updating the job listing (e.g., redirect to a different page)
+      if (response.status === 200) {
+        // Successful update
+        setNotification({
+          open: true,
+          message: "Job listing updated successfully!",
+          severity: "success",
+        });
+        // Here, add what should happen after successfully updating the job listing (e.g., redirect to a different page)
+      } else if (response.status === 404) {
+        // Job listing not found
+        setNotification({
+          open: true,
+          message: "Job listing not found!",
+          severity: "error",
+        });
+      } else {
+        // Other unexpected status
+        setNotification({
+          open: true,
+          message: "Unexpected error!",
+          severity: "error",
+        });
+      }
     } catch (error) {
+      console.error(error);
       setNotification({
         open: true,
         message: "There was an error updating the job listing!",

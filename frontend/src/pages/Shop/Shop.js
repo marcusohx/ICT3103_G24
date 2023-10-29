@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { api } from 'services/api';
+import React, { useState, useEffect } from "react";
+import { api } from "services/api";
 import {
   Typography,
   Button,
@@ -10,10 +10,8 @@ import {
   Container,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { NavBarRefreshContext } from "../../contexts/NavBarRefreshContext";
 const Shop = () => {
   const [products, setProducts] = useState([]);
-  const { toggleRefresh } = useContext(NavBarRefreshContext);
   const refreshPage = () => {
     window.location.reload();
   };

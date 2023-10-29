@@ -23,11 +23,7 @@ export default function PrimarySearchAppBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { refresh } = useContext(NavBarRefreshContext);
-  const {
-    authState,
-    logout: userLogout,
-    fetchUserData: fetch,
-  } = useContext(AuthContext);
+  const { authState, logout: userLogout } = useContext(AuthContext);
   const { employerAuthState, employerlogout: employerLogout } =
     useContext(EmployerAuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -244,17 +240,19 @@ export default function PrimarySearchAppBar() {
                 Employer Credits: {employerAuthState.credits}
               </Typography>
             )}
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {(authState || employerAuthState) && (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            )}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, color: "gray" }}>
             <IconButton
