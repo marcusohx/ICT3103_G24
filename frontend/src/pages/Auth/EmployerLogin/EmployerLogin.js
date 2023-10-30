@@ -29,7 +29,7 @@ function EmployerLogin() {
   const [pinDialogOpen, setPinDialogOpen] = useState(false);
   const { login } = useContext(EmployerAuthContext);
   const [tempAuthToken, setTempAuthToken] = useState(null);
-
+  const emailLowerCase = email.toLowerCase();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -38,19 +38,19 @@ function EmployerLogin() {
       const response = await api.post(
         "employer/login", // Update the URL to your employer login endpoint
         {
-          email,
+          email: emailLowerCase,
           password,
         },
         {
           withCredentials: true,
         }
       );
-
+      console.log(email);
       if (response.status === 206) {
         setTempAuthToken(response.data.tempAuthToken); // Store the temporary auth token
         setPinDialogOpen(true); // Open the 2FA dialog if 2FA is required
       } else if (response.status === 200) {
-        await login({ email, password });
+        await login({ email: emailLowerCase, password });
         navigate("/");
       } else {
         setError(response.data || "An error occurred");

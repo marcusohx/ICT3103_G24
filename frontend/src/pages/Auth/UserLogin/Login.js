@@ -30,6 +30,7 @@ function Login() {
   const { login } = useContext(AuthContext);
   const [tempAuthToken, setTempAuthToken] = useState(null);
   const navigate = useNavigate();
+  const emailLowerCase = email.toLowerCase();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ function Login() {
       const response = await api.post(
         "user/login",
         {
-          email,
+          email: emailLowerCase,
           password,
         },
         {
@@ -49,7 +50,7 @@ function Login() {
         setTempAuthToken(response.data.tempAuthToken); // Store the temporary auth token
         setPinDialogOpen(true); // Open the 2FA dialog if 2FA is required
       } else if (response.status === 200) {
-        await login({ email, password });
+        await login({ email: emailLowerCase, password });
         navigate("/");
       } else {
         setError(response.data || "An error occurred");
