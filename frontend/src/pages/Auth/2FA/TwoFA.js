@@ -3,7 +3,7 @@ import { api } from "services/api";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 
-function TwoFASetup() {
+function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
   const { authState } = useContext(AuthContext);
   const { employerAuthState } = useContext(EmployerAuthContext);
   // const [secret, setSecret] = useState("");
@@ -12,6 +12,7 @@ function TwoFASetup() {
   const [message, setMessage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [countdown, setCountdown] = useState(30); // The initial countdown value
+
 
   async function generateSecret() {
     if (!isGenerating) {
@@ -57,10 +58,28 @@ function TwoFASetup() {
           withCredentials: true,
         }
       );
+      //setMessage(data);
       const data = response.data;
-      setMessage(data);
+       // Check if verification was successful
+       if (data === "Two-factor authentication verified successfully") {
+        
+        updateTwoFAMessage("2FA verified successfully");
+
+        
+        setTimeout(() => {
+          onClose();
+          window.location.reload();
+        }, 1500);
+
+
+      } else {
+
+        updateTwoFAMessage("2FA verification failed");
+
+      }
     } catch (error) {
       console.error("Error verifying token:", error);
+      updateTwoFAMessage("Error verifying 2FA");
     }
   }
 
@@ -68,21 +87,8 @@ function TwoFASetup() {
     return <div>You must be logged in to view this page</div>;
   }
 
+
   return (
-    /*<div>
-      <button onClick={generateSecret}>Generate Secret</button>
-      {dataURL && (
-        <img src={dataURL} alt="Scan this QR code with Google Authenticator" />
-      )}
-      <input
-        type="text"
-        value={token}
-        onChange={(e) => setToken(e.target.value)}
-        placeholder="Enter Token"
-      />
-      <button onClick={verifyToken}>Verify Token</button>
-      {message && <div>{message}</div>}
-    </div>*/
     <div>
       <div>
         <div>

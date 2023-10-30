@@ -23,6 +23,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
 
+
 function Profile() {
   const { authState } = useContext(AuthContext);
   const [formValues, setFormValues] = useState({
@@ -44,6 +45,23 @@ function Profile() {
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
   const [errorMsg, setErrorMsg] = useState(""); // Use to display error message in snack bar
   const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
+  const [message, setMessage] = useState(""); // Define the 'setMessage' function
+  const [twoFAMessage, setTwoFAMessage] = useState("");
+  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
+  const handleTwoFAClose = () => {
+    setOpenTwoFADialog(false);
+  };
+  const updateTwoFAMessage = (message) => {
+    setTwoFAMessage(message);
+    if (message === "2FA verified successfully"){
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+    }
+    else{
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+    }
+  };
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -53,6 +71,54 @@ function Profile() {
     }));
   }, []);
 
+
+  // const verifyToken = (onSuccess) => {
+  //   TwoFASetup.verifyToken((message) => {
+  //     setSnackbarType("success");
+  //     setErrorMsg(message);
+  //     setOpenSnackbar(true);
+  //     onSuccess();
+  //   });
+  // };
+  
+  async function disable2FA() {
+    try {
+      // Make an API request to disable 2FA
+      const response = await api.post(
+        "twofa/disable2fa",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data;
+  
+      if (data === "2FA Disabled") {
+        // Show a success message popup
+        setTwoFAMessage("2FA Disabled successfully");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+  
+        // Update the state to reflect 2FA disabled
+        setTwoFAEnabled(false);
+      } else {
+        // Show an error message popup
+        setMessage("2FA disabling failed");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error disabling 2FA:", error);
+      setMessage("Error disabling 2FA");
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+    }
+  }
+  
   // useEffect(() => {
   //   // Assuming the API endpoint is http://localhost:3001/user/getJobs/${username}
   //   axios
@@ -285,8 +351,16 @@ function Profile() {
               <Button
                 variant="contained"
                 color="primary"
-                //onClick={redirectToTwoFA}
-                onClick={() => setOpenTwoFADialog(true)}
+                disabled={isDisable2FADisabled}
+                onClick={() => {
+                  setIsDisable2FADisabled(true);
+                  if (twoFAEnabled){
+                    disable2FA();
+                  } 
+                  else {
+                    setOpenTwoFADialog(true);
+                  }
+                }}
               >
                 {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
               </Button>
@@ -305,14 +379,12 @@ function Profile() {
           </Card>
           <Dialog
             open={openTwoFADialog}
-            //onClose={() => setOpenTwoFADialog(false)}
-            disableBackdropClick
             disableEscapeKeyDown
           >
             <IconButton
               edge="end"
               color="inherit"
-              onClick={() => setOpenTwoFADialog(false)}
+              onClick={handleTwoFAClose}
               aria-label="close"
               style={{
                 position: "absolute",
@@ -326,7 +398,11 @@ function Profile() {
             </IconButton>
             <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
             <DialogContent>
-              <TwoFASetup onClose={() => setOpenTwoFADialog(false)} />
+              <TwoFASetup 
+              open={openTwoFADialog} // Pass open state to TwoFASetup
+              onClose={handleTwoFAClose}
+              updateTwoFAMessage={updateTwoFAMessage} // Pass the callback function
+              />
             </DialogContent>
           </Dialog>
         </Container>
@@ -334,11 +410,11 @@ function Profile() {
           open={openSnackbar}
           autoHideDuration={6000}
           onClose={() => setOpenSnackbar(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          anchorOrigin={{ vertical: "top", horizontal: "middle" }}
         >
           <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarType}>
             {snackbarType === "success"
-              ? "User updated successfully!"
+              ? twoFAMessage || "User updated successfully!"
               : errorMsg || "Error updating user."}
           </Alert>
         </Snackbar>

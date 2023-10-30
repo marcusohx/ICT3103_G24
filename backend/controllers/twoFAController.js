@@ -98,9 +98,9 @@ exports.verifyToken = async (req, res) => {
     if (verified) {
       userOrEmployer.twoFAEnabled = true;
       await userOrEmployer.save();
-      res.status(200).send("Verified");
+      res.status(200).send("Two-factor authentication verified successfully");
     } else {
-      res.status(400).send("Verification failed");
+      res.status(400).send("Two-factor authentication verification failed");
     }
   } catch (error) {
     console.error(error);
@@ -175,6 +175,33 @@ exports.verify2FAAndLogin = async (req, res) => {
     } else {
       res.status(400).send("Verification failed");
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};
+
+exports.disable2FA = async (req, res) => {
+  try {
+    let userOrEmployer;
+    if (req.user) {
+      userOrEmployer = await User.findById(req.user._id);
+    } else if (req.employer) {
+      userOrEmployer = await Employer.findById(req.employer._id);
+    }
+
+    if (!userOrEmployer) {
+      return res.status(404).send("User or Employer not found");
+    }
+
+
+    userOrEmployer.twoFAEnabled = false;
+    await userOrEmployer.save();
+
+    // Delete the AES key record associated with the user
+    await AESKey.deleteOne({ userId: userOrEmployer._id });
+
+    res.status(200).send("2FA Disabled");
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
