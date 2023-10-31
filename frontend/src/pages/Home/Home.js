@@ -12,15 +12,27 @@ import {
   Container,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import SchoolIcon from "@mui/icons-material/School";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
-import RedeemIcon from "@mui/icons-material/Redeem";
+import ComputerIcon from "@mui/icons-material/Computer";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import EngineeringIcon from "@mui/icons-material/Engineering";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import SearchIcon from "@mui/icons-material/Search";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import WorkIcon from "@mui/icons-material/Work";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import educationJPG from "../../assets/Education.jpg";
+import bookstech from "../../assets/bookstech.jpg";
+import amazonian from "../../assets/amazonian.jpg";
+import mechanic from "../../assets/mechanic.jpg";
 
 const HeroSection = styled(Box)(({ theme }) => ({
   background: `linear-gradient(180deg, #a0e7e5, #f8fff4)`,
   padding: "100px 0",
+  height: "300px",
   textAlign: "center",
 }));
 
@@ -39,7 +51,7 @@ const SearchField = styled(TextField)({
 });
 
 const CategoryCard = styled(Card)(({ theme }) => ({
-  padding: "20px",
+  padding: "10px",
   borderRadius: "15px",
   transition: "transform 0.3s",
   "&:hover": {
@@ -97,29 +109,42 @@ function HomePage() {
       </HeroSection>
 
       {/* Categories Section */}
-      <Container sx={{ my: 10 }} data-aos="fade-up">
-        <Typography variant="h4" gutterBottom>
+      <Container sx={{ my: 10, py: 5 }} data-aos="fade-up">
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ textAlign: "center", padding: "20px" }}
+        >
           Discover Opportunities in Top Categories
         </Typography>
         <Grid container spacing={4}>
           {[
             {
-              title: "Student Opportunities",
-              icon: <SchoolIcon fontSize="large" />,
-              description: "Projects tailored for SIT students",
+              title: "Technology",
+              icon: <ComputerIcon fontSize="large" />,
             },
             {
-              title: "Business Collaborations",
+              title: "Accountancy",
               icon: <BusinessCenterIcon fontSize="large" />,
-              description: "Collaborations with IT companies",
             },
             {
-              title: "Redeem Rewards",
-              icon: <RedeemIcon fontSize="large" />,
-              description: "Earn and redeem exclusive rewards",
+              title: "Mobile",
+              icon: <PhoneAndroidIcon fontSize="large" />,
+            },
+            {
+              title: "Engineering",
+              icon: <EngineeringIcon fontSize="large" />,
+            },
+            {
+              title: "Digital Art",
+              icon: <ColorLensIcon fontSize="large" />,
+            },
+            {
+              title: "F & B",
+              icon: <RestaurantIcon fontSize="large" />,
             },
           ].map((category, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+            <Grid item xs={12} sm={6} md={4} key={index} sx={{ mb: 4 }}>
               <CategoryCard elevation={0}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   {category.icon}
@@ -137,7 +162,7 @@ function HomePage() {
       </Container>
 
       {/* JobBox Section */}
-      <Container sx={{ my: 10 }} data-aos="fade-up">
+      <Container sx={{ my: 10, py: 10 }} data-aos="fade-up">
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Typography variant="h4" gutterBottom>
@@ -155,8 +180,8 @@ function HomePage() {
           </Grid>
           <Grid item xs={12} md={6}>
             <img
-              src="https://via.placeholder.com/600x400"
-              alt="JobBox Image"
+              src={educationJPG}
+              alt="JobBox"
               style={{ width: "100%", borderRadius: "15px" }}
             />
           </Grid>
@@ -164,30 +189,139 @@ function HomePage() {
       </Container>
 
       {/* Featured Jobs Section */}
-      <Container sx={{ my: 10 }} data-aos="fade-up">
+      <Container sx={{ my: 10, py: 10 }} data-aos="fade-up">
         <Typography variant="h4" gutterBottom>
           Exclusive Benefits for SIT Students
         </Typography>
         <Grid container spacing={4}>
-          {/* Featured jobs data to be mapped here. Use JobCard for individual job listings. */}
-          {[1, 2, 3].map((job, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <JobCard>
+          <Grid item xs={12}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <JobCard style={{ margin: "0 16px" }}>
                 <CardMedia
                   component="img"
                   height="140"
-                  image="https://via.placeholder.com/600x400"
+                  image={bookstech}
                   alt="Job Image"
                 />
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Job Title {index}
+                    Software Engineer (backend)
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Job description and details here
+                    Build backend solution for a book managing software. Main
+                    language in C#, to code logic and authenticate from backend
+                    database mongoDB
                   </Typography>
                 </CardContent>
               </JobCard>
+
+              <JobCard style={{ margin: "0 16px" }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={amazonian}
+                  alt="Job Image"
+                />
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Full Stack Engineer
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Design and develop responsive and stylish user interframe
+                    framework and web component. Using technology like HTML5,
+                    CSS3, REST
+                  </Typography>
+                </CardContent>
+              </JobCard>
+
+              <JobCard style={{ margin: "0 16px" }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={mechanic}
+                  alt="Job Image"
+                />
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Mechanical Engineer
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Analyze mechanical problems and produce innovative solutions
+                    using multiple fabrication and material methods such as
+                    molding, aluminum casting.
+                  </Typography>
+                </CardContent>
+              </JobCard>
+            </div>
+          </Grid>
+        </Grid>
+      </Container>
+
+      {/*How it Works Section */}
+      <Container sx={{ my: 10, py: 10 }} data-aos="fade-up">
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ textAlign: "center", padding: "20px" }}
+        >
+          How it Works
+        </Typography>
+        <Grid
+          container
+          spacing={4}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          {[
+            {
+              title: "1. Search for a gig",
+              icon: <SearchIcon fontSize="large" />,
+              description:
+                "Browse and search for the particular gig or job that you want to do based on your skills and interest.",
+            },
+            {
+              title: "2. Apply for gig",
+              icon: <WorkIcon fontSize="large" />,
+              description:
+                "Apply for the job and wait for the employer to get back to you.",
+            },
+            {
+              title: "3. Accept your gig",
+              icon: <ThumbUpIcon fontSize="large" />,
+              description:
+                "After submitting an application, accept the offer by the company to officially begin your journey.",
+            },
+            {
+              title: "4. Get rewarded after",
+              icon: <EmojiEventsIcon fontSize="large" />,
+              description:
+                "After completing the job, get credits based on the job to exchange for good stuff!",
+            },
+          ].map((category, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index} sx={{ mb: 4 }}>
+              <CategoryCard
+                elevation={0}
+                sx={{ display: "flex", flexDirection: "column" }}
+              >
+                <CardMedia
+                  component="div"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 100,
+                  }}
+                >
+                  {category.icon}
+                </CardMedia>
+                <CardContent sx={{ height: "150px", textAlign: "left" }}>
+                  <CategoryTitle variant="h6" sx={{ textAlign: "left" }}>
+                    {category.title}
+                  </CategoryTitle>
+                  <CategoryDescription variant="body2">
+                    {category.description}
+                  </CategoryDescription>
+                </CardContent>
+              </CategoryCard>
             </Grid>
           ))}
         </Grid>

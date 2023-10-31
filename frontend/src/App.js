@@ -26,6 +26,8 @@ import About from "./pages/About/About.js";
 import Shop from "./pages/Shop/Shop.js";
 import EmployerProfile from "./pages/EmployerProfile/EmployerProfile.js";
 import EmployerProfileSettings from "./pages/EmployerProfile/EmployerProfileSettings.js";
+import UserTransactions from "./pages/UserTransaction/UserTransaction.js";
+import TwoFASetup from "pages/Auth/2FA/TwoFA.js";
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -90,6 +92,11 @@ function App() {
                       <Route
                         path="/employer/profilesettings"
                         element={<EmployerProfileSettings />}
+                      />
+                      <Route path="/two-fa-setup" element={<TwoFASetup />} />
+                      <Route
+                        path="/user/transactions"
+                        element={<UserTransactions />}
                       />
                     </Routes>
                   </Box>

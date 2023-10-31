@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,7 +7,11 @@ import {
   Box,
   Button,
   Container,
-  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Link,
   Stack,
   TextField,
@@ -20,9 +24,13 @@ import { Email as EmailIcon, Lock as LockIcon } from "@mui/icons-material";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [enteredPin, setEnteredPin] = useState("");
   const [error, setError] = useState(null);
+  const [pinDialogOpen, setPinDialogOpen] = useState(false);
   const { login } = useContext(AuthContext);
+  const [tempAuthToken, setTempAuthToken] = useState(null);
   const navigate = useNavigate();
+  const emailLowerCase = email.toLowerCase();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,7 +38,7 @@ function Login() {
       const response = await api.post(
         "user/login",
         {
-          email,
+          email: emailLowerCase,
           password,
         },
         {
@@ -38,20 +46,54 @@ function Login() {
         }
       );
 
-      if (response.status === 200) {
-        await login({ email, password });
+      if (response.status === 206) {
+        setTempAuthToken(response.data.tempAuthToken); // Store the temporary auth token
+        setPinDialogOpen(true); // Open the 2FA dialog if 2FA is required
+      } else if (response.status === 200) {
+        await login({ email: emailLowerCase, password });
         navigate("/");
       } else {
-        setError(response.data);
+        setError(response.data || "An error occurred");
       }
     } catch (error) {
       if (error.response) {
-        setError(error.response.data);
+        setError(error.response.data || "An error occurred");
       } else if (error.request) {
         setError("No response received from server. Please try again later.");
       } else {
         setError("An unknown error occurred. Please try again later.");
       }
+    }
+  };
+  const verifyPinAndCloseJob = async () => {
+    if (!tempAuthToken) {
+      setError("Please log in to verify 2FA");
+      return;
+    }
+    try {
+      // Replace the URL and request body with your actual verify 2FA endpoint and request body
+      const response = await api.post(
+        "/twofa/verify-2fa",
+        {
+          email,
+          token: enteredPin,
+          tempAuthToken,
+          type: "user",
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        setPinDialogOpen(false);
+        await login({ email, password });
+        navigate("/");
+      } else {
+        setError("Verification failed");
+      }
+    } catch (error) {
+      setError("An error occurred while verifying the pin");
       console.error(error);
     }
   };
@@ -59,12 +101,12 @@ function Login() {
   return (
     <Box
       sx={{
-        backgroundColor: "#f5f5f5", // Light gray background color
+        backgroundColor: "#f5f5f5",
         flex: "1 1 auto",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh", // Center the content vertically
+        minHeight: "100vh",
       }}
     >
       <Container maxWidth="sm">
@@ -127,6 +169,33 @@ function Login() {
           </form>
         </Paper>
       </Container>
+
+      <Dialog open={pinDialogOpen} onClose={() => setPinDialogOpen(false)}>
+        <DialogTitle>Enter 2FA Code</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter the 2FA code sent to your device to continue.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="2fa-code" // adjusted id
+            label="2FA Code" // adjusted label
+            type="text" // for obfuscation
+            fullWidth
+            value={enteredPin}
+            onChange={(e) => setEnteredPin(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPinDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={verifyPinAndCloseJob} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

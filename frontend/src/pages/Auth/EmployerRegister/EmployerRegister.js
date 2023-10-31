@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import {
   Box,
   Button,
@@ -16,7 +16,6 @@ import {
   Business as BusinessIcon,
   Email as EmailIcon,
   Lock as LockIcon,
-  Person as PersonIcon,
 } from "@mui/icons-material";
 
 function EmployerRegister() {
@@ -37,7 +36,7 @@ function EmployerRegister() {
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\-]).{8,}$/;
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*-]).{8,}$/;
     return re.test(password);
   };
 
@@ -69,15 +68,12 @@ function EmployerRegister() {
     }
 
     try {
-      const response = await api.post(
-        "employer/register",
-        {
-          companyName,
-          email,
-          password,
-          pin,
-        }
-      );
+      const response = await api.post("employer/register", {
+        companyName,
+        email,
+        password,
+        pin,
+      });
       setMessage("Employer registered");
       navigate("/employerlogin");
       console.log(response.data);

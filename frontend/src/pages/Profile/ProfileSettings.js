@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import {
   Avatar,
@@ -10,12 +10,19 @@ import {
   CardContent,
   Container,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
   Grid,
   TextField,
   Typography,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
+
 
 function Profile() {
   const { authState } = useContext(AuthContext);
@@ -23,9 +30,11 @@ function Profile() {
     firstName: authState?.firstName || "",
     lastName: authState?.lastName || "",
     email: authState?.email || "",
-    resumeLink: authState?.resumeLink || "",
     linkedinLink: authState?.linkedinLink || "",
   });
+  const [twoFAEnabled, setTwoFAEnabled] = useState(
+    authState?.twoFAEnabled || false
+  );
 
   const [appliedJobs, setAppliedJobs] = useState(authState?.appliedJobs || []);
   const [acceptedJobs, setAcceptedJobs] = useState(
@@ -34,6 +43,25 @@ function Profile() {
   const [credits, setCredits] = useState(authState?.credits || 0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success"); // can be 'success' or 'error'
+  const [errorMsg, setErrorMsg] = useState(""); // Use to display error message in snack bar
+  const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
+  const [message, setMessage] = useState(""); // Define the 'setMessage' function
+  const [twoFAMessage, setTwoFAMessage] = useState("");
+  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
+  const handleTwoFAClose = () => {
+    setOpenTwoFADialog(false);
+  };
+  const updateTwoFAMessage = (message) => {
+    setTwoFAMessage(message);
+    if (message === "2FA verified successfully"){
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+    }
+    else{
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+    }
+  };
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -43,6 +71,54 @@ function Profile() {
     }));
   }, []);
 
+
+  // const verifyToken = (onSuccess) => {
+  //   TwoFASetup.verifyToken((message) => {
+  //     setSnackbarType("success");
+  //     setErrorMsg(message);
+  //     setOpenSnackbar(true);
+  //     onSuccess();
+  //   });
+  // };
+  
+  async function disable2FA() {
+    try {
+      // Make an API request to disable 2FA
+      const response = await api.post(
+        "twofa/disable2fa",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data;
+  
+      if (data === "2FA Disabled") {
+        // Show a success message popup
+        setTwoFAMessage("2FA Disabled successfully");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+  
+        // Update the state to reflect 2FA disabled
+        setTwoFAEnabled(false);
+      } else {
+        // Show an error message popup
+        setMessage("2FA disabling failed");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error disabling 2FA:", error);
+      setMessage("Error disabling 2FA");
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+    }
+  }
+  
   // useEffect(() => {
   //   // Assuming the API endpoint is http://localhost:3001/user/getJobs/${username}
   //   axios
@@ -60,6 +136,10 @@ function Profile() {
   //     });
   // }, [username]);
 
+  //const redirectToTwoFA = () => {
+  //navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
+  //};
+
   useEffect(() => {
     if (authState) {
       setFormValues((prevFormData) => ({
@@ -67,7 +147,6 @@ function Profile() {
         firstName: authState.firstName || "",
         lastName: authState.lastName || "",
         email: authState.email || "",
-        resumeLink: authState.resumeLink || "",
         linkedinLink: authState.linkedinLink || "",
       }));
 
@@ -75,10 +154,12 @@ function Profile() {
       api
         .get(`user/getuser/${authState.username}`)
         .then((response) => {
-          const { appliedJobs, acceptedJobs, credits } = response.data;
+          const { appliedJobs, acceptedJobs, credits, twoFAEnabled } =
+            response.data;
           setAppliedJobs(appliedJobs || []);
           setAcceptedJobs(acceptedJobs || []);
           setCredits(credits || 0);
+          setTwoFAEnabled(twoFAEnabled);
         })
         .catch((error) => {
           console.error("There was an error fetching jobs:", error);
@@ -104,39 +185,35 @@ function Profile() {
 
     if (!validateEmail(formValues.email)) {
       setSnackbarType("error");
-
+      setErrorMsg("Invalid Email input.");
       setOpenSnackbar(true);
       return; // Exit early if email is invalid
     }
 
     if (!validateLinkedIn(formValues.linkedinLink)) {
       setSnackbarType("error");
-
+      setErrorMsg("Invalid Linkedin URL.");
       setOpenSnackbar(true);
       return; // Exit early if LinkedIn URL is invalid
     }
 
     try {
-      const response = await api.put(
-        "user/updateuser",
-        formValues,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.put("user/updateuser", formValues, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         setSnackbarType("success");
         setOpenSnackbar(true);
       } else {
         setSnackbarType("error");
+        setErrorMsg(response.data);
         setOpenSnackbar(true);
-        console.log("Error updating user:", response.data);
       }
     } catch (error) {
       setSnackbarType("error");
+      setErrorMsg(error);
       setOpenSnackbar(true);
-      console.error("Error updating user:", error);
     }
   };
 
@@ -247,16 +324,6 @@ function Profile() {
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label="Resume Link"
-                      name="resumeLink"
-                      onChange={handleChange}
-                      required
-                      value={formValues.resumeLink}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
                       label="Linkedin Link"
                       name="linkedinLink"
                       onChange={handleChange}
@@ -281,6 +348,27 @@ function Profile() {
 
           <Card sx={{ mt: 3 }}>
             <CardContent>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={isDisable2FADisabled}
+                onClick={() => {
+                  setIsDisable2FADisabled(true);
+                  if (twoFAEnabled){
+                    disable2FA();
+                  } 
+                  else {
+                    setOpenTwoFADialog(true);
+                  }
+                }}
+              >
+                {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
               <Typography variant="body1" sx={{ mb: 2 }}>
                 Applied Jobs: {appliedJobs.length}
               </Typography>
@@ -289,17 +377,45 @@ function Profile() {
               </Typography>
             </CardContent>
           </Card>
+          <Dialog
+            open={openTwoFADialog}
+            disableEscapeKeyDown
+          >
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleTwoFAClose}
+              aria-label="close"
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "8px",
+                color: "red",
+                fontSize: "1rem",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
+            <DialogContent>
+              <TwoFASetup 
+              open={openTwoFADialog} // Pass open state to TwoFASetup
+              onClose={handleTwoFAClose}
+              updateTwoFAMessage={updateTwoFAMessage} // Pass the callback function
+              />
+            </DialogContent>
+          </Dialog>
         </Container>
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}
           onClose={() => setOpenSnackbar(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          anchorOrigin={{ vertical: "top", horizontal: "middle" }}
         >
           <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarType}>
             {snackbarType === "success"
-              ? "User updated successfully!"
-              : "Error updating user."}
+              ? twoFAMessage || "User updated successfully!"
+              : errorMsg || "Error updating user."}
           </Alert>
         </Snackbar>
       </Box>

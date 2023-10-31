@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Container, TextField, Button } from "@mui/material";
-import { api } from 'services/api';
+import { Container, TextField, Button, Snackbar, Alert } from "@mui/material";
+import { api } from "services/api";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 
 function CreateJobListingPage() {
@@ -11,8 +11,16 @@ function CreateJobListingPage() {
     description: "",
     payment: "",
     employer: "",
-    skills: [], // Adding skills array
-    status: "open", // Adding status field with default value "open"
+    skills: [],
+    status: "open",
+  });
+
+  const [formErrors, setFormErrors] = useState({});
+
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
 
   const handleChange = (e) => {
@@ -27,7 +35,7 @@ function CreateJobListingPage() {
     const { value } = e.target;
     setFormData({
       ...formData,
-      skills: value.split(","), // Skills are stored as an array of strings
+      skills: value.split(","),
     });
   };
 
@@ -35,32 +43,61 @@ function CreateJobListingPage() {
     if (employerAuthState) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        employer: employerAuthState._id, // Assuming the ID is stored in _id field
+        employer: employerAuthState._id,
       }));
     }
   }, [employerAuthState]);
 
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.title) errors.title = "Title is required";
+    if (!formData.description) errors.description = "Description is required";
+    if (formData.description.length > 500)
+      errors.description = "Description can be at most 500 characters";
+    if (!formData.payment) errors.payment = "Payment is required";
+    if (isNaN(Number(formData.payment)))
+      errors.payment = "Payment must be a number";
+    // ... add other validation checks as needed
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     try {
-      // Replace with your API endpoint to create a job listing
-      const response = await api.post(
-        "joblisting/createjoblisting",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("Job listing created:", response.data);
-      // Redirect to a different page or reset the form
-      setFormData({
-        title: "",
-        description: "",
-        payment: "",
+      const response = await api.post("joblisting/createjoblisting", formData, {
+        withCredentials: true,
       });
+      if (response.status === 200) {
+        setNotification({
+          open: true,
+          message: "Job listing created successfully!",
+          severity: "success",
+        });
+        setFormData({
+          title: "",
+          description: "",
+          payment: "",
+        });
+      } else {
+        throw new Error(`Unexpected response: ${response.statusText}`);
+      }
     } catch (error) {
-      console.error("There was an error creating the job listing!", error);
+      console.error(error);
+      setNotification({
+        open: true,
+        message: "There was an error creating the job listing!",
+        severity: "error",
+      });
     }
+  };
+
+  const handleCloseNotification = () => {
+    setNotification({
+      ...notification,
+      open: false,
+    });
   };
 
   if (!employerAuthState) {
@@ -70,7 +107,6 @@ function CreateJobListingPage() {
       </div>
     );
   }
-
   return (
     <Container>
       <form onSubmit={handleSubmit}>
@@ -82,6 +118,8 @@ function CreateJobListingPage() {
           onChange={handleChange}
           fullWidth
           margin="normal"
+          error={!!formErrors.title}
+          helperText={formErrors.title}
         />
         <TextField
           label="Description"
@@ -93,6 +131,8 @@ function CreateJobListingPage() {
           margin="normal"
           multiline
           rows={4}
+          error={!!formErrors.description}
+          helperText={formErrors.description}
         />
         <TextField
           label="Payment"
@@ -102,8 +142,9 @@ function CreateJobListingPage() {
           onChange={handleChange}
           fullWidth
           margin="normal"
+          error={!!formErrors.payment}
+          helperText={formErrors.payment}
         />
-
         <TextField
           label="Skills (comma-separated)"
           variant="outlined"
@@ -112,7 +153,12 @@ function CreateJobListingPage() {
           onChange={handleSkillsChange}
           fullWidth
           margin="normal"
-          helperText="Enter skills separated by commas"
+          error={!!formErrors.skills}
+          helperText={
+            formErrors.skills
+              ? formErrors.skills
+              : "Enter skills separated by commas"
+          }
         />
         <TextField
           label="Status"
@@ -124,24 +170,28 @@ function CreateJobListingPage() {
           margin="normal"
           select
           SelectProps={{ native: true }}
+          error={!!formErrors.status}
+          helperText={formErrors.status}
         >
-          <TextField
-            label="Employer ID"
-            variant="outlined"
-            name="employer"
-            value={formData.employer}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            disabled
-          />
           <option value="open">Open</option>
-          <option value="closed">in-progress</option>
+          <option value="closed">In-progress</option>
         </TextField>
         <Button variant="contained" color="primary" type="submit">
           Create Job Listing
         </Button>
       </form>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+      >
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

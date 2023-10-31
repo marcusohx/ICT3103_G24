@@ -23,11 +23,7 @@ export default function PrimarySearchAppBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { refresh } = useContext(NavBarRefreshContext);
-  const {
-    authState,
-    logout: userLogout,
-    fetchUserData: fetch,
-  } = useContext(AuthContext);
+  const { authState, logout: userLogout } = useContext(AuthContext);
   const { employerAuthState, employerlogout: employerLogout } =
     useContext(EmployerAuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -102,6 +98,7 @@ export default function PrimarySearchAppBar() {
     },
     { text: "User Settings", path: "/user/profilesettings" },
     { text: "Job Listings", path: "/joblistings" },
+    { text: "Transactions", path: "/user/transactions" },
     { text: "Shop", path: "/shop" },
   ];
 
@@ -141,15 +138,6 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      </Link>
-      <Link
-        to="/my-account"
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      </Link>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
@@ -253,17 +241,19 @@ export default function PrimarySearchAppBar() {
                 Employer Credits: {employerAuthState.credits}
               </Typography>
             )}
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {(authState || employerAuthState) && (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            )}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, color: "gray" }}>
             <IconButton

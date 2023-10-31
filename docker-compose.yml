@@ -17,6 +17,7 @@ services:
       - "443:443"
     depends_on:
       - backend
+    env_file: .frontend_env
       
   jenkins:
     build:
@@ -27,13 +28,14 @@ services:
     privileged: true
     user: root
     ports:
-      - 8080:8080
       - 50000:50000
     container_name: jenkins
+
+    
     volumes:
       - jenkins-docker-certs:/certs/client
       - jenkins-data:/var/jenkins_home
-      - /home/student73/test/ICT3103_G24:/var/jenkins_home/gitrepo
+      - /home/student73/ICT3103_G24:/var/jenkins_home/gitrepo
 
 volumes:
   jenkins-docker-certs:

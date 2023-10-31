@@ -13,7 +13,7 @@ import {
   Checkbox,
   Divider,
 } from "@mui/material";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
@@ -46,7 +46,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const Banner = styled(Box)(({ theme }) => ({
-  background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('path/to/your/image.jpg') no-repeat center center/cover`,
+  background: `
+    linear-gradient(
+      rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5)
+    ), 
+    url('https://source.unsplash.com/featured/?workspace') no-repeat center center/cover`,
   color: "#fff",
   padding: theme.spacing(10, 2),
   textAlign: "center",
@@ -65,17 +70,76 @@ const Sidebar = styled("aside")(({ theme }) => ({
 function JobListingsPage() {
   const [jobListings, setJobListings] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSalaryRange, setSelectedSalaryRange] = useState({
+    "$500 - $2000": false,
+    "$2000 - $4000": false,
+    "$4000 - $6000": false,
+    "$6000 - $8000": false,
+    "$8000 - $10000": false,
+  });
+
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
   const { authState } = useContext(AuthContext);
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSalaryRangeChange = (event) => {
+    const value = event.target.name;
+    const isChecked = event.target.checked;
+    setSelectedSalaryRange((prevRange) => ({
+      ...prevRange,
+      [value]: isChecked,
+    }));
+  };
+
+  const handleLanguageChange = (language) => {
+    setSelectedLanguages((prevLanguages) =>
+      prevLanguages.includes(language)
+        ? prevLanguages.filter((lang) => lang !== language)
+        : [...prevLanguages, language]
+    );
+  };
+
   useEffect(() => {
     api
       .get("joblisting/job-listings?status=open")
       .then((response) => {
-        setJobListings(response.data);
+        let data = response.data;
+        if (searchTerm) {
+          data = data.filter((job) =>
+            job.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+        if (Object.values(selectedSalaryRange).some((v) => v)) {
+          // check if any range is selected
+          data = data.filter((job) =>
+            Object.entries(selectedSalaryRange).some(([range, isSelected]) => {
+              if (isSelected) {
+                const [min, max] = range
+                  .split("-")
+                  .map((str) => str.replace(/[^\d]/g, "").trim());
+                return (
+                  (min ? job.payment >= Number(min) : true) &&
+                  (max ? job.payment <= Number(max) : true)
+                );
+              }
+              return false;
+            })
+          );
+        }
+        if (selectedLanguages.length > 0) {
+          data = data.filter((job) =>
+            selectedLanguages.some((language) => job.skills.includes(language))
+          );
+        }
+        setJobListings(data);
       })
       .catch((error) => {
         console.error("There was an error fetching the job listings!", error);
       });
-  }, []);
+  }, [searchTerm, selectedSalaryRange, selectedLanguages]);
 
   const viewDetails = (job) => {
     api
@@ -151,6 +215,8 @@ function JobListingsPage() {
           variant="outlined"
           placeholder="Search for jobs..."
           fullWidth
+          value={searchTerm}
+          onChange={handleSearchChange}
           sx={{
             maxWidth: "500px",
             bgcolor: "background.paper",
@@ -174,32 +240,112 @@ function JobListingsPage() {
             </Typography>
             <FormControl component="fieldset">
               <FormGroup>
-                <FormControlLabel control={<Checkbox />} label="< $50k" />
-                <FormControlLabel control={<Checkbox />} label="$50k - $100k" />
                 <FormControlLabel
-                  control={<Checkbox />}
-                  label="$100k - $150k"
+                  control={
+                    <Checkbox
+                      onChange={handleSalaryRangeChange}
+                      name="$500 - $2000"
+                    />
+                  }
+                  label="$500 - $2k"
                 />
                 <FormControlLabel
-                  control={<Checkbox />}
-                  label="$150k - $200k"
+                  control={
+                    <Checkbox
+                      onChange={handleSalaryRangeChange}
+                      name="$2000 - $4000"
+                    />
+                  }
+                  label="$2k - $4k"
                 />
-                <FormControlLabel control={<Checkbox />} label="> $200k" />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleSalaryRangeChange}
+                      name="$4000 - $6000"
+                    />
+                  }
+                  label="$4k - $6k"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleSalaryRangeChange}
+                      name="$6000 - $8000"
+                    />
+                  }
+                  label="$6k - $8k"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleSalaryRangeChange}
+                      name="$8000 - $10000"
+                    />
+                  }
+                  label="$8k - $10k"
+                />
               </FormGroup>
             </FormControl>
+
             <Divider />
 
             {/* Popular Keywords Filter */}
             <Typography variant="subtitle1" gutterBottom mt={2}>
-              Popular Keywords
+              Programming Languages
             </Typography>
             <FormControl component="fieldset">
               <FormGroup>
-                <FormControlLabel control={<Checkbox />} label="Remote" />
-                <FormControlLabel control={<Checkbox />} label="Full-time" />
-                <FormControlLabel control={<Checkbox />} label="Part-time" />
-                <FormControlLabel control={<Checkbox />} label="Contract" />
-                <FormControlLabel control={<Checkbox />} label="Internship" />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Node.js"
+                  onChange={() => handleLanguageChange("node.js")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Python"
+                  onChange={() => handleLanguageChange("Python")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Java"
+                  onChange={() => handleLanguageChange("Java")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="C++"
+                  onChange={() => handleLanguageChange("C++")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Ruby"
+                  onChange={() => handleLanguageChange("Ruby")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="PHP"
+                  onChange={() => handleLanguageChange("PHP")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Go"
+                  onChange={() => handleLanguageChange("Go")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Swift"
+                  onChange={() => handleLanguageChange("Swift")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Kotlin"
+                  onChange={() => handleLanguageChange("Kotlin")}
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="TypeScript"
+                  onChange={() => handleLanguageChange("TypeScript")}
+                />
               </FormGroup>
             </FormControl>
             <Divider />

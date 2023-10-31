@@ -1,12 +1,30 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
+import {
+  Container,
+  Select,
+  MenuItem,
+  Button,
+  FormControl,
+  InputLabel,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+
 function AcceptUser() {
   const { jobId } = useParams();
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const { employerAuthState } = useContext(EmployerAuthContext);
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
   useEffect(() => {
     // Use axios to get job listing details
     api
@@ -31,15 +49,32 @@ function AcceptUser() {
       )
       .then((response) => {
         console.log(response.data);
-        alert("User accepted for the job");
+        setNotification({
+          open: true,
+          message: "User accepted for the job",
+          severity: "success",
+        });
       })
       .catch((error) => {
         console.error(
           "There was an error accepting the user for the job!",
           error
         );
+        setNotification({
+          open: true,
+          message: "There was an error accepting the user for the job!",
+          severity: "error",
+        });
       });
   };
+
+  const handleCloseNotification = () => {
+    setNotification({
+      ...notification,
+      open: false,
+    });
+  };
+
   if (!employerAuthState) {
     return (
       <div>
@@ -49,21 +84,44 @@ function AcceptUser() {
   }
 
   return (
-    <div>
-      <h2>Accept User for Job</h2>
-      <select
-        value={selectedUser}
-        onChange={(e) => setSelectedUser(e.target.value)}
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Accept User for Job
+      </Typography>
+      <FormControl fullWidth variant="outlined" margin="normal">
+        <InputLabel id="user-select-label">Select a user</InputLabel>
+        <Select
+          labelId="user-select-label"
+          value={selectedUser}
+          onChange={(e) => setSelectedUser(e.target.value)}
+          label="Select a user"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {users.map((user) => (
+            <MenuItem key={user._id} value={user._id}>
+              {user.firstName} {user.lastName}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Button variant="contained" color="primary" onClick={handleAcceptUser}>
+        Accept User
+      </Button>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
       >
-        <option value="">Select a user</option>
-        {users.map((user) => (
-          <option key={user._id} value={user._id}>
-            {user.firstName} {user.lastName}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleAcceptUser}>Accept User</button>
-    </div>
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 }
 

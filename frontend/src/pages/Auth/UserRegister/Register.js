@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import {
   Box,
   Button,
@@ -10,13 +10,18 @@ import {
   Typography,
   Paper,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   Email as EmailIcon,
   Lock as LockIcon,
   Person as PersonIcon,
+  Visibility,
+  VisibilityOff,
 } from "@mui/icons-material";
+
+import ReCAPTCHA from "react-google-recaptcha";
 
 function Register() {
   const [firstName, setFirstName] = useState("");
@@ -24,17 +29,38 @@ function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
+
   const navigate = useNavigate();
 
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const validatePin = (pin) => {
+    return /^\d{6}$/.test(pin);
+  };
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\-]).{8,}$/;
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*-]).{8,}$/;
+
     return re.test(password);
   };
 
@@ -47,7 +73,8 @@ function Register() {
       !email ||
       !username ||
       !password ||
-      !confirmPassword
+      !confirmPassword ||
+      !recaptchaValue
     ) {
       setMessage("All fields are required");
       return;
@@ -55,6 +82,10 @@ function Register() {
 
     if (!validateEmail(email)) {
       setMessage("Please enter a valid email address.");
+      return;
+    }
+    if (!validatePin(pin)) {
+      setMessage("Pin must be a 6-digit number.");
       return;
     }
 
@@ -68,21 +99,37 @@ function Register() {
       return;
     }
 
+    if (!recaptchaValue) {
+      setMessage("Please complete the reCAPTCHA.");
+      return;
+    }
+
     try {
-      const response = await api.post("user/register", {
-        firstName,
-        lastName,
-        email,
-        username,
-        password,
+      //recaptcha response
+      const recaptchaResponse = await api.post("user/recaptcha", {
+        token: recaptchaValue,
       });
-      setMessage("User created");
-      navigate("/userlogin");
-      console.log(response.data);
+
+      if (recaptchaResponse.data.success) {
+        //register response
+        const response = await api.post("user/register", {
+          firstName,
+          lastName,
+          email,
+          username,
+          password,
+          pin,
+        });
+        setMessage("User created");
+        navigate("/userlogin");
+        console.log(response.data);
+      } else {
+        setMessage("reCAPTCHA verification failed");
+      }
     } catch (error) {
       console.error(error);
       if (error.response) {
-        setMessage(error.response.data);
+        setMessage(JSON.stringify(error.response.data));
       } else {
         setMessage("Unable to register. Please try again later.");
       }
@@ -187,10 +234,11 @@ function Register() {
               <TextField
                 fullWidth
                 type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="6-digit Pin"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
                 InputProps={{
+                  inputProps: { maxLength: 6 },
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon />
@@ -200,7 +248,28 @@ function Register() {
               />
               <TextField
                 fullWidth
-                type="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility}>
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                fullWidth
+                type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -208,6 +277,21 @@ function Register() {
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          toggleConfirmPasswordVisibility("confirmPassword")
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
@@ -222,6 +306,12 @@ function Register() {
                 </ul>
               </Typography>
             </Stack>
+            {
+              <ReCAPTCHA
+                sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                onChange={handleRecaptchaChange}
+              />
+            }
             <Button
               fullWidth
               size="large"

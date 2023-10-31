@@ -231,3 +231,28 @@ exports.closeJobListingAndGiveCredits = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
+exports.deleteJobListing = async (req, res) => {
+  try {
+    // Find the job listing by its ID and remove it
+    const jobListing = await JobListing.findByIdAndRemove(req.params.id);
+
+    // If no job listing was found, send a 404 Not Found response
+    if (!jobListing) {
+      return res.status(404).send("Job listing not found");
+    }
+
+    // Optionally, you might want to also remove references to this job listing from other documents,
+    // such as removing the job ID from the appliedJobs and acceptedJobs arrays of User documents.
+    // This step is omitted here for brevity, but you can implement it according to your needs.
+
+    // Send a success response
+    res.json({ msg: "Job listing deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    if (err.kind === "ObjectId") {
+      return res.status(404).send("Job listing not found");
+    }
+    res.status(500).send("Server error");
+  }
+};

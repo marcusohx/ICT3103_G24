@@ -4,9 +4,11 @@ const userController = require("../controllers/userController");
 const authMiddleware = require("../middlewares/auth");
 
 router.post("/register", userController.register);
+router.post("/recaptcha", userController.recaptcha);
 router.post("/login", userController.login);
 router.post("/logout", userController.logout);
 router.get("/user-data", authMiddleware, userController.getUserData);
 router.get("/getuser/:username", userController.getUserByName);
 router.put("/updateuser", authMiddleware, userController.updateUser);
+router.post("/verifyPin", authMiddleware, userController.verifyPin);
 module.exports = router;

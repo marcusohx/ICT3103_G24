@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { api } from 'services/api';
+import { api } from "services/api";
 import { EmployerAuthContext } from "../../contexts/EmployerAuthContext";
 import {
   Avatar,
@@ -10,15 +10,23 @@ import {
   CardContent,
   Container,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
   Grid,
   TextField,
   Typography,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+// import { useNavigate } from "react-router-dom";
+import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
 
 function EmployerProfile() {
   const { employerAuthState } = useContext(EmployerAuthContext);
+  // const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     companyName: employerAuthState?.companyName || "",
     email: employerAuthState?.email || "",
@@ -27,8 +35,36 @@ function EmployerProfile() {
   const [postedJobs, setPostedJobs] = useState(
     employerAuthState?.postedJobs || []
   );
+  const [twoFAEnabled, setTwoFAEnabled] = useState(
+    employerAuthState?.twoFAEnabled || false
+  );
+  const [message, setMessage] = useState(""); // Define the 'setMessage' function
+  const [twoFAMessage, setTwoFAMessage] = useState("");
+  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
+  const handleTwoFAClose = () => {
+    setOpenTwoFADialog(false);
+  };
+  const updateTwoFAMessage = (message) => {
+    setTwoFAMessage(message);
+    if (message === "2FA verified successfully"){
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+    }
+    else{
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+    }
+   
+    console.log(message);
+  };
+
+  // const [twoFAEnabled, setTwoFAEnabled] = useState(
+  //   employerAuthState?.twoFAEnabled || false
+  // );
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success");
+
+  const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -38,28 +74,68 @@ function EmployerProfile() {
     }));
   }, []);
 
+  async function disable2FA() {
+    try {
+      // Make an API request to disable 2FA
+      const response = await api.post(
+        "twofa/disable2fa",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data;
+  
+      if (data === "2FA Disabled") {
+        // Show a success message popup
+        setTwoFAMessage("2FA Disabled successfully");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+        
+        // Update the state to reflect 2FA disabled
+        setTwoFAEnabled(false);
+      } else {
+        // Show an error message popup
+        setMessage("2FA disabling failed");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error disabling 2FA:", error);
+      setMessage("Error disabling 2FA");
+      setSnackbarType("success");
+      setOpenSnackbar(true);
+    }
+  }
+  
+
   useEffect(() => {
     if (employerAuthState) {
       setFormValues((prevFormData) => ({
         ...prevFormData,
         companyName: employerAuthState.companyName || "",
         email: employerAuthState.email || "",
+        twoFAEnabled: employerAuthState.twoFAEnabled || false,
       }));
       setPostedJobs(employerAuthState.postedJobs || []);
     }
   }, [employerAuthState]);
 
+  // const redirectToTwoFA = () => {
+  //   navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
+  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await api.put(
-        "employer/updateemployer",
-        formValues,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.put("employer/updateemployer", formValues, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         setSnackbarType("success");
@@ -77,7 +153,7 @@ function EmployerProfile() {
   };
 
   if (employerAuthState) {
-    const { email, companyName } = formValues;
+    const { email, companyName, twoFAEnabled } = formValues;
 
     return (
       <Box
@@ -153,6 +229,7 @@ function EmployerProfile() {
                       onChange={handleChange}
                       required
                       value={formValues.companyName}
+                      disabled
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -179,7 +256,55 @@ function EmployerProfile() {
               </CardActions>
             </form>
           </Card>
-
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={isDisable2FADisabled}
+                onClick={() => {
+                  setIsDisable2FADisabled(true);
+                  if (twoFAEnabled){
+                    disable2FA();
+                  } 
+                  else {
+                    setOpenTwoFADialog(true);
+                  }
+                  
+                }}
+              >
+                {twoFAEnabled ? "Disable 2FA" : "Enable 2FA"}
+              </Button>
+            </CardContent>
+          </Card>
+          <Dialog
+            open={openTwoFADialog}
+            disableEscapeKeyDown
+          >
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={() => setOpenTwoFADialog(false)}
+              aria-label="close"
+              style={{
+                position: "absolute",
+                top: "0px",
+                right: "8px",
+                color: "red",
+                fontSize: "1rem",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
+            <DialogContent>
+              <TwoFASetup 
+                open={openTwoFADialog} // Pass open state to TwoFASetup
+                onClose={handleTwoFAClose}
+                updateTwoFAMessage={updateTwoFAMessage} // Pass the callback function
+              />
+            </DialogContent>
+          </Dialog>
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="body1" sx={{ mb: 2 }}>
@@ -192,11 +317,11 @@ function EmployerProfile() {
           open={openSnackbar}
           autoHideDuration={6000}
           onClose={() => setOpenSnackbar(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarType}>
             {snackbarType === "success"
-              ? "Employer updated successfully!"
+              ? twoFAMessage || "Employer updated successfully!"
               : "Error updating employer."}
           </Alert>
         </Snackbar>
