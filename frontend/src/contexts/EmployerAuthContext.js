@@ -16,9 +16,7 @@ export function EmployerAuthProvider({ children }) {
           withCredentials: true,
         }
       );
-      console.log(response.data);
-      setEmployerAuthState(response.data);
-      console.log(employerAuthState);
+      setEmployerAuthState(response.data); 
     } catch (error) {
       console.error(error);
       setError(error);

@@ -122,7 +122,6 @@ function Register() {
         });
         setMessage("User created");
         navigate("/userlogin");
-        console.log(response.data);
       } else {
         setMessage("reCAPTCHA verification failed");
       }

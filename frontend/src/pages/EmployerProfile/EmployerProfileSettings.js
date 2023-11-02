@@ -53,8 +53,6 @@ function EmployerProfile() {
       setSnackbarType("error");
       setOpenSnackbar(true);
     }
-   
-    console.log(message);
   };
 
   // const [twoFAEnabled, setTwoFAEnabled] = useState(
@@ -142,12 +140,10 @@ function EmployerProfile() {
       } else {
         setSnackbarType("error");
         setOpenSnackbar(true);
-        console.log("Error updating employer:", response.data);
       }
     } catch (error) {
       setSnackbarType("error");
       setOpenSnackbar(true);
-      console.error("Error updating employer:", error);
     }
   };
 
