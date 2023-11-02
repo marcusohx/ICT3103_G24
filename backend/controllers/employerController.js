@@ -48,8 +48,21 @@ exports.register = async (req, res) => {
 
   try {
     const emailExists = await Employer.findOne({ email });
-    if (emailExists) return res.status(400).send("Email already registered");
+    if (emailExists) {
+      return res.status(400).send("Email already registered");
+    } else {
+      // Validate if email is of an actual email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).send("Invalid input.");
+      }
+    }
 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*-]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).send("Invalid input.");
+    }
+    
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const hashedPin = await bcrypt.hash(pin, salt); // Hashing the pin
@@ -103,9 +116,16 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Update the fields
-    if (email) employer.email = email;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email) {
+      if (emailRegex.test(email)) {
+        employer.email = email;
+      } else {
+        throw new Error("Invalid Email");
+      }
+    }
+    
     if (companyName) employer.companyName = companyName;
-    // ... add any other field updates as necessary
 
     await employer.save();
 

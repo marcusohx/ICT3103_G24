@@ -70,11 +70,24 @@ exports.register = async (req, res) => {
   try {
     // Checking if the email already exists
     const emailExists = await User.findOne({ email });
-    if (emailExists) return res.status(400).send("Email already registered");
+    if (emailExists) {
+      return res.status(400).send("Email already registered");
+    } else {
+      // Validate if email is of an actual email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).send("Invalid input.");
+      }
+    }
 
     // Checking if the username already exists
     const usernameExists = await User.findOne({ username });
     if (usernameExists) return res.status(400).send("Username already taken");
+    
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*-]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).send("Invalid input.");
+    }
 
     // Hash the password before storing it in the database
     const salt = await bcrypt.genSalt(10);
