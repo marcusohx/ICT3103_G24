@@ -40,7 +40,6 @@ function EmployerProfile() {
   );
   const [message, setMessage] = useState(""); // Define the 'setMessage' function
   const [twoFAMessage, setTwoFAMessage] = useState("");
-  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
   const handleTwoFAClose = () => {
     setOpenTwoFADialog(false);
   };
@@ -261,9 +260,7 @@ function EmployerProfile() {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={isDisable2FADisabled}
                 onClick={() => {
-                  setIsDisable2FADisabled(true);
                   if (twoFAEnabled){
                     disable2FA();
                   } 
