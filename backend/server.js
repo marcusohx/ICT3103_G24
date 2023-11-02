@@ -35,24 +35,24 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // replace with your frontend application's URL
+    origin: ["http://localhost:3000", "https://localhost", "https://sitgigs.online", "https://www.sitgigs.online"], // replace with your frontend application's URL
     credentials: true,
   })
 );
 
-// // Create CSRF Token
-// app.use(csrf({
-//   cookie: {
-//     secure: process.env.NODE_ENV === "production",
-//     httpOnly: true
-//   }
-// }));
+// Create CSRF Token
+app.use(csrf({
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true
+  }
+}));
 
-// // Use CSRF Token in all request
-// app.use((req, res, next) => {
-//   res.cookie("XSRF-TOKEN", req.csrfToken()); // Default cookie name for CSRF in Axios
-//   next();
-// });
+// Use CSRF Token in all request
+app.use((req, res, next) => {
+  res.cookie("XSRF-TOKEN", req.csrfToken()); // Default cookie name for CSRF in Axios
+  next();
+});
 
 app.use("/user", userRoutes);
 app.use("/employer", employerRoutes);
