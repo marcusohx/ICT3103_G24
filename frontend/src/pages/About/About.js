@@ -11,10 +11,11 @@ const HeroSection = styled(Box)(({ theme }) => ({
   padding: "100px 0",
   height: "200px",
   textAlign: "center",
+  margin: "20px -100%",
 }));
 
 const AboutContainer = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(6),
+  marginTop: theme.spacing(8),
   marginBottom: theme.spacing(6),
 }));
 
@@ -51,7 +52,7 @@ function About() {
       {/* <BackgroundImage /> Background image appears above */}
       <HeroSection data-aos="fade-up">
         <AboutTitle variant="h2">About Us</AboutTitle>
-        <AboutSubtitle variant="h6">
+        <AboutSubtitle variant="h5">
           Your Gateway to Freelance Industry Jobs - Discover SIT Gigs
         </AboutSubtitle>
       </HeroSection>

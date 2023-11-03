@@ -181,8 +181,8 @@ export default function PrimarySearchAppBar() {
   );
 
   const appBarStyles = {
-    backgroundColor:
-      location.pathname === "/"
+    backgroundColor: 
+    location.pathname === "/" || location.pathname === "/about"
         ? isScrolled
           ? "#fff"
           : "transparent"
@@ -190,8 +190,9 @@ export default function PrimarySearchAppBar() {
     transition: "background-color 0.5s ease",
     boxShadow: isScrolled ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
   };
+  
   const mainContainerStyles = {
-    pt: location.pathname === "/" ? "0px" : "64px",
+    pt: location.pathname === "/" || location.pathname === "/about" ? "0px" : "64px",
   };
 
   return (
