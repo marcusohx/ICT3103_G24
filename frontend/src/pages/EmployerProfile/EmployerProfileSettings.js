@@ -21,12 +21,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-// import { useNavigate } from "react-router-dom";
 import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
 
 function EmployerProfile() {
   const { employerAuthState } = useContext(EmployerAuthContext);
-  // const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     companyName: employerAuthState?.companyName || "",
     email: employerAuthState?.email || "",
@@ -55,9 +53,6 @@ function EmployerProfile() {
     }
   };
 
-  // const [twoFAEnabled, setTwoFAEnabled] = useState(
-  //   employerAuthState?.twoFAEnabled || false
-  // );
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success");
 
@@ -122,9 +117,6 @@ function EmployerProfile() {
     }
   }, [employerAuthState]);
 
-  // const redirectToTwoFA = () => {
-  //   navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
-  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();

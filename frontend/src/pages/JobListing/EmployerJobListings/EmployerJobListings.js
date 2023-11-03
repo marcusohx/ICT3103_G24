@@ -143,7 +143,6 @@ function EmployerJobListings() {
           );
           // Assuming your response contains the updated employer details
           // Update employer credits in context
-          // employerAuthDispatch({ type: 'UPDATE_CREDITS', payload: response.data.credits });
         })
         .catch((error) => {
           console.error("Error closing job and distributing credits:", error);

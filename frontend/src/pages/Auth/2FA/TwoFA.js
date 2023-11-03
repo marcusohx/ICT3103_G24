@@ -38,7 +38,7 @@ function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
           withCredentials: true,
         });
         const data = response.data;
-        // setSecret(data.secret);
+        
 
         setDataURL(data.dataURL);
       } catch (error) {
@@ -58,7 +58,7 @@ function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
           withCredentials: true,
         }
       );
-      //setMessage(data);
+      
       const data = response.data;
        // Check if verification was successful
        if (data === "Two-factor authentication verified successfully") {
