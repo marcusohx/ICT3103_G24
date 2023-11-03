@@ -46,6 +46,7 @@ function Profile() {
   const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
   const [message, setMessage] = useState(""); // Define the 'setMessage' function
   const [twoFAMessage, setTwoFAMessage] = useState("");
+  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
   const handleTwoFAClose = () => {
     setOpenTwoFADialog(false);
   };
@@ -317,6 +318,7 @@ function Profile() {
               <Button
                 variant="contained"
                 color="primary"
+                disabled={isDisable2FADisabled}
                 onClick={() => {
                   setIsDisable2FADisabled(true);
                   if (twoFAEnabled) {
