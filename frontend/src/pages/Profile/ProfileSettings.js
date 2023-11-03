@@ -71,14 +71,7 @@ function Profile() {
   }, []);
 
 
-  // const verifyToken = (onSuccess) => {
-  //   TwoFASetup.verifyToken((message) => {
-  //     setSnackbarType("success");
-  //     setErrorMsg(message);
-  //     setOpenSnackbar(true);
-  //     onSuccess();
-  //   });
-  // };
+
   
   async function disable2FA() {
     try {
@@ -118,26 +111,7 @@ function Profile() {
     }
   }
   
-  // useEffect(() => {
-  //   // Assuming the API endpoint is http://localhost:3001/user/getJobs/${username}
-  //   axios
-  //     .get(`http://localhost:3001/user/getJobs/${username}`)
-  //     .then((response) => {
-  //       const { appliedJobs, acceptedJobs } = response.data;
-  //       setAppliedJobs(appliedJobs || []);
-  //       setAcceptedJobs(acceptedJobs || []);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error fetching jobs:", error);
-  //       // Optionally set default empty arrays if the fetch fails
-  //       setAppliedJobs([]);
-  //       setAcceptedJobs([]);
-  //     });
-  // }, [username]);
 
-  //const redirectToTwoFA = () => {
-  //navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
-  //};
 
   useEffect(() => {
     if (authState) {
