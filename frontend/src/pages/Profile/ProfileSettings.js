@@ -46,7 +46,6 @@ function Profile() {
   const [openTwoFADialog, setOpenTwoFADialog] = useState(false); // State to control dialog visibility
   const [message, setMessage] = useState(""); // Define the 'setMessage' function
   const [twoFAMessage, setTwoFAMessage] = useState("");
-  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
   const handleTwoFAClose = () => {
     setOpenTwoFADialog(false);
   };
@@ -68,15 +67,6 @@ function Profile() {
       [name]: value,
     }));
   }, []);
-
-  // const verifyToken = (onSuccess) => {
-  //   TwoFASetup.verifyToken((message) => {
-  //     setSnackbarType("success");
-  //     setErrorMsg(message);
-  //     setOpenSnackbar(true);
-  //     onSuccess();
-  //   });
-  // };
 
   async function disable2FA() {
     try {
@@ -115,27 +105,6 @@ function Profile() {
       setOpenSnackbar(true);
     }
   }
-
-  // useEffect(() => {
-  //   // Assuming the API endpoint is http://localhost:3001/user/getJobs/${username}
-  //   axios
-  //     .get(`http://localhost:3001/user/getJobs/${username}`)
-  //     .then((response) => {
-  //       const { appliedJobs, acceptedJobs } = response.data;
-  //       setAppliedJobs(appliedJobs || []);
-  //       setAcceptedJobs(acceptedJobs || []);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error fetching jobs:", error);
-  //       // Optionally set default empty arrays if the fetch fails
-  //       setAppliedJobs([]);
-  //       setAcceptedJobs([]);
-  //     });
-  // }, [username]);
-
-  //const redirectToTwoFA = () => {
-  //navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
-  //};
 
   useEffect(() => {
     if (authState) {
@@ -348,7 +317,6 @@ function Profile() {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={isDisable2FADisabled}
                 onClick={() => {
                   setIsDisable2FADisabled(true);
                   if (twoFAEnabled) {

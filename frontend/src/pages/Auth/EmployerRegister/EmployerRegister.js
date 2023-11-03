@@ -76,7 +76,6 @@ function EmployerRegister() {
       });
       setMessage("Employer registered");
       navigate("/employerlogin");
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       if (error.response) {

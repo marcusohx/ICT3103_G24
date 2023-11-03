@@ -21,12 +21,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-// import { useNavigate } from "react-router-dom";
 import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
 
 function EmployerProfile() {
   const { employerAuthState } = useContext(EmployerAuthContext);
-  // const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     companyName: employerAuthState?.companyName || "",
     email: employerAuthState?.email || "",
@@ -40,7 +38,6 @@ function EmployerProfile() {
   );
   const [message, setMessage] = useState(""); // Define the 'setMessage' function
   const [twoFAMessage, setTwoFAMessage] = useState("");
-  const [isDisable2FADisabled, setIsDisable2FADisabled] = useState(false);
   const handleTwoFAClose = () => {
     setOpenTwoFADialog(false);
   };
@@ -54,13 +51,8 @@ function EmployerProfile() {
       setSnackbarType("error");
       setOpenSnackbar(true);
     }
-   
-    console.log(message);
   };
 
-  // const [twoFAEnabled, setTwoFAEnabled] = useState(
-  //   employerAuthState?.twoFAEnabled || false
-  // );
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarType, setSnackbarType] = useState("success");
 
@@ -125,9 +117,6 @@ function EmployerProfile() {
     }
   }, [employerAuthState]);
 
-  // const redirectToTwoFA = () => {
-  //   navigate("/two-fa-setup"); // replace '/two-fa-setup' with the path of your new page
-  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -143,12 +132,10 @@ function EmployerProfile() {
       } else {
         setSnackbarType("error");
         setOpenSnackbar(true);
-        console.log("Error updating employer:", response.data);
       }
     } catch (error) {
       setSnackbarType("error");
       setOpenSnackbar(true);
-      console.error("Error updating employer:", error);
     }
   };
 
@@ -261,9 +248,7 @@ function EmployerProfile() {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={isDisable2FADisabled}
                 onClick={() => {
-                  setIsDisable2FADisabled(true);
                   if (twoFAEnabled){
                     disable2FA();
                   } 

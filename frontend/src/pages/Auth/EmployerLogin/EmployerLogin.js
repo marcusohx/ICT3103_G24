@@ -45,7 +45,6 @@ function EmployerLogin() {
           withCredentials: true,
         }
       );
-      console.log(email);
       if (response.status === 206) {
         setTempAuthToken(response.data.tempAuthToken); // Store the temporary auth token
         setPinDialogOpen(true); // Open the 2FA dialog if 2FA is required

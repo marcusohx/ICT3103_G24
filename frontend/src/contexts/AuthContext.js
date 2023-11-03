@@ -12,7 +12,6 @@ export function AuthProvider({ children }) {
       const response = await api.get("user/user-data", {
         withCredentials: true,
       });
-      // console.log(response.data);
       setAuthState(response.data);
     } catch (error) {
       console.error(error);

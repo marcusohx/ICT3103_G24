@@ -160,7 +160,6 @@ function JobListingsPage() {
         { withCredentials: true }
       )
       .then((response) => {
-        console.log(response.data);
         if (response.status === 200) {
           alert("Job application successful");
         }
@@ -183,11 +182,9 @@ function JobListingsPage() {
           }
         } else if (error.request) {
           // The request was made but no response was received
-          console.log(error.request);
           alert("No response received from the server");
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log("Error", error.message);
           alert("An unexpected error occurred");
         }
       });

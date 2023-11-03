@@ -48,7 +48,6 @@ function AcceptUser() {
         }
       )
       .then((response) => {
-        console.log(response.data);
         setNotification({
           open: true,
           message: "User accepted for the job",

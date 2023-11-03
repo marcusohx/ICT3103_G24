@@ -37,7 +37,6 @@ function TwoFASetup({ open, onClose, updateTwoFAMessage }) {
           withCredentials: true,
         });
         const data = response.data;
-        // setSecret(data.secret);
 
         setDataURL(data.dataURL);
       } catch (error) {
