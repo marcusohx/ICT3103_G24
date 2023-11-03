@@ -2,6 +2,16 @@ import React from "react";
 import { Box, Typography, Container, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 import "./About.css";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
+
+const HeroSection = styled(Box)(({ theme }) => ({
+  background: `linear-gradient(180deg, #a0e7e5, #f8fff4)`,
+  padding: "100px 0",
+  height: "200px",
+  textAlign: "center",
+}));
 
 const AboutContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(6),
@@ -20,6 +30,7 @@ const AboutTitle = styled(Typography)({
 
 const AboutSubtitle = styled(Typography)({
   fontWeight: 500,
+  marginBottom: "40px",
 });
 
 const SectionTitle = styled(Typography)({
@@ -29,22 +40,27 @@ const SectionTitle = styled(Typography)({
 });
 
 function About() {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+    });
+  }, []);
+
   return (
     <AboutContainer>
       {/* <BackgroundImage /> Background image appears above */}
-
-      <AboutHeader>
+      <HeroSection data-aos="fade-up">
         <AboutTitle variant="h2">About Us</AboutTitle>
-        <AboutSubtitle variant="h5">
+        <AboutSubtitle variant="h6">
           Your Gateway to Freelance Industry Jobs - Discover SIT Gigs
         </AboutSubtitle>
-      </AboutHeader>
+      </HeroSection>
 
       <Grid container spacing={8}>
         <Grid item xs={12}>
           <Box>
             <SectionTitle variant="h4">Who We Are</SectionTitle>
-            <Typography variant="body1">
+            <Typography variant="body1" textAlign="center">
               We are SIT Gigs, a community built around the aspirations of
               university students. Our platform is designed to connect talented
               students with exciting freelance opportunities. We believe in the
@@ -61,7 +77,7 @@ function About() {
             <SectionTitle variant="h4" centered>
               What We Offer
             </SectionTitle>
-            <Typography variant="body1">
+            <Typography variant="body1" textAlign="center">
               Whether you're a talented writer, a coding wizard, a creative
               designer, or a skilled marketer, we've got something for you. At
               SIT Gigs, we offer a wide range of freelance gigs and projects to
@@ -77,7 +93,7 @@ function About() {
         <Grid item xs={6}>
           <Box>
             <SectionTitle variant="h4">Our Commitment</SectionTitle>
-            <Typography variant="body1">
+            <Typography variant="body1" textAlign="center">
               We are committed to creating a safe and supportive environment for
               students and freelancers. Your security and satisfaction are our
               top priorities. We employ advanced security measures to protect
@@ -92,7 +108,7 @@ function About() {
         <Grid item xs={6}>
           <Box>
             <SectionTitle variant="h4">Get Started Today!</SectionTitle>
-            <Typography variant="body1">
+            <Typography variant="body1" textAlign="center">
               Are you ready to embark on your side hustle journey? Join SIT Gigs
               today and start exploring freelance opportunities that match your
               skills and interests. It's easy to get started – create your
@@ -106,7 +122,7 @@ function About() {
         <Grid item xs={6}>
           <Box>
             <SectionTitle variant="h4">Stay Connected</SectionTitle>
-            <Typography variant="body1">
+            <Typography variant="body1" textAlign="center">
               Stay in the loop with the latest opportunities, success stories,
               and community updates. Connect with us on social media, follow our
               blog, and subscribe to our newsletter. Be part of a vibrant
@@ -123,7 +139,7 @@ function About() {
             <SectionTitle variant="h4" centered>
               Contact Us
             </SectionTitle>
-            <Typography variant="body1">
+            <Typography variant="body1" textAlign="center">
               Got questions or need assistance? Our support team is here to
               help. We value your feedback and are eager to assist you with any
               inquiries. Reach out to us via email, phone, or our online contact
