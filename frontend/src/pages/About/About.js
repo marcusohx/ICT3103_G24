@@ -61,7 +61,7 @@ function About() {
         <Grid item xs={12}>
           <Box>
             <SectionTitle variant="h4">Who We Are</SectionTitle>
-            <Typography variant="body1" textAlign="center">
+            <Typography variant="body1" >
               We are SIT Gigs, a community built around the aspirations of
               university students. Our platform is designed to connect talented
               students with exciting freelance opportunities. We believe in the
@@ -78,7 +78,7 @@ function About() {
             <SectionTitle variant="h4" centered>
               What We Offer
             </SectionTitle>
-            <Typography variant="body1" textAlign="center">
+            <Typography variant="body1" >
               Whether you're a talented writer, a coding wizard, a creative
               designer, or a skilled marketer, we've got something for you. At
               SIT Gigs, we offer a wide range of freelance gigs and projects to
@@ -140,7 +140,7 @@ function About() {
             <SectionTitle variant="h4" centered>
               Contact Us
             </SectionTitle>
-            <Typography variant="body1" textAlign="center">
+            <Typography variant="body1" >
               Got questions or need assistance? Our support team is here to
               help. We value your feedback and are eager to assist you with any
               inquiries. Reach out to us via email, phone, or our online contact
