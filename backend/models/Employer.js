@@ -9,7 +9,7 @@ const employerSchema = new mongoose.Schema({
   credits: { type: Number, default: 0 },
   twoFASecret: { type: String },
   twoFAEnabled: { type: Boolean, default: false },
-  tempAuthToken: { type: String }, // Added tempAuthToken field
+  tempAuthToken: { type: String, required: true }, // Added tempAuthToken field
 });
 
 module.exports = mongoose.model("Employer", employerSchema);

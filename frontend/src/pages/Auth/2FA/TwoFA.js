@@ -3,7 +3,7 @@ import { api } from "services/api";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { EmployerAuthContext } from "../../../contexts/EmployerAuthContext";
 
-function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
+function TwoFASetup({ open, onClose, updateTwoFAMessage }) {
   const { authState } = useContext(AuthContext);
   const { employerAuthState } = useContext(EmployerAuthContext);
   // const [secret, setSecret] = useState("");
@@ -12,7 +12,6 @@ function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
   const [message, setMessage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [countdown, setCountdown] = useState(30); // The initial countdown value
-
 
   async function generateSecret() {
     if (!isGenerating) {
@@ -58,24 +57,18 @@ function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
           withCredentials: true,
         }
       );
-      //setMessage(data);
+
       const data = response.data;
-       // Check if verification was successful
-       if (data === "Two-factor authentication verified successfully") {
-        
+      // Check if verification was successful
+      if (data === "Two-factor authentication verified successfully") {
         updateTwoFAMessage("2FA verified successfully");
 
-        
         setTimeout(() => {
           onClose();
           window.location.reload();
         }, 1500);
-
-
       } else {
-
         updateTwoFAMessage("2FA verification failed");
-
       }
     } catch (error) {
       console.error("Error verifying token:", error);
@@ -86,7 +79,6 @@ function TwoFASetup({ open, onClose, updateTwoFAMessage}) {
   if (!(authState || employerAuthState)) {
     return <div>You must be logged in to view this page</div>;
   }
-
 
   return (
     <div>

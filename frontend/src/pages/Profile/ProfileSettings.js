@@ -23,7 +23,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import TwoFASetup from "../Auth/2FA/TwoFA"; // Import the TwoFASetup component
 
-
 function Profile() {
   const { authState } = useContext(AuthContext);
   const [formValues, setFormValues] = useState({
@@ -53,11 +52,10 @@ function Profile() {
   };
   const updateTwoFAMessage = (message) => {
     setTwoFAMessage(message);
-    if (message === "2FA verified successfully"){
+    if (message === "2FA verified successfully") {
       setSnackbarType("success");
       setOpenSnackbar(true);
-    }
-    else{
+    } else {
       setSnackbarType("error");
       setOpenSnackbar(true);
     }
@@ -71,7 +69,6 @@ function Profile() {
     }));
   }, []);
 
-
   // const verifyToken = (onSuccess) => {
   //   TwoFASetup.verifyToken((message) => {
   //     setSnackbarType("success");
@@ -80,7 +77,7 @@ function Profile() {
   //     onSuccess();
   //   });
   // };
-  
+
   async function disable2FA() {
     try {
       // Make an API request to disable 2FA
@@ -92,17 +89,17 @@ function Profile() {
         }
       );
       const data = response.data;
-  
+
       if (data === "2FA Disabled") {
         // Show a success message popup
         setTwoFAMessage("2FA Disabled successfully");
         setSnackbarType("success");
         setOpenSnackbar(true);
-        
+
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-  
+
         // Update the state to reflect 2FA disabled
         setTwoFAEnabled(false);
       } else {
@@ -118,7 +115,7 @@ function Profile() {
       setOpenSnackbar(true);
     }
   }
-  
+
   // useEffect(() => {
   //   // Assuming the API endpoint is http://localhost:3001/user/getJobs/${username}
   //   axios
@@ -354,10 +351,9 @@ function Profile() {
                 disabled={isDisable2FADisabled}
                 onClick={() => {
                   setIsDisable2FADisabled(true);
-                  if (twoFAEnabled){
+                  if (twoFAEnabled) {
                     disable2FA();
-                  } 
-                  else {
+                  } else {
                     setOpenTwoFADialog(true);
                   }
                 }}
@@ -377,10 +373,7 @@ function Profile() {
               </Typography>
             </CardContent>
           </Card>
-          <Dialog
-            open={openTwoFADialog}
-            disableEscapeKeyDown
-          >
+          <Dialog open={openTwoFADialog} disableEscapeKeyDown>
             <IconButton
               edge="end"
               color="inherit"
@@ -398,10 +391,10 @@ function Profile() {
             </IconButton>
             <DialogTitle>Two-Factor Authentication Setup</DialogTitle>
             <DialogContent>
-              <TwoFASetup 
-              open={openTwoFADialog} // Pass open state to TwoFASetup
-              onClose={handleTwoFAClose}
-              updateTwoFAMessage={updateTwoFAMessage} // Pass the callback function
+              <TwoFASetup
+                open={openTwoFADialog} // Pass open state to TwoFASetup
+                onClose={handleTwoFAClose}
+                updateTwoFAMessage={updateTwoFAMessage} // Pass the callback function
               />
             </DialogContent>
           </Dialog>
