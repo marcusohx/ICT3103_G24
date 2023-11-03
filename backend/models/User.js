@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   linkedinLink: { type: String, default: "" },
   twoFASecret: { type: String, default: "" },
   twoFAEnabled: { type: Boolean, default: false },
-  tempAuthToken: { type: String },
+  tempAuthToken: { type: String, required: true },
 });
 
 module.exports = mongoose.model("User", userSchema);

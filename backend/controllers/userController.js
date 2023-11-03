@@ -93,6 +93,8 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const hashedPin = await bcrypt.hash(pin, salt); // Hashing the pin
+    //tempAuthToken is used for 2FA
+    const tempAuthToken = crypto.randomBytes(32).toString("hex");
     // Create a new user
     const user = new User({
       email,
@@ -101,6 +103,7 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       firstName,
       lastName,
+      tempAuthToken,
     });
 
     // Save the new user in the database

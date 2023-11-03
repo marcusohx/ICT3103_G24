@@ -66,12 +66,15 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const hashedPin = await bcrypt.hash(pin, salt); // Hashing the pin
+    // Generate a temporary authentication token
+    const tempAuthToken = crypto.randomBytes(32).toString("hex");
 
     const employer = new Employer({
       companyName,
       email,
       password: hashedPassword,
       pin: hashedPin, // Storing the hashed pin
+      tempAuthToken,
     });
 
     await employer.save();
