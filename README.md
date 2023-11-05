@@ -40,7 +40,7 @@ Create a .env file in the backend directory and include the following variables:
 
 ```bash
 
-# MongoDB URI (replace with your actual MongoDB URI)
+# MongoDB URI (replace with your actual MongoDB URI) created with mongodb atlas (https://www.mongodb.com/atlas/database)
 MONGODB_URI=your_mongodb_uri
 
 # Server Port (can be left as is or changed to your preferred port)
