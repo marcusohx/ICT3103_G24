@@ -58,6 +58,9 @@ function CreateJobListingPage() {
     if (isNaN(Number(formData.payment)))
       errors.payment = "Payment must be a number";
     // ... add other validation checks as needed
+    if(formData.payment < 0) {
+      errors.payment = "Payment must be more than 0";
+    } 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
